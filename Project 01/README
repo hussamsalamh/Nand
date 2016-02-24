@@ -1,21 +1,31 @@
 yonilipman, eraXXX
-yonatan lipman, 305629750
-era choshen, XXXXXXXXX
+===============================================================================
+Yonatan Lipman, ID 305629750, yonatan.lipman@mail.huji.ac.il
+Era Choshen, ID XXXXXXXXX, era.choshen@mail.huji.ac.il (????)
+===============================================================================
 
 project01
+===============================================================================
 
-Not.hdl
-And.hdl
-Or.hdl
-Xor.hdl
-Mux.hdl
-DMux.hdl
-Not16.hdl
-And16.hdl
-Or16.hdl
-Mux16.hdl
-Or8Way.hdl
-Mux4Way16.hdl
-Mux8Way16.hdl
-DMux4Way.hdl
-DMux8Way.hdl
+Submitted Files
+--------------------------
+REAMDE - This file.
+Not.hdl - Logical Not Chip
+And.hdl - Logical And Chip
+Or.hdl - Logical Or Chip
+Xor.hdl - Logical Xor Chip
+Mux.hdl - Logical Mux Chip
+DMux.hdl - Logical DMux Chip
+Not16.hdl - Logical Not 16 bit Chip
+And16.hdl - Logical And 16 bit Chip
+Or16.hdl - Logical Or 16 bit Chip
+Mux16.hdl - Logical Mux 16 bit Chip
+Or8Way.hdl - Logical Or between 8 inputs Chip
+Mux4Way16.hdl - Logical Mux for 4 inputs of 16 bit buses Chip
+Mux8Way16.hdl - Logical Mux for 8 inputs of 16 bit buses Chip
+DMux4Way.hdl - Logical DMux for 4 outputs Chip
+DMux8Way.hdl - Logical Dmux for 8 outputs Chip
+
+Remarks
+-------
+Implementation was quite straightforward for creating the chips.
