@@ -1,0 +1,9 @@
+CHIP ShiftLeft {
+     IN in[16];
+     OUT out[16];
+     
+     PARTS:
+     Mux16(a[0] = false, a[1..15] = in[0..14], b[0..15] = false, sel = false, out[0..15] = out[0..15]);
+
+
+}
