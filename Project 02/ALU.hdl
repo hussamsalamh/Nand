@@ -5,7 +5,7 @@
 
 /**
  * The ALU. Computes one of the following functions:
- * x+y, x-y, y–x, 0, 1, -1, x, y, -x, -y, !x, !y,
+ * x+y, x-y, yï¿½x, 0, 1, -1, x, y, -x, -y, !x, !y,
  * x+1, y+1, x-1, y-1, x&y, x|y on two 16-bit inputs, 
  * according to 6 input bits denoted zx,nx,zy,ny,f,no.
  * The bit-combinations that yield each function are 
@@ -45,5 +45,19 @@ CHIP ALU {
         ng; // 1 if (out<0),  0 otherwise
 
     PARTS:
-    // Put your code here.
+    // Manipulate x
+    Not(in=zx, out=negatedZx);
+    And16(a=x, b[0..15]=negatedZx,out = finalX);
+    // TODO: Yoni - call your temp pin for negation finalX, and then I'll
+    // change mine to manipulated Zx (that's your input), same for y
+    // Manipulate y
+    Not(in=zy, out=negatedZy);
+    And16(a=y, b[0..15]=negatedYx, out = finalY);
+    //Output
+    Add16(a=finalX,b=finalY, out=positiveF);
+    And16(a=finalX,b=finalY, out=zeroF);
+    Mux16(a=zeroF, b=positiveF, sel=f, out=tempEval);
+    // TODO: Yoni - use tempEval as the input of what you need to negate.
+
+
 }
