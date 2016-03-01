@@ -1,0 +1,72 @@
+CHIP Mul{
+    IN a[16], b[16];
+    OUT out[16];
+
+    PARTS:
+    ShiftLeft(in=a, out=a1);
+    ShiftLeft(in=a1, out=a2);
+    ShiftLeft(in=a2, out=a3);
+    ShiftLeft(in=a3, out=a4);
+    ShiftLeft(in=a4, out=a5);
+    ShiftLeft(in=a5, out=a6);
+    ShiftLeft(in=a6, out=a7);
+    ShiftLeft(in=a7, out=a8);
+    ShiftLeft(in=a8, out=a9);
+    ShiftLeft(in=a9, out=a10);
+    ShiftLeft(in=a10, out=a11);
+    ShiftLeft(in=a11, out=a12);
+    ShiftLeft(in=a12, out=a13);
+    ShiftLeft(in=a13, out=a14);
+    ShiftLeft(in=a14, out=a15);
+
+    Not(in=b[0], out=negatedB0);
+    Not(in=b[1], out=negatedB1);
+    Not(in=b[2], out=negatedB2);
+    Not(in=b[3], out=negatedB3);
+    Not(in=b[4], out=negatedB4);
+    Not(in=b[5], out=negatedB5);
+    Not(in=b[6], out=negatedB6);
+    Not(in=b[7], out=negatedB7);
+    Not(in=b[8], out=negatedB8);
+    Not(in=b[9], out=negatedB9);
+    Not(in=b[10], out=negatedB10);
+    Not(in=b[11], out=negatedB11);
+    Not(in=b[12], out=negatedB12);
+    Not(in=b[13], out=negatedB13);
+    Not(in=b[14], out=negatedB14);
+    Not(in=b[15], out=negatedB15);
+
+    ALU(x=a,y[0..15]=false,zx=negatedB0,nx=false,zy=false,ny=false,f=true,no=false,out=prod1);
+    ALU(x=a1,y[0..15]=false,zx=negatedB1,nx=false,zy=false,ny=false,f=true,no=false,out=prod2);
+    ALU(x=a2,y[0..15]=false,zx=negatedB2,nx=false,zy=false,ny=false,f=true,no=false,out=prod3);
+    ALU(x=a3,y[0..15]=false,zx=negatedB3,nx=false,zy=false,ny=false,f=true,no=false,out=prod4);
+    ALU(x=a4,y[0..15]=false,zx=negatedB4,nx=false,zy=false,ny=false,f=true,no=false,out=prod5);
+    ALU(x=a5,y[0..15]=false,zx=negatedB5,nx=false,zy=false,ny=false,f=true,no=false,out=prod6);
+    ALU(x=a6,y[0..15]=false,zx=negatedB6,nx=false,zy=false,ny=false,f=true,no=false,out=prod7);
+    ALU(x=a7,y[0..15]=false,zx=negatedB7,nx=false,zy=false,ny=false,f=true,no=false,out=prod8);
+    ALU(x=a8,y[0..15]=false,zx=negatedB8,nx=false,zy=false,ny=false,f=true,no=false,out=prod9);
+    ALU(x=a9,y[0..15]=false,zx=negatedB9,nx=false,zy=false,ny=false,f=true,no=false,out=prod10);
+    ALU(x=a10,y[0..15]=false,zx=negatedB10,nx=false,zy=false,ny=false,f=true,no=false,out=prod11);
+    ALU(x=a11,y[0..15]=false,zx=negatedB11,nx=false,zy=false,ny=false,f=true,no=false,out=prod12);
+    ALU(x=a12,y[0..15]=false,zx=negatedB12,nx=false,zy=false,ny=false,f=true,no=false,out=prod13);
+    ALU(x=a13,y[0..15]=false,zx=negatedB13,nx=false,zy=false,ny=false,f=true,no=false,out=prod14);
+    ALU(x=a14,y[0..15]=false,zx=negatedB14,nx=false,zy=false,ny=false,f=true,no=false,out=prod15);
+    ALU(x=a15,y[0..15]=false,zx=negatedB15,nx=false,zy=false,ny=false,f=true,no=false,out=prod16);
+
+    Add16(a=prod1, b=prod2, out=sum1);
+    Add16(a=sum1, b=prod3, out=sum2);
+    Add16(a=sum2, b=prod4, out=sum3);
+    Add16(a=sum3, b=prod5, out=sum4);
+    Add16(a=sum4, b=prod6, out=sum5);
+    Add16(a=sum5, b=prod7, out=sum6);
+    Add16(a=sum6, b=prod8, out=sum7);
+    Add16(a=sum7, b=prod9, out=sum8);
+    Add16(a=sum8, b=prod10, out=sum9);
+    Add16(a=sum9, b=prod11, out=sum10);
+    Add16(a=sum10, b=prod12, out=sum11);
+    Add16(a=sum11, b=prod13, out=sum12);
+    Add16(a=sum12, b=prod14, out=sum13);
+    Add16(a=sum13, b=prod15, out=sum14);
+    Add16(a=sum14, b=prod16, out=out);
+
+}
