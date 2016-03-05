@@ -66,8 +66,8 @@ CHIP ALU {
 
 
     //Output
-    Add16(a=finalX,b=finalY, out=positiveF);
-    And16(a=finalX,b=finalY, out=zeroF);
+    Add16(a=afterNx ,b=afterNy, out=positiveF);
+    And16(a=afterNx,b=afterNy, out=zeroF);
     Mux16(a=zeroF, b=positiveF, sel=f, out=tempEval);
     // TODO: Yoni - use tempEval as the input of what you need to negate.
 
