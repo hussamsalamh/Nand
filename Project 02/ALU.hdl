@@ -72,7 +72,7 @@ CHIP ALU {
 
     //Output
     Add16(a=afterNx ,b=afterNy, out=positiveF);
-    And16(a=afterNx,b=afterNy, out=zeroF);
+    Or16(a=afterNx,b=afterNy, out=zeroF);
     Mux16(a=zeroF, b=positiveF, sel=f, out=tempEval);
 
     Not16(in = tempEval, out = negatedOut);
