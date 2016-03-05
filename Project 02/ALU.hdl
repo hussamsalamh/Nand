@@ -46,14 +46,15 @@ CHIP ALU {
 
     PARTS:
     // Manipulate x
-    Not(in=zx, out=negatedZx);
-    And16(a=x, b[0..15]=negatedZx ,out = afterZx);
+    //Not(in=zx, out=negatedZx);
+    //And16(a=x, b[0..15]=negatedZx ,out = afterZx);
+
+    Not16(in = x, out = negX);
+    And16(a = x, b = negX, out = zeroX);
+    Mux16(a = x, b = zeroX, sel = zx, out = afterZx);
 
     Add16(a = afterZx, b = true, out = xBeforeNeg);
     Not16(in = xBeforeNeg, out = afterNx);
-
-    // TODO: Yoni - call your temp pin for negation finalX, and then I'll
-    // change mine to manipulated Zx (that's your input), same for y
 
 
     // Manipulate y
@@ -68,7 +69,6 @@ CHIP ALU {
     Add16(a=afterNx ,b=afterNy, out=positiveF);
     And16(a=afterNx,b=afterNy, out=zeroF);
     Mux16(a=zeroF, b=positiveF, sel=f, out=tempEval);
-    // TODO: Yoni - use tempEval as the input of what you need to negate.
 
     Not16(in = tempEval, out = negatedOut);
     Mux16(a = tempEval, b = negatedOut, sel = no, out = out);
