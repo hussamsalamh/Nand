@@ -58,8 +58,13 @@ CHIP ALU {
 
 
     // Manipulate y
-    Not(in=zy, out=negatedZy);
-    And16(a=y, b[0..15]=negatedYx, out = afterZy);
+    //Not(in=zy, out=negatedZy);
+    //And16(a=y, b[0..15]=negatedYx, out = afterZy);
+
+    Not16(in = y, out = negY);
+    And16(a = y, b = negY, out = zeroY);
+    Mux16(a = y, b = zeroY, sel = zy, out = afterZy);
+
 
     Add16(a = afterZy, b = true, out = yBeforeNeg);
     Not16(in = yBeforeNeg, out = afterNy);
@@ -71,11 +76,16 @@ CHIP ALU {
     Mux16(a=zeroF, b=positiveF, sel=f, out=tempEval);
 
     Not16(in = tempEval, out = negatedOut);
-    Mux16(a = tempEval, b = negatedOut, sel = no, out = out);
+    Mux16(a = tempEval, b = negatedOut, sel = no, out = res, out[15] = t);
+    Mux16(a = res, b = false, sel = false, out = out);
 
-    And(a = true, b = out[0], out = ng); // maybe flip to out[15]
-    Or8Way(in = out[0..7], out = firstOr);
-    Or8Way(in = out[8..15], out = secondOr);
+
+
+    And(a = true, b = t, out = ng); // maybe flip to out[15]
+
+    Mux16(a = res, b = false, sel = false, out[0..7] = r1, out[8..15] = r2);
+    Or8Way(in = r1, out = firstOr);
+    Or8Way(in = r2, out = secondOr);
     Or(a = firstOr, b = secondOr, out = finalOr);
     Not(in = finalOr, out = zr);
 }
