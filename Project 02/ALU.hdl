@@ -67,7 +67,7 @@ CHIP ALU {
 
 
     Not16(in = afterZy, out = negatedY);
-    Mux16(a = afterZy, b=negatedY, out = afterNy);
+    Mux16(a = afterZy, b=negatedY, sel=ny, out = afterNy);
 
 
     //Output
