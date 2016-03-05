@@ -53,8 +53,8 @@ CHIP ALU {
     And16(a = x, b = negX, out = zeroX);
     Mux16(a = x, b = zeroX, sel = zx, out = afterZx);
 
-    Add16(a = afterZx, b = true, out = xBeforeNeg);
-    Not16(in = xBeforeNeg, out = afterNx);
+    Not16(in = afterZx, out = negatedX);
+    Mux16(a = afterZx, b=negatedX, out = afterNx);
 
 
     // Manipulate y
@@ -66,8 +66,8 @@ CHIP ALU {
     Mux16(a = y, b = zeroY, sel = zy, out = afterZy);
 
 
-    Add16(a = afterZy, b = true, out = yBeforeNeg);
-    Not16(in = yBeforeNeg, out = afterNy);
+    Not16(in = afterZy, out = negatedY);
+    Mux16(a = afterZy, b=negatedY, out = afterNy);
 
 
     //Output
