@@ -18,15 +18,15 @@
 // Implementation: the ALU manipulates the x and y
 // inputs and then operates on the resulting values, 
 // as follows:
-// if (zx==1) set x = 0        // 16-bit constant
+// if (zx==1) set x = 0        // 16-bit constant ERA
 // if (nx==1) set x = ~x       // bitwise "not"
-// if (zy==1) set y = 0        // 16-bit constant
+// if (zy==1) set y = 0        // 16-bit constant ERA
 // if (ny==1) set y = ~y       // bitwise "not"
-// if (f==1)  set out = x + y  // integer 2's complement addition
+// if (f==1)  set out = x + y  // integer 2's complement addition ERA
 // if (f==0)  set out = x & y  // bitwise "and"
-// if (no==1) set out = ~out   // bitwise "not"
+// if (no==1) set out = ~out   // bitwise "not" ERA
 // if (out==0) set zr = 1
-// if (out<0) set ng = 1
+// if (out<0) set ng = 1 ERA
 
   
 CHIP ALU {
@@ -47,35 +47,21 @@ CHIP ALU {
     PARTS:
     // Manipulate x
     Not(in=zx, out=negatedZx);
-    And16(a=x, b[0..15]=negatedZx ,out = afterZx);
-
-    Add16(a = afterZx, b = true, out = xBeforeNeg);
-    Not16(in = xBeforeNeg, out = afterNx);
-
+    And16(a=x, b[0..15]=negatedZx,out = finalX);
     // TODO: Yoni - call your temp pin for negation finalX, and then I'll
-    // change mine to manipulated Zx (that's your input), same for y
-
-
+    // TODO: change mine to manipulated Zx (that's your input), same for y
     // Manipulate y
     Not(in=zy, out=negatedZy);
-    And16(a=y, b[0..15]=negatedYx, out = afterZy);
-
-    Add16(a = afterZy, b = true, out = yBeforeNeg);
-    Not16(in = yBeforeNeg, out = afterNy);
-
-
+    And16(a=y, b[0..15]=negatedYx, out = finalY);
     //Output
-    Add16(a=afterNx ,b=afterNy, out=positiveF);
-    And16(a=afterNx,b=afterNy, out=zeroF);
+        // Addition of X and Y
+    Add16(a=finalX,b=finalY, out=positiveF);
+        // And of X and Y
+    And16(a=finalX,b=finalY, out=zeroF);
+        // TempEval is picked according to f
     Mux16(a=zeroF, b=positiveF, sel=f, out=tempEval);
-    // TODO: Yoni - use tempEval as the input of what you need to negate.
-
-    Not16(in = tempEval, out = negatedOut);
-    Mux16(a = tempEval, b = negatedOut, sel = no, out = out);
-
-    And(a = true, b = out[0], out = ng); // maybe flip to out[15]
-    Or8Way(in = out[0..7], out = firstOr);
-    Or8Way(in = out[8..15], out = secondOr);
-    Or(a = firstOr, b = secondOr, out = finalOr);
-    Not(in = finalOr, out = zr);
+        // TempEval is negated
+    Not16(in=tempEval, out=negatedTempEval);
+        // Picked according to the value of no.
+    Mux16(a=tempEval, b=negatedTempEval, sel=no, out=finalEval, out[0] = ng);
 }
