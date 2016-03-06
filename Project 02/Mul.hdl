@@ -2,6 +2,9 @@ CHIP Mul{
     IN a[16], b[16];
     OUT out[16];
 
+    /**
+     * 16-bit multiplier: out = a[16] * b[16]
+     */
     PARTS:
     ShiftLeft(in=a, out=a1);
     ShiftLeft(in=a1, out=a2);

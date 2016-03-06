@@ -1,3 +1,6 @@
+/**
+*Shifts 16-bits to the right (divides by two and floors)
+*/
 CHIP ShiftRight{
      IN in[16];
      OUT out[16];

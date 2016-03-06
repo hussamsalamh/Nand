@@ -1,3 +1,6 @@
+/**
+ * Shifts 16 bit bus to the left, (multiplies by two)
+ */
 CHIP ShiftLeft {
      IN in[16];
      OUT out[16];
