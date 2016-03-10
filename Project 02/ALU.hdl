@@ -46,8 +46,6 @@ CHIP ALU {
 
     PARTS:
     // Manipulate x
-    //Not(in=zx, out=negatedZx);
-    //And16(a=x, b[0..15]=negatedZx ,out = afterZx);
 
     Not16(in = x, out = negX);
     And16(a = x, b = negX, out = zeroX);
@@ -58,8 +56,6 @@ CHIP ALU {
 
 
     // Manipulate y
-    //Not(in=zy, out=negatedZy);
-    //And16(a=y, b[0..15]=negatedYx, out = afterZy);
 
     Not16(in = y, out = negY);
     And16(a = y, b = negY, out = zeroY);
@@ -79,9 +75,7 @@ CHIP ALU {
     Mux16(a = tempEval, b = negatedOut, sel = no, out = res, out[15] = t);
     Mux16(a = res, b = false, sel = false, out = out);
 
-
-
-    And(a = true, b = t, out = ng); // maybe flip to out[15]
+    And(a = true, b = t, out = ng);
 
     Mux16(a = res, b = false, sel = false, out[0..7] = r1, out[8..15] = r2);
     Or8Way(in = r1, out = firstOr);
