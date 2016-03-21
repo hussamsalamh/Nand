@@ -7,6 +7,7 @@
 
 // Bubble sort, switch adjacent numbers, with smaller number moving forward.
 // At the end of the iteration shorten length of array by one.
+
     // Set i to look at start of array
     @R14
     D=M

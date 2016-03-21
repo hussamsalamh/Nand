@@ -1,0 +1,18 @@
+yonilipman,irahi
+===============================================================================
+Yonatan Lipman, ID 305629750, yonatan.lipman@mail.huji.ac.il
+Era Choshen, ID 302907761, era.choshen@mail.huji.ac.il
+===============================================================================
+
+project04
+===============================================================================
+
+Submitted Files
+--------------------------
+README - This file.
+Mult.asm - Assembly file for multiplication of 2 numbers.
+Fill.asm - Assembly file illustrating low level handling of the screen and keyboard devices.
+           Pressing any button on the keyboard will blacken the screen, screen is white if
+           no button is pressed.
+Sort.asm - Assembly file for sorting a given array in descending order using bubble sort.
+Divide.asm - Assembly file for dividing 2 numbers, remainder is discarded
