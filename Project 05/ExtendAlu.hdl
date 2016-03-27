@@ -16,5 +16,27 @@ CHIP ExtendAlu{
      OUT out[16],zr,ng;
      
      PARTS:
-        
+     // Compute regular ALU operation on x and y by instructions
+     ALU(x=x,y=y,zx=instruction[5],nx=instruction[4], zy=instruction[3],
+     ny=instruction[2],f=instruction[1], no=instruction[0],
+     out=ALUOut,zr=regALUzr,ng=regALUng);
+
+     // Leftmost bits 11 - mux ALUout
+     // Leftmost bits 10 - x*y
+     // Leftmost bits 00 - x*y
+      // Leftmost bits 01 -  If instruction[4]=0 shift y, if instruction[4]=1
+     // shift x, instruction[5]=1 shift left, instruction[5]=0 shift right
+
+     // Result of Multiplication
+     Mul(a=x, b=y, out=multOut);
+     // Choose whether to shift x or y
+     Mux16(a=y, b=x, sel=instruction[4], out=shiftInput);
+     ShiftLeft(in=shiftInput, out= leftShift);
+     ShiftRight(in=shiftInput, out= rightShift);
+     // Choose between the leftShift and the rightShift
+     Mux16(a= rightShift, b = leftShift, sel=instruction[5], out=shiftOutput);
+
+     //Choose which output to deliver
+     Mux4Way16(a=multOut, b=shiftOutput, c=multOut, d=ALUout, sel=instruction[7..8]
+      ,out=out);
 }
