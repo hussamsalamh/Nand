@@ -21,7 +21,10 @@
  * memory map. The behavior in these addresses is described in the 
  * Screen and Keyboard chip specifications given in the book.
  */
-
+// Screen - (16384 - 24575)
+// Keyboard - 24576
+// Invalid - 24577 and higheer
+// Valid - The rest
 CHIP Memory {
     IN in[16], load, address[15];
     OUT out[16];
