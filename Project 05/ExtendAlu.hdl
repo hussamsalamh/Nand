@@ -37,6 +37,19 @@ CHIP ExtendAlu{
      Mux16(a= rightShift, b = leftShift, sel=instruction[5], out=shiftOutput);
 
      //Choose which output to deliver
-     Mux4Way16(a=multOut, b=shiftOutput, c=multOut, d=ALUout, sel=instruction[7..8]
+     Mux4Way16(a=multOut, b=shiftOutput, c=multOut, d=ALUOut, sel=instruction[7..8]
       ,out=out);
+     ALU(x=multOut, y=true,zx=false,nx=false,zy=false,f=true,no=false,zr=multZr,
+     ng=multNg);
+     ALU(x=shiftOutput, y=true,zx=false,nx=false,zy=false,f=true,no=false,
+     zr=shiftZr, ng=shiftNg);
+
+    // Handle which Zr to output
+     Mux(a=shiftZr, b=regALUzr, sel=instruction[8], out=tempZr);
+     Mux(a=multZr, b=tempZr, sel=instruction[7], out=zr);
+
+    // Handle which Ng to output
+    Mux(a=shiftNg, b=regALUng, sel=instruction[8], out=tempNg);
+    Mux(a=multNg, b=tempNg, sel=instruction[7], out=ng);
+
 }
