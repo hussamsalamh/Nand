@@ -39,5 +39,29 @@ CHIP CPU {
         pc[15];          // address of next instruction
 
     PARTS:
-    // Put your code here:
+    // ***********Decoder**************
+    // Outputs 1 if MSB is 0 to know whether to set the A register
+    Xor(a=instruction[15], b=true, out=instructionType);
+    // Mux in front of A Register
+    Mux16(a=ALUOut, b=instruction[0..14], sel=instructionType, out=newAValue);
+    // Takes value from A Register
+    Mux16(a=ARegisterout, b=ALUOut);
+
+
+
+
+    ARegister(in=newAValue,load=instructionType,out=ARegisterOut,
+    out= addressM);
+    ALU(x=DRegisterOut,y=outAM,zx=instruction[12],nx=instruction[11],
+    zy=instruction[10],ny=zx=instruction[9],f=zx=instruction[8],
+    no=zx=instruction[7],out=ALUOut,zr,ng);
+
+    // Mux before ALU - determined by a bit
+    Mux16(a=ARegisterOut,b=inM,sel=instruction[12],out=outAM); // Register A/M
+
+
+
+    DRegister(in=ALUOut,load=instruction[4],out=DRegisterOut);
+    // PC
+    PC(in=ARegisterOut,load,inc,reset=reset,out=pc);
 }
