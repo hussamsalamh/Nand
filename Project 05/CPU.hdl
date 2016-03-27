@@ -40,16 +40,14 @@ CHIP CPU {
 
     PARTS:
     // ***********Decoder**************
-    // Outputs 1 if MSB is 0 to know whether to set the A register
-    Xor(a=instruction[15], b=true, out=instructionType);
-    // Mux in front of A Register
-    Mux16(a=ALUOut, b=instruction[0..14], sel=instructionType, out=newAValue);
+
     // Takes value from A Register
-    Mux16(a=ARegisterout, b=ALUOut);
+    Mux16(a=ARegisterout, b=ALUOut,);
 
 
 
-
+    // Mux in front of A Register
+    Mux16(a=instruction[0..14], b=ALUout, sel=instructionType, out=newAValue);
     ARegister(in=newAValue,load=instructionType,out=ARegisterOut,
     out= addressM);
     ALU(x=DRegisterOut,y=outAM,zx=instruction[12],nx=instruction[11],
