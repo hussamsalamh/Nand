@@ -41,21 +41,29 @@ CHIP CPU {
     PARTS:
     // ***********Decoder**************
 
+
+
+
+
     // Takes value from A Register
-    Mux16(a=ARegisterout, b=ALUOut,);
+    //Mux16(a=ARegisterout, b=ALUOut,);
 
-
+    //decode the instruction type for load_A
+    Mux(a = true, b = instruction[5] , sel = instruction[15], out = load_A);
 
     // Mux in front of A Register
-    Mux16(a=instruction[0..14], b=ALUout, sel=instructionType, out=newAValue);
-    ARegister(in=newAValue,load=instructionType,out=ARegisterOut,
-    out= addressM);
-    ALU(x=DRegisterOut,y=outAM,zx=instruction[12],nx=instruction[11],
-    zy=instruction[10],ny=instruction[9],f=instruction[8],
-    no=instruction[7],out=ALUOut,zr,ng);
+    Mux16(a = instruction, b = ALUOut, sel = load_A, out = newAValue);
+
+    ARegister(in = newAValue, load = load_A, out = ARegisterOut,
+    out = addressM);
 
     // Mux before ALU - determined by a bit
-    Mux16(a=ARegisterOut,b=inM,sel=instruction[12],out=outAM); // Register A/M
+    Mux16(a = ARegisterOut, b = inM, sel = instruction[12], out = outAM);
+
+    ALU(x = DRegisterOut, y = outAM, zx = instruction[12], nx = instruction[11],
+    zy = instruction[10], ny = instruction[9], f = instruction[8],
+    no = instruction[7], out = ALUOut, zr, ng);
+
 
 
 

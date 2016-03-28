@@ -30,4 +30,32 @@ CHIP CpuMul{
         pc[15];          // address of next instruction
 
      PARTS:
+
+
+     //if instruction[15] == 0 (A instruction) then behave normal to the cpu
+     //else
+
+     Mux16(a = instruction ,b = ,sel = instruction[15] ,out = afterInstType);
+
+     //Decide if behave like book CPU
+     // instruction[15] == 0 OR (instruction[13] and instruction[14] == 1) behave like book CPU
+     And(a = instruction[14], b = instruction[13], out = xBitsAfterAnd);
+     Not(in = instruction[15], out = negMSB);
+     Or(a = negMSB, b = xBitsAfterAnd, out = negInstructionType);
+     Not(in = negInstructionType, out = instructionType); // out == 0 behave like book CPU
+
+     CPU(inM = inM, instruction = instruction, reset = reset, outM = outM_CPU, writeM = writeM_CPU,
+     addressM = addressM_CPU, pc = pc_CPU);
+
+
+
+     Mul(a = inM, b = outM_CPU, out = outM_afterMult);
+     // should i make another mul for the A reg? and then mux will choose by instruction[12]
+     ShiftLeft(in[15] = true, in[0..14] = outM_CPU, out = out_ShiftLeft_D);
+     ShiftLeft(in[15] = true, in[0..14] = inM, out = out_ShiftLeft_M);
+     ShiftLeft(in[15] = true, in[0..14] = addressM, out = out_ShiftLeft_A);
+
+     ShiftRight(in,out);
+
+
 }
