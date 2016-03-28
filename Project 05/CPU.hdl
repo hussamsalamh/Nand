@@ -39,10 +39,6 @@ CHIP CPU {
         pc[15];          // address of next instruction
 
     PARTS:
-    // ***********Decoder**************
-
-    // Takes value from A Register
-    //Mux16(a=ARegisterout, b=ALUOut,);
 
     //decode the instruction type for loadA
     Mux(a = true, b = instruction[5] , sel =instruction[15], out = loadA);
