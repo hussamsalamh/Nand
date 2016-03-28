@@ -31,6 +31,56 @@ CHIP CpuMul{
 
      PARTS:
 
+       // ***********Decoder**************
+
+        // Takes value from A Register
+        //Mux16(a=ARegisterout, b=ALUOut,);
+
+        //decode the instruction type for loadA
+        Mux(a = true, b = instruction[5] , sel =instruction[15], out = loadA);
+
+        // Mux in front of A Register
+        Mux16(a = instruction, b = ALUOut, sel =instruction[15], out = newAValue);
+
+        // Set ARegister
+        ARegister(in = newAValue, load = loadA, out = ARegisterOut,
+        out[0..14] = addressM);
+
+        // Mux before ALU - determined by a bit
+        Mux16(a = ARegisterOut, b = inM, sel = instruction[12], out = outAM);
+
+
+        ExtendAlu(x=DRegisterOut, y=outAM, instruction=instruction[6..14],
+        out=outM, out=ALUOut, zr=ALUzr, ng=ALUng);
+
+        // Set value of D Register
+        And(a= instruction[15], b=instruction[4], out=loadD);
+        DRegister(in=ALUOut,load=loadD,out=DRegisterOut);
+
+        //Set value of writeM
+        And(a= instruction[15], b=instruction[3], out=writeM);
+
+        // PC
+        Not(in=ALUng, out=positive);
+        Not(in=ALUzr, out=notzr);
+        // Determine strong inequalities
+        And(a=instruction[15], b=instruction[2], out=JLT);
+        And(a=instruction[15], b=instruction[1], out=JEQ);
+        And(a=instruction[15], b=instruction[0], out=JGT);
+
+        // Determine if satisfies condition
+        And(a=JLT, b=ALUng, out=sel2);
+        And(a=JEQ, b=ALUzr, out=sel1);
+        And(a=positive, b=notzr, out=strictPositive);
+        And(a=JGT, b=strictPositive, out=sel0);
+
+        // Determine if weak inequality and define load
+        Or(a=sel2, b=sel1, out=tempSel);
+        Or(a=tempSel, b=sel0, out=loadPC);
+
+
+        // Set value of PC, increment by default, load / reset if necessary.
+        PC(in=ARegisterOut,load=loadPC,inc=true,reset=reset,out[0..14]=pc);
 
 
      //if instruction[15] == 0 (A instruction) then behave normal to the cpu
