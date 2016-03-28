@@ -27,11 +27,21 @@ CHIP Memory {
     OUT out[16];
 
     PARTS:
+    // Decide which chip will receive the flipped load bit.
+
     DMux4Way(in=load, sel=address[13..14], a=load0,b=load1,c=load2,d=load3);
     Or(a=load0,b=load1, out=RAMLoad);
+
+    // Input into RAM16K
     RAM16K(in=in, load=RAMLoad, address=address[0..13], out=RAMout);
+
+    // Input into Screen
     Screen(in=in, load=load2, address=address[0..12], out=screenOut);
+
+    // Get output from keyboard
     Keyboard(out=keyOut);
+
+    // Output relevant bits
     Mux4Way16(a=RAMout, b=RAMout, c=screenOut, d=keyOut, sel = address[13..14]
     , out=out);
 }

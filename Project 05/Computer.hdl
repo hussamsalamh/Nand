@@ -19,8 +19,14 @@ CHIP Computer {
     IN reset;
 
     PARTS:
-    CPU(inM=memOut, instruction=RAMInstruction, reset=reset, pc=pcOUT, outM=memIn,
-     writeM=memLoad, addressM=memAddress);
+    // Link all chips according to diagram (interconnected), CPU receives
+    // reset bit from in and handles PC accordingly
+    CPU(inM=memOut, instruction=RAMInstruction, reset=reset, pc=pcOUT,
+    outM=memIn, writeM=memLoad, addressM=memAddress);
+
+    // Outputs instruction according to PC from CPU
     ROM32K(address=pcOUT, out=RAMInstruction);
+
+    // Output relevant memory content according to CPU
     Memory(in=memIn,load=memLoad,address=memAddress, out=memOut);
 }
