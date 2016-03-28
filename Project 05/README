@@ -1,0 +1,20 @@
+yonilipman,irahi
+===============================================================================
+Yonatan Lipman, ID 305629750, yonatan.lipman@mail.huji.ac.il
+Era Choshen, ID 302907761, era.choshen@mail.huji.ac.il
+===============================================================================
+
+project05
+===============================================================================
+
+Submitted Files
+--------------------------
+README - This file.
+Computer.hdl - The HACK computer, including CPU, ROM and RAM.
+CPU.hdl - The Hack CPU (Central Processing unit), consisting of an ALU,
+          two registers named A and D, and a program counter named PC.
+CpuMul.hdl - This chip is an extension of the book CPU by using the extended
+             ALU.
+ExtendAlu.hdl - The extended ALU with additional functions.
+Memory.hdl - The complete address space of the Hack computer's memory,
+             including RAM and memory-mapped I/O.
