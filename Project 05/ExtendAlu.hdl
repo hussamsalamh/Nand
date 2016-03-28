@@ -39,9 +39,9 @@ CHIP ExtendAlu{
      //Choose which output to deliver
      Mux4Way16(a=multOut, b=shiftOutput, c=multOut, d=ALUOut, sel=instruction[7..8]
       ,out=out);
-     ALU(x=multOut, y=true,zx=false,nx=false,zy=false,f=true,no=false,zr=multZr,
+     ALU(x=multOut, y=true,zx=false,nx=false,zy=false,f=false,no=false,zr=multZr,
      ng=multNg);
-     ALU(x=shiftOutput, y=true,zx=false,nx=false,zy=false,f=true,no=false,
+     ALU(x=shiftOutput, y=true,zx=false,nx=false,zy=false,f=false,no=false,
      zr=shiftZr, ng=shiftNg);
 
     // Handle which Zr to output
