@@ -28,21 +28,29 @@ CHIP ExtendAlu{
      // shift x, instruction[5]=1 shift left, instruction[5]=0 shift right
 
      // Result of Multiplication
-     Mul(a=x, b=y, out=multOut);
+     Mul(a=x, b=y, out=multOut, out[15]= multNg, out[0..7]=multFirstPart,
+     out[8..15] = multSecondPart);
      // Choose whether to shift x or y
      Mux16(a=y, b=x, sel=instruction[4], out=shiftInput);
      ShiftLeft(in=shiftInput, out= leftShift);
      ShiftRight(in=shiftInput, out= rightShift);
      // Choose between the leftShift and the rightShift
-     Mux16(a= rightShift, b = leftShift, sel=instruction[5], out=shiftOutput);
+     Mux16(a= rightShift, b = leftShift, sel=instruction[5], out=shiftOutput,
+     out[0..7]=firstShiftOut, out[8..15]=secondShiftOut, out[15]=shiftNg);
 
      //Choose which output to deliver
      Mux4Way16(a=multOut, b=shiftOutput, c=multOut, d=ALUOut, sel=instruction[7..8]
       ,out=out);
-     ALU(x=multOut, y=true,zx=false,nx=false,zy=false,f=false,no=false,zr=multZr,
-     ng=multNg);
-     ALU(x=shiftOutput, y=true,zx=false,nx=false,zy=false,f=false,no=false,
-     zr=shiftZr, ng=shiftNg);
+      // Compute multZr
+     Or8Way(in=multFirstPart, out=multOr1);
+     Or8Way(in=multSecondPart, out=multOr2);
+     Or(a=multOr1, b=multOr2, out = negatedMultZr);
+     Not(in= negatedMultZr, out=multZr);
+     // Compute shiftZr
+      Or8Way(in=firstShiftOut, out=shiftOr1);
+      Or8Way(in=secondShiftOut, out=shiftOr2);
+      Or(a=shiftOr1, b=shiftOr2, out = negatedShiftZr);
+      Not(in= negatedShiftZr, out=shiftZr);
 
     // Handle which Zr to output
      Mux(a=shiftZr, b=regALUzr, sel=instruction[8], out=tempZr);
