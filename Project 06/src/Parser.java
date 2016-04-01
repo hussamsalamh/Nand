@@ -2,6 +2,7 @@
  * Created by Era on 01/04/2016.
  */
 public class Parser {
+    public enum CommandType{A_COMMAND, C_COMMAND, L_COMMAND};
     private String fileName;
     private Code currentCommand;
     public Parser(String fileName)
