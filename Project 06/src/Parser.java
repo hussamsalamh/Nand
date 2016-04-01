@@ -22,16 +22,14 @@ public class Parser {
      * Reads the next command from the input and makes it the current command. Should be called only if
      * hasMoreCommands() is true.
      */
-    public void advance()
-    {
-        return null;
+    public void advance(){
     }
 
     /**
      * Returns the type of the current command.
      * @return - ENUM representing the type of the command.
      */
-    public Code.CommandType commandtype()
+    public CommandType commandtype()
     {
         return null;
     }

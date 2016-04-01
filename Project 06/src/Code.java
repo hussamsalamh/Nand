@@ -1,18 +1,35 @@
 /**
  * Created by Era on 01/04/2016.
  */
-public class Code {
-    public Code()
-    {
-
-    }
+import java.util.Hashtable;
+public  class Code {
+    static final Hashtable<String, Integer> comp0Table = new Hashtable<String,Integer>() {{
+        // Put predefined binary translations here
+        put("foo", 0);
+        put("x", 0);
+    }};
+    static final Hashtable<String, Integer> comp1Table = new Hashtable<String, Integer>() {{
+        // Put predefined binary translations here
+        put("foo", 0);
+        put("x", 0);
+    }};
+    static final Hashtable<String, Integer> destTable = new Hashtable<String, Integer>() {{
+        // Put predefined binary translations here
+        put("foo", 0);
+        put("x", 0);
+    }};
+    static final Hashtable<String, Integer> jmpTable = new Hashtable<String, Integer>() {{
+        // Put predefined binary translations here
+        put("foo", 0);
+        put("x", 0);
+    }};
 
     /**
      * Returns the binary code of the dest mnemonic.
      * @param destMem - The mnemonic to translate.
      * @return - The relevant 3 bits after translation.
      */
-    public int dest(String destMem){
+    public static int dest(String destMem){
         return 0;
     }
 
@@ -21,7 +38,7 @@ public class Code {
      * @param compMem - The mnemonic to translate.
      * @return - The relevant 7 bits after translation.
      */
-    public int comp(String compMem)
+    public static int comp(String compMem)
     {
         return 0;
     }
@@ -31,7 +48,7 @@ public class Code {
      * @param jumpMem - The mnemonic to translate.
      * @return - The relevant 3 bits after translation.
      */
-    public int jump(String jumpMem)
+    public static int jump(String jumpMem)
     {
         return 0;
     }
