@@ -5,23 +5,23 @@ import java.util.Hashtable;
 public  class Code {
     static final Hashtable<String, Integer> comp0Table = new Hashtable<String,Integer>() {{
         // Put predefined binary translations here
-        put("foo", 0);
-        put("x", 0);
+        put("foo", 0b10);
+        put("x", 0b10);
     }};
     static final Hashtable<String, Integer> comp1Table = new Hashtable<String, Integer>() {{
         // Put predefined binary translations here
-        put("foo", 0);
-        put("x", 0);
+        put("foo", 0b10);
+        put("x", 0b10);
     }};
     static final Hashtable<String, Integer> destTable = new Hashtable<String, Integer>() {{
         // Put predefined binary translations here
-        put("foo", 0);
-        put("x", 0);
+        put("M", 0b001);
+        put("D", 0b010);
     }};
     static final Hashtable<String, Integer> jmpTable = new Hashtable<String, Integer>() {{
         // Put predefined binary translations here
-        put("foo", 0);
-        put("x", 0);
+        put("foo", 0b10);
+        put("x", 0b10);
     }};
 
     /**
