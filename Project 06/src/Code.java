@@ -2,6 +2,10 @@
  * Created by Era on 01/04/2016.
  */
 import java.util.Hashtable;
+
+/**
+ * This is a static Code class which translates mnemonics to binary code.
+ */
 public  class Code {
 
     /**
@@ -101,7 +105,7 @@ public  class Code {
      */
     public static int comp(String compMem)
     {
-        return 0;
+        return compTable.get(compMem);
     }
 
     /**
@@ -111,6 +115,6 @@ public  class Code {
      */
     public static int jump(String jumpMem)
     {
-        return 0;
+        return jmpTable.get(jumpMem);
     }
 }
