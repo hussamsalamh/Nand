@@ -41,7 +41,8 @@ public class SymbolTable {
         symbolTable.put("SP", SPAddress);
         symbolTable.put("LCL", LCLAddress);
         symbolTable.put("ARG", ARGAddress);
-        symbolTable.put("THIS", THATAddress);
+        symbolTable.put("THAT", THATAddress)
+        symbolTable.put("THIS", THISAddress);
         symbolTable.put("R0", R0);
         symbolTable.put("R1", R1);
         symbolTable.put("R2", R2);
