@@ -44,15 +44,6 @@ public  class Code {
         put("M-D", 0b1000111);
         put("D&M", 0b1000000);
         put("D|M", 0b1010101);
-
-
-
-
-
-
-
-
-
     }};
 
     /**
@@ -61,7 +52,7 @@ public  class Code {
     static final Hashtable<String, Integer> destTable = new Hashtable<String, Integer>() {{
         // Put predefined binary translations here
         // The "NULL" needs to be added when nothing appears
-        put("NULL", 0b000)
+        put("NULL", 0b000);
         put("M", 0b001);
         put("D", 0b010);
         put("MD", 0b011);
