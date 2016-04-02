@@ -41,7 +41,7 @@ public class SymbolTable {
         symbolTable.put("SP", SPAddress);
         symbolTable.put("LCL", LCLAddress);
         symbolTable.put("ARG", ARGAddress);
-        symbolTable.put("THAT", THATAddress)
+        symbolTable.put("THAT", THATAddress);
         symbolTable.put("THIS", THISAddress);
         symbolTable.put("R0", R0);
         symbolTable.put("R1", R1);
@@ -69,7 +69,8 @@ public class SymbolTable {
      * @param address - The address.
      */
     public void addEntry(String symbol, int address){
-        return;
+        //TODO: Can we assume symbol doesn't already exist?
+        symbolTable.put(symbol, address);
     }
 
     /**
@@ -78,7 +79,7 @@ public class SymbolTable {
      * @return - True if the symbol is in the table, false otherwise.
      */
     public boolean contains(String symbol){
-        return true;
+        return symbolTable.contains(symbol);
     }
 
     /**
@@ -87,7 +88,8 @@ public class SymbolTable {
      * @return - The address of the symbol.
      */
     public int GetAddress(String symbol){
-        return 0;
+        //TODO: check whether we can assume symbol is already in table.
+        return symbolTable.get(symbol);
     }
 
 }

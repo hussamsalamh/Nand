@@ -1,3 +1,4 @@
 Code - Not much here, wrote most of it with simple hashtables.
 Parser - Majority of the code, we need to talk about this
 SymbolTable
+Decimal to binary conversion - Need to understand if necessary
