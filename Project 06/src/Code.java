@@ -6,7 +6,7 @@ import java.util.Hashtable;
 /**
  * This is a static Code class which translates mnemonics to binary code.
  */
-public  class Code {
+public class Code {
 
     /**
      * Static hashtable to translate comp mnemonics to binary

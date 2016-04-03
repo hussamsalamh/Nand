@@ -7,6 +7,10 @@ import static java.lang.System.exit;
  * Created by Era on 01/04/2016.
  */
 public class Assembler {
+
+    private SymbolTable symbolTable;
+
+
     public static void main(String[] args) {
         // The first argument should be the name of the file to be parsed
         SymbolTable st = new SymbolTable();

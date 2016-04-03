@@ -5,29 +5,29 @@ import java.util.Hashtable;
 public class SymbolTable {
     private Hashtable<String, String> symbolTable;
     // Constants for the default values of the symbolTable
-    final int SPAddress = 0;
-    final int LCLAddress = 1;
-    final int ARGAddress = 2;
-    final int THISAddress = 3;
-    final int THATAddress = 4;
-    final int R0 = 0;
-    final int R1 = 1;
-    final int R2 = 2;
-    final int R3 = 3;
-    final int R4 = 4;
-    final int R5 = 5;
-    final int R6 = 6;
-    final int R7 = 7;
-    final int R8 = 8;
-    final int R9 = 9;
-    final int R10 = 10;
-    final int R11 = 11;
-    final int R12 = 12;
-    final int R13 = 13;
-    final int R14 = 14;
-    final int R15 = 15;
-    final int screenAddress = 16384;
-    final int keyBoardAddress = 24576;
+    final String SPAddress = "0";
+    final String LCLAddress = "1";
+    final String ARGAddress = "2";
+    final String THISAddress = "3";
+    final String THATAddress = "4";
+    final String R0 = "0";
+    final String R1 = "1";
+    final String R2 = "2";
+    final String R3 = "3";
+    final String R4 = "4";
+    final String R5 = "5";
+    final String R6 = "6";
+    final String R7 = "7";
+    final String R8 = "8";
+    final String R9 = "9";
+    final String R10 = "10";
+    final String R11 = "11";
+    final String R12 = "12";
+    final String R13 = "13";
+    final String R14 = "14";
+    final String R15 = "15";
+    final String screenAddress = "16384";
+    final String keyBoardAddress = "24576";
 
     /**
      * Constructor for the SymbolTable class.
