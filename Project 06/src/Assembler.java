@@ -29,7 +29,7 @@ public class Assembler {
          table. The program’s variables are handled in the second pass.
          */
         int lineNum = 0;
-        try (FileReader fr = new FileReader("testFile"); BufferedReader br = new BufferedReader(fr))
+        try (FileReader fr = new FileReader(args[1]); BufferedReader br = new BufferedReader(fr))
         {
             Parser p = new Parser(br);
             while (p.hasMoreCommands())
@@ -62,8 +62,8 @@ public class Assembler {
          allocated to the predefined symbols).
          This completes the assembler’s implementation.
          */
-        try (FileReader fr1 = new FileReader("testFile");  BufferedReader br1 = new BufferedReader(fr1);
-             FileWriter fw1 = new FileWriter("outputFile");
+        try (FileReader fr1 = new FileReader(args[1]);  BufferedReader br1 = new BufferedReader(fr1);
+             FileWriter fw1 = new FileWriter(args[2]);
              BufferedWriter bw = new BufferedWriter(fw1))
         {
             Parser p = new Parser(br1);
