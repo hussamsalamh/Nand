@@ -38,7 +38,7 @@ public class Assembler {
                 p.advance();
                if (p.commandtype().equals(Parser.CommandType.L_COMMAND))
                {
-                   st.addROMEntry(p.symbol(), Parser.BinaryLeftPad(lineNum+1));
+                   st.addROMEntry(p.symbol(), Parser.BinaryLeftPad(lineNum + 1));
                    continue;
                }else{
                    lineNum++;
@@ -75,6 +75,19 @@ public class Assembler {
                 if (type.equals(Parser.CommandType.A_COMMAND))
                 {
                     // Auxiliary function which checks
+                    // check if only num:
+                    if (p.symbol().matches("[-+]?\\d*\\.?\\d+"))
+                    {
+                        String numInBinary = Parser.BinaryLeftPad(p.symbol());
+                        bw.write(numInBinary + "\n");
+                        continue;
+                    }
+                    if (st.GetAddress(p.symbol()) == null)
+                    {
+                        st.addVariableEntry(p.symbol());
+                    }
+                    String writeSymb = st.GetAddress(p.symbol());
+                    bw.write(writeSymb + "\n");
                 }
                 else if (type.equals(Parser.CommandType.C_COMMAND))
                 {
