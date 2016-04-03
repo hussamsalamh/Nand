@@ -50,7 +50,7 @@ public class Parser {
     }
     public static String BinaryLeftPad(String num)
     {
-        String.format("%16s", Integer.toBinaryString(Integer.parseInt(num))).replace(' ', '0');
+        return String.format("%16s", Integer.toBinaryString(Integer.parseInt(num))).replace(' ', '0');
     }
     public static String BinaryLeftPad(Integer num)
     {
