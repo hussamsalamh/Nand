@@ -38,7 +38,7 @@ public class Assembler {
                 p.advance();
                if (p.commandtype().equals(Parser.CommandType.L_COMMAND))
                {
-                   st.addEntry(p.symbol(), String.format("%16s", Integer.toBinaryString(lineNum+1)).replace(' ', '0'));
+                   st.addEntry(p.symbol(), Parser.BinaryLeftPad(lineNum+1));
                    continue;
                }else{
                    lineNum++;
@@ -72,11 +72,7 @@ public class Assembler {
             {
                 p.advance();
                 Parser.CommandType type = p.commandtype();
-                if (type.equals(Parser.CommandType.L_COMMAND))
-                {
-                    bw.write(st.GetAddress(p.symbol()) + "\n");
-                }
-                else if (type.equals(Parser.CommandType.A_COMMAND))
+                if (type.equals(Parser.CommandType.A_COMMAND))
                 {
                     // Auxiliary function which checks
                 }

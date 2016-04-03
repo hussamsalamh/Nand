@@ -48,6 +48,14 @@ public class Parser {
         this.currentCommand = currentLine;
         commandType = commandtype();
     }
+    public static String BinaryLeftPad(String num)
+    {
+        String.format("%16s", Integer.toBinaryString(Integer.parseInt(num))).replace(' ', '0');
+    }
+    public static String BinaryLeftPad(Integer num)
+    {
+        return String.format("%16s", Integer.toBinaryString(num)).replace(' ', '0');
+    }
 
     /**
      * Returns the type of the current command.
