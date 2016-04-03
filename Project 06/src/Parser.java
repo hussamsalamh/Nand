@@ -6,6 +6,7 @@ import java.io.IOException;
  */
 public class Parser {
     public enum CommandType{A_COMMAND, C_COMMAND, L_COMMAND};
+
     private CommandType commandType;
     private BufferedReader file;
     private String currentCommand;

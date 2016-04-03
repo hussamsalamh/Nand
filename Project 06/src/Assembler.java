@@ -1,5 +1,7 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
 
 import static java.lang.System.exit;
 
@@ -36,7 +38,7 @@ public class Assembler {
                 p.advance();
                if (p.commandtype().equals(Parser.CommandType.L_COMMAND))
                {
-                   st.addEntry(p.symbol(), Integer.toBinaryString(lineNum+1));
+                   st.addEntry(p.symbol(), String.format("%16s", Integer.toBinaryString(lineNum+1)).replace(' ', '0'));
                    continue;
                }else{
                    lineNum++;
@@ -48,7 +50,6 @@ public class Assembler {
             System.out.println("happened");
             exit(0);
         }
-        System.out.println(st.GetAddress("AAA"));
         // Second pass
         /**
          * Now go again through the entire program, and parse each line. Each
@@ -62,6 +63,35 @@ public class Assembler {
          allocated to the predefined symbols).
          This completes the assembler’s implementation.
          */
+        try (FileReader fr1 = new FileReader("testFile");  BufferedReader br1 = new BufferedReader(fr1);
+             FileWriter fw1 = new FileWriter("outputFile");
+             BufferedWriter bw = new BufferedWriter(fw1))
+        {
+            Parser p = new Parser(br1);
+            while (p.hasMoreCommands())
+            {
+                p.advance();
+                Parser.CommandType type = p.commandtype();
+                if (type.equals(Parser.CommandType.L_COMMAND))
+                {
+                    bw.write(st.GetAddress(p.symbol()) + "\n");
+                }
+                else if (type.equals(Parser.CommandType.A_COMMAND))
+                {
+                    // Auxiliary function which checks
+                }
+                else if (type.equals(Parser.CommandType.C_COMMAND))
+                {
+                    String cCommand = "111" + Code.comp(p.comp()) + Code.dest(p.dest()) + Code.jump(p.jump()) + "\n";
+                    bw.write(cCommand);
+                }
 
+            }
+        }
+        catch (Exception e)
+        {
+            System.out.println("happened");
+            exit(0);
+        }
     }
 }

@@ -67,7 +67,7 @@ public class SymbolTable {
      * @param symbol - The symbol.
      * @param address - The address.
      */
-    public void addEntry(String symbol, int address){
+    public void addEntry(String symbol, String address){
         //TODO: Can we assume symbol doesn't already exist?
         symbolTable.put(symbol, address);
     }
