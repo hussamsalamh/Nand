@@ -12,7 +12,6 @@ public class Assembler {
 
     private SymbolTable symbolTable;
 
-
     public static void main(String[] args) {
         // The first argument should be the name of the file to be parsed
         SymbolTable st = new SymbolTable();
@@ -71,7 +70,7 @@ public class Assembler {
             while (p.hasMoreCommands())
             {
                 p.advance();
-                Parser.CommandType type = p.commandtype();
+                Parser.CommandType type = p.getCommandType();
                 if (type.equals(Parser.CommandType.A_COMMAND))
                 {
                     // Auxiliary function which checks
@@ -91,7 +90,14 @@ public class Assembler {
                 }
                 else if (type.equals(Parser.CommandType.C_COMMAND))
                 {
-                    String cCommand = "111" + Code.comp(p.comp()) + Code.dest(p.dest()) + Code.jump(p.jump()) + "\n";
+                    String startingTriplet = "111";
+                    if (p.comp().contains("<<") || p.comp().contains(">>"))
+                    {
+                        startingTriplet = "101";
+                    }
+                    String cCommand = startingTriplet + Code.comp(p.comp()) + Code.dest(p.dest()) +
+                            Code.jump(p.jump()) + "\n";
+
                     bw.write(cCommand);
                 }
 

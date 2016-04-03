@@ -18,6 +18,10 @@ public class Parser {
 
     }
 
+    public CommandType getCommandType() {
+        return commandType;
+    }
+
     /**
      * Checks if there are more commands in input
      * @return - True if there are more commands

@@ -78,7 +78,6 @@ public class SymbolTable {
     {
         symbolTable.put(symbol, Parser.BinaryLeftPad(currentFreeAddress));
         currentFreeAddress++;
-
     }
 
     /**
