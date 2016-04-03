@@ -4,7 +4,7 @@
 public class Assembler {
     public static void main(String[] args) {
         // The first argument should be the name of the file to be parsed
-
+        SymbolTable sb = new SymbolTable();
         // First pass
         /**
          *         Go through the entire assembly program, line by line, and build the
@@ -32,5 +32,6 @@ public class Assembler {
          allocated to the predefined symbols).
          This completes the assembler’s implementation.
          */
+
     }
 }
