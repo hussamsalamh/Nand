@@ -77,7 +77,7 @@ public class Parser {
     public String symbol()
     {
         if (commandType == CommandType.L_COMMAND){
-            currentCommand = currentCommand.replaceAll("()", "");
+            currentCommand = currentCommand.replaceAll("[()]", "");
             return currentCommand;
         }
         else if (commandType == CommandType.A_COMMAND) {
@@ -138,6 +138,13 @@ public class Parser {
             return "NULL";
         }
         indexOfSemiC++;
-        return currentCommand.substring(indexOfSemiC);
+        String jmpDest = currentCommand.substring(indexOfSemiC);
+        if (indexOfSemiC == currentCommand.length())
+        {
+            return "NULL";
+        }
+        else{
+            return jmpDest;
+        }
     }
 }

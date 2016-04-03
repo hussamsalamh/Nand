@@ -3,7 +3,7 @@
  */
 import java.util.Hashtable;
 public class SymbolTable {
-    private Hashtable<String, Integer> symbolTable;
+    private Hashtable<String, String> symbolTable;
     // Constants for the default values of the symbolTable
     final int SPAddress = 0;
     final int LCLAddress = 1;
