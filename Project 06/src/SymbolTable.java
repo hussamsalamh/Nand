@@ -5,30 +5,29 @@ import java.util.Hashtable;
 public class SymbolTable {
     private Hashtable<String, String> symbolTable;
     // Constants for the default values of the symbolTable
-    final String SPAddress = "0";
-    final String LCLAddress = "1";
-    final String ARGAddress = "2";
-    final String THISAddress = "3";
-    final String THATAddress = "4";
-    final String R0 = "0";
-    final String R1 = "1";
-    final String R2 = "2";
-    final String R3 = "3";
-    final String R4 = "4";
-    final String R5 = "5";
-    final String R6 = "6";
-    final String R7 = "7";
-    final String R8 = "8";
-    final String R9 = "9";
-    final String R10 = "10";
-    final String R11 = "11";
-    final String R12 = "12";
-    final String R13 = "13";
-    final String R14 = "14";
-    final String R15 = "15";
-    final String screenAddress = "16384";
-    final String keyBoardAddress = "24576";
-
+    private final String SPAddress = String.format("%16s", Integer.toBinaryString(0)).replace(' ', '0');
+    private final String LCLAddress = String.format("%16s", Integer.toBinaryString(1)).replace(' ', '0');
+    private final String ARGAddress = String.format("%16s", Integer.toBinaryString(2)).replace(' ', '0');
+    private final String THISAddress = String.format("%16s", Integer.toBinaryString(3)).replace(' ', '0');
+    private final String THATAddress = String.format("%16s", Integer.toBinaryString(4)).replace(' ', '0');
+    private final String R0 = String.format("%16s", Integer.toBinaryString(0)).replace(' ', '0');
+    private final String R1 = String.format("%16s", Integer.toBinaryString(1)).replace(' ', '0');
+    private final String R2 = String.format("%16s", Integer.toBinaryString(2)).replace(' ', '0');
+    private final String R3 = String.format("%16s", Integer.toBinaryString(3)).replace(' ', '0');
+    private final String R4 = String.format("%16s", Integer.toBinaryString(4)).replace(' ', '0');
+    private final String R5 = String.format("%16s", Integer.toBinaryString(5)).replace(' ', '0');
+    private final String R6 = String.format("%16s", Integer.toBinaryString(6)).replace(' ', '0');
+    private final String R7 = String.format("%16s", Integer.toBinaryString(7)).replace(' ', '0');
+    private final String R8 = String.format("%16s", Integer.toBinaryString(8)).replace(' ', '0');
+    private final String R9 = String.format("%16s", Integer.toBinaryString(9)).replace(' ', '0');
+    private final String R10 = String.format("%16s", Integer.toBinaryString(10)).replace(' ', '0');
+    private final String R11 = String.format("%16s", Integer.toBinaryString(11)).replace(' ', '0');
+    private final String R12 = String.format("%16s", Integer.toBinaryString(12)).replace(' ', '0');
+    private final String R13 = String.format("%16s", Integer.toBinaryString(13)).replace(' ', '0');
+    private final String R14 = String.format("%16s", Integer.toBinaryString(14)).replace(' ', '0');
+    private final String R15 = String.format("%16s", Integer.toBinaryString(15)).replace(' ', '0');
+    private final String screenAddress = String.format("%16s", Integer.toBinaryString(16384)).replace(' ', '0');
+    private final String keyBoardAddress = String.format("%16s", Integer.toBinaryString(24576)).replace(' ', '0');
     /**
      * Constructor for the SymbolTable class.
      */
@@ -87,7 +86,7 @@ public class SymbolTable {
      * @param symbol - The symbol whose address is requested.
      * @return - The address of the symbol.
      */
-    public int GetAddress(String symbol){
+    public String GetAddress(String symbol){
         //TODO: check whether we can assume symbol is already in table.
         return symbolTable.get(symbol);
     }
