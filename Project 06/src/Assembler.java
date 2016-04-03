@@ -38,7 +38,7 @@ public class Assembler {
                 p.advance();
                if (p.commandtype().equals(Parser.CommandType.L_COMMAND))
                {
-                   st.addEntry(p.symbol(), Parser.BinaryLeftPad(lineNum+1));
+                   st.addROMEntry(p.symbol(), Parser.BinaryLeftPad(lineNum+1));
                    continue;
                }else{
                    lineNum++;

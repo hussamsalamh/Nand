@@ -28,6 +28,8 @@ public class SymbolTable {
     private final String R15 = String.format("%16s", Integer.toBinaryString(15)).replace(' ', '0');
     private final String screenAddress = String.format("%16s", Integer.toBinaryString(16384)).replace(' ', '0');
     private final String keyBoardAddress = String.format("%16s", Integer.toBinaryString(24576)).replace(' ', '0');
+    private final int startRAMAddress = 1024;
+    private int currentFreeAddress = startRAMAddress;
     /**
      * Constructor for the SymbolTable class.
      */
@@ -67,9 +69,15 @@ public class SymbolTable {
      * @param symbol - The symbol.
      * @param address - The address.
      */
-    public void addEntry(String symbol, String address){
+    public void addROMEntry(String symbol, String address){
         //TODO: Can we assume symbol doesn't already exist?
         symbolTable.put(symbol, address);
+    }
+
+    public void addVariableEntry(String symbol)
+    {
+        symbolTable.put(symbol, Parser.BinaryLeftPad(currentFreeAddress));
+        currentFreeAddress++;
     }
 
     /**
