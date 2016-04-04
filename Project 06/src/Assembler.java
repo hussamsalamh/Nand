@@ -15,6 +15,13 @@ public class Assembler {
     public static void main(String[] args) {
         // The first argument should be the name of the file to be parsed
         SymbolTable st = new SymbolTable();
+
+        //create the output file name
+        //String outFileName = args[0];
+        String outFileName = "Max.asm";
+        int indexOfSuffix = outFileName.indexOf(".");
+        outFileName = outFileName.substring(0, indexOfSuffix) + ".hack";
+
         // First pass
         /**
          *         Go through the entire assembly program, line by line, and build the
@@ -29,24 +36,25 @@ public class Assembler {
          table. The program’s variables are handled in the second pass.
          */
         int lineNum = 0;
-        try (FileReader fr = new FileReader(args[1]); BufferedReader br = new BufferedReader(fr))
+        try (FileReader fr = new FileReader("Max.asm"); BufferedReader br = new BufferedReader(fr))
         {
             Parser p = new Parser(br);
             while (p.hasMoreCommands())
             {
                 p.advance();
-               if (p.commandtype().equals(Parser.CommandType.L_COMMAND))
-               {
-                   st.addROMEntry(p.symbol(), Parser.BinaryLeftPad(lineNum + 1));
-                   continue;
-               }else{
-                   lineNum++;
-               }
+                if (p.commandtype().equals(Parser.CommandType.L_COMMAND))
+                {
+                    st.addROMEntry(p.symbol(), Parser.BinaryLeftPad(lineNum));
+                    continue;
+                }else{
+                    lineNum++;
+                }
             }
         }
         catch (Exception e)
         {
             System.out.println("happened");
+            System.out.println(e.getMessage());
             exit(0);
         }
         // Second pass
@@ -62,17 +70,21 @@ public class Assembler {
          allocated to the predefined symbols).
          This completes the assembler’s implementation.
          */
-        try (FileReader fr1 = new FileReader(args[1]);  BufferedReader br1 = new BufferedReader(fr1);
-             FileWriter fw1 = new FileWriter(args[2]);
+        try (FileReader fr1 = new FileReader("Max.asm");
+             BufferedReader br1 = new BufferedReader(fr1);
+
+             FileWriter fw1 = new FileWriter(outFileName);
              BufferedWriter bw = new BufferedWriter(fw1))
         {
             Parser p = new Parser(br1);
+            int outLineNum = 0;
             while (p.hasMoreCommands())
             {
                 p.advance();
                 Parser.CommandType type = p.getCommandType();
                 if (type.equals(Parser.CommandType.A_COMMAND))
                 {
+                    outLineNum++;
                     // Auxiliary function which checks
                     // check if only num:
                     if (p.symbol().matches("[-+]?\\d*\\.?\\d+"))
@@ -90,6 +102,7 @@ public class Assembler {
                 }
                 else if (type.equals(Parser.CommandType.C_COMMAND))
                 {
+                    outLineNum++;
                     String startingTriplet = "111";
                     if (p.comp().contains("<<") || p.comp().contains(">>"))
                     {

@@ -14,7 +14,7 @@ public class Parser {
     private final int START_INDEX = 0;
     public Parser(BufferedReader file)
     {
-       this.file = file;
+        this.file = file;
 
     }
 
@@ -38,6 +38,15 @@ public class Parser {
         }
         if (currentLine != null)
         {
+            int indexOfComment = currentLine.indexOf("//");
+            if (indexOfComment > 0)
+            {
+                currentLine = currentLine.substring(0, indexOfComment);
+            }
+            else if (indexOfComment == 0)
+            {
+                return hasMoreCommands();
+            }
             currentLine = currentLine.replaceAll("\\s+", "");
         }
         return (currentLine != null);
