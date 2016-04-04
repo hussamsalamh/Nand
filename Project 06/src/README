@@ -1,0 +1,24 @@
+yonilipman,irahi
+===============================================================================
+Yonatan Lipman, ID 305629750, yonatan.lipman@mail.huji.ac.il
+Era Choshen, ID 302907761, era.choshen@mail.huji.ac.il
+===============================================================================
+
+project06
+===============================================================================
+
+Submitted Files
+--------------------------
+README
+
+Makefile
+
+Assembler.java - The main module of the project, contains the main. when given an asm file, runs 2 passes over it
+                 for parsing. first run will fill the symbol table with addresses for labels and count the lines.
+                 Second run will parse the A and C instructions and write them to file.
+
+Code.java - Contains the hash table that contains the instructions that are known to the computer.
+
+Parser.java - Contains methods that parse different needed parts of the code, as called by the assembler
+
+SymbolTable.java - Contains a hash table that contains all the default and set symbols that are saved
