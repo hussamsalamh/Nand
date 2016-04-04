@@ -17,7 +17,8 @@ public class Assembler {
         SymbolTable st = new SymbolTable();
 
         //create the output file name
-        String outFileName = args[0];
+        //String outFileName = args[0];
+        String outFileName = "Divide.asm";
         int indexOfSuffix = outFileName.indexOf(".");
         outFileName = outFileName.substring(0, indexOfSuffix) + ".hack";
 
@@ -35,7 +36,7 @@ public class Assembler {
          table. The program’s variables are handled in the second pass.
          */
         int lineNum = 0;
-        try (FileReader fr = new FileReader(args[0]); BufferedReader br = new BufferedReader(fr))
+        try (FileReader fr = new FileReader("Divide.asm"); BufferedReader br = new BufferedReader(fr))
         {
             Parser p = new Parser(br);
             while (p.hasMoreCommands())
@@ -68,7 +69,7 @@ public class Assembler {
          allocated to the predefined symbols).
          This completes the assembler’s implementation.
          */
-        try (FileReader fr1 = new FileReader(args[0]);
+        try (FileReader fr1 = new FileReader("Divide.asm");
              BufferedReader br1 = new BufferedReader(fr1);
 
              FileWriter fw1 = new FileWriter(outFileName);

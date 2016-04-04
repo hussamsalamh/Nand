@@ -38,6 +38,7 @@ public class Parser {
         }
         if (currentLine != null)
         {
+            currentLine = currentLine.replaceAll("\\s+", "");
             int indexOfComment = currentLine.indexOf("//");
             if (indexOfComment > 0)
             {
@@ -47,7 +48,6 @@ public class Parser {
             {
                 return hasMoreCommands();
             }
-            currentLine = currentLine.replaceAll("\\s+", "");
         }
         return (currentLine != null);
     }
