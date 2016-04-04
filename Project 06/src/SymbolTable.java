@@ -28,7 +28,7 @@ public class SymbolTable {
     private final String R15 = String.format("%16s", Integer.toBinaryString(15)).replace(' ', '0');
     private final String screenAddress = String.format("%16s", Integer.toBinaryString(16384)).replace(' ', '0');
     private final String keyBoardAddress = String.format("%16s", Integer.toBinaryString(24576)).replace(' ', '0');
-    private final int startRAMAddress = 1024;
+    private final int startRAMAddress = 16;
     private int currentFreeAddress = startRAMAddress;
     /**
      * Constructor for the SymbolTable class.
