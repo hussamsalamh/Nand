@@ -29,4 +29,4 @@ tar:
 	$(TAR) $(TARFLAGS) $(TARNAME) $(TARSRCS)
 
 clean:
-	rm -f *.class *~
+	rm -f $(SRCS) $(EXEC) README Makefile *.class *~
