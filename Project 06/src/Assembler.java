@@ -1,7 +1,6 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.lang.System.exit;
 
@@ -10,17 +9,14 @@ import static java.lang.System.exit;
  */
 public class Assembler {
 
-    private SymbolTable symbolTable;
+    private static SymbolTable symbolTable;
 
-    public static void main(String[] args) {
-        // The first argument should be the name of the file to be parsed
-        SymbolTable st = new SymbolTable();
+    private static void parseFile(String readFile)
+    {
 
-        //create the output file name
-        //String outFileName = args[0];
-        String outFileName = "Divide.asm";
-        int indexOfSuffix = outFileName.indexOf(".");
-        outFileName = outFileName.substring(0, indexOfSuffix) + ".hack";
+        String writeFile = readFile;
+        int indexOfSuffix = writeFile.indexOf(".");
+        writeFile = writeFile.substring(0, indexOfSuffix) + ".hack";
 
         // First pass
         /**
@@ -36,7 +32,7 @@ public class Assembler {
          table. The program’s variables are handled in the second pass.
          */
         int lineNum = 0;
-        try (FileReader fr = new FileReader("Divide.asm"); BufferedReader br = new BufferedReader(fr))
+        try (FileReader fr = new FileReader(readFile); BufferedReader br = new BufferedReader(fr))
         {
             Parser p = new Parser(br);
             while (p.hasMoreCommands())
@@ -44,9 +40,8 @@ public class Assembler {
                 p.advance();
                 if (p.commandtype().equals(Parser.CommandType.L_COMMAND))
                 {
-                    st.addROMEntry(p.symbol(), Parser.BinaryLeftPad(lineNum));
-                    continue;
-                }else{
+                    symbolTable.addROMEntry(p.symbol(), Parser.BinaryLeftPad(lineNum));
+                } else {
                     lineNum++;
                 }
             }
@@ -69,10 +64,10 @@ public class Assembler {
          allocated to the predefined symbols).
          This completes the assembler’s implementation.
          */
-        try (FileReader fr1 = new FileReader("Divide.asm");
+        try (FileReader fr1 = new FileReader(readFile);
              BufferedReader br1 = new BufferedReader(fr1);
 
-             FileWriter fw1 = new FileWriter(outFileName);
+             FileWriter fw1 = new FileWriter(writeFile);
              BufferedWriter bw = new BufferedWriter(fw1))
         {
             Parser p = new Parser(br1);
@@ -90,11 +85,11 @@ public class Assembler {
                         bw.write(numInBinary + "\n");
                         continue;
                     }
-                    if (st.GetAddress(p.symbol()) == null)
+                    if (symbolTable.GetAddress(p.symbol()) == null)
                     {
-                        st.addVariableEntry(p.symbol());
+                        symbolTable.addVariableEntry(p.symbol());
                     }
-                    String writeSymb = st.GetAddress(p.symbol());
+                    String writeSymb = symbolTable.GetAddress(p.symbol());
                     bw.write(writeSymb + "\n");
                 }
                 else if (type.equals(Parser.CommandType.C_COMMAND))
@@ -116,6 +111,53 @@ public class Assembler {
         {
             System.out.println(e.getMessage());
             exit(0);
+        }
+    }
+
+
+
+    private static String[] getFileArray(String pathName)
+    {
+        File directory = new File(pathName);
+        List<String> fileArray = new ArrayList<String>();
+        if (directory.isDirectory())
+        {
+            for (File file : directory.listFiles())
+            {
+                // append to array all the files that end with asm
+                String fileName = file.getName();
+                int indexOfSuffix = fileName.indexOf(".");
+                String suffix = fileName.substring(indexOfSuffix);
+
+                if (suffix.equals(".asm"))
+                {
+                    fileArray.add(fileName);
+                }
+            }
+        }
+        else
+        {
+            // return array with single file, check that has asm suffix
+            int indexOfSuffix = pathName.indexOf(".");
+            if (pathName.substring(indexOfSuffix).equals(".asm"))
+            {
+                fileArray.add(pathName);
+            }
+        }
+        return fileArray.toArray(new String[fileArray.size()]);
+    }
+
+
+    public static void main(String[] args) {
+        // The first argument should be the name of the file to be parsed
+        symbolTable = new SymbolTable();
+
+        //get the file array
+        String[] fileNameArray = getFileArray(args[0]);
+
+        for (String fileName : fileNameArray)
+        {
+            parseFile(fileName);
         }
     }
 }
