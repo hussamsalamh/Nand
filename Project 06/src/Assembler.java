@@ -15,7 +15,7 @@ public class Assembler {
     {
 
         String writeFile = readFile;
-        int indexOfSuffix = writeFile.indexOf(".");
+        int indexOfSuffix = writeFile.lastIndexOf(".");
         writeFile = writeFile.substring(0, indexOfSuffix) + ".hack";
 
         // First pass
@@ -119,6 +119,7 @@ public class Assembler {
     private static String[] getFileArray(String pathName)
     {
         File directory = new File(pathName);
+
         List<String> fileArray = new ArrayList<String>();
         if (directory.isDirectory())
         {
@@ -126,22 +127,26 @@ public class Assembler {
             {
                 // append to array all the files that end with asm
                 String fileName = file.getName();
-                int indexOfSuffix = fileName.indexOf(".");
-                String suffix = fileName.substring(indexOfSuffix);
-
-                if (suffix.equals(".asm"))
+                int indexOfSuffix = fileName.lastIndexOf(".");
+                if (indexOfSuffix > 0)
                 {
-                    fileArray.add(fileName);
+                    String suffix = fileName.substring(indexOfSuffix);
+                    if (suffix.equals(".asm"))
+                    {
+                        fileArray.add(file.getAbsolutePath());
+                    }
                 }
+
             }
         }
         else
         {
             // return array with single file, check that has asm suffix
-            int indexOfSuffix = pathName.indexOf(".");
+            int indexOfSuffix = pathName.lastIndexOf(".");
             if (pathName.substring(indexOfSuffix).equals(".asm"))
             {
-                fileArray.add(pathName);
+                fileArray.add(directory.getAbsolutePath());
+                System.out.println(directory.getAbsolutePath());
             }
         }
         return fileArray.toArray(new String[fileArray.size()]);
