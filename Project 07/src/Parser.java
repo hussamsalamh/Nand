@@ -27,7 +27,7 @@ public class Parser {
         add("sub");
         add("neg");
         add("eq");
-        add("get");
+        add("gt");
         add("lt");
         add("and");
         add("or");
