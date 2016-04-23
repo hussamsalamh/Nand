@@ -1,6 +1,7 @@
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.File;
 
 /**
  * Created by Era on 19/04/2016.
@@ -71,13 +72,16 @@ public class VMTranslator {
             }
         } else
         {
-            int indexOfSuffix = pathName.lastIndexOf(".");
+            int indexOfSuffix = directory.getAbsolutePath().lastIndexOf(".");
+            if (indexOfSuffix == -1)
+            {
+                indexOfSuffix = 0;
+            }
             // return array with single file, check that has asm vm
-            if (pathName.substring(indexOfSuffix).equals(".vm")) {
+            if (directory.getAbsolutePath().substring(indexOfSuffix).equals(".vm")) {
                 // If the path is a file, the .asm file to translate to is the same as the file name.
-                VMTranslator.fileName = directory.getName().substring(0,indexOfSuffix) + ".asm";
+                VMTranslator.fileName = directory.getAbsolutePath().substring(0,indexOfSuffix) + ".asm";
                 fileArray.add(directory.getAbsolutePath());
-                System.out.println(directory.getAbsolutePath());
             }
         }
         return fileArray.toArray(new String[fileArray.size()]);
@@ -94,8 +98,17 @@ public class VMTranslator {
             {
             // Check if this is correct
             int indexOfSuffix = fileName.lastIndexOf(".");
+            int indexOfPrefix = fileName.lastIndexOf(File.separator);
+            if (indexOfPrefix == -1)
+            {
+                indexOfPrefix = 0;
+            }
+            else
+            {
+                indexOfPrefix += 1;
+            }
             // Tell the codwriter we're processing a new .vm, so it knows how to name the static files.
-            cw.setFileName(fileName.substring(0, indexOfSuffix));
+            cw.setFileName(fileName.substring(indexOfPrefix, indexOfSuffix));
             // Parse the given vm and write results using the code-writer we created.
             translate(fileName, cw);
             }
