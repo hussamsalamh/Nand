@@ -51,7 +51,6 @@ public class VMTranslator {
     private static String[] getFileArray(String pathName)
     {
         File directory = new File(pathName);
-
         List<String> fileArray = new ArrayList<String>();
         if (directory.isDirectory())
         {
@@ -72,11 +71,11 @@ public class VMTranslator {
             }
         } else
         {
-            // return array with single file, check that has asm vm
             int indexOfSuffix = pathName.lastIndexOf(".");
+            // return array with single file, check that has asm vm
             if (pathName.substring(indexOfSuffix).equals(".vm")) {
                 // If the path is a file, the .asm file to translate to is the same as the file name.
-                VMTranslator.fileName = directory.getName() + ".asm";
+                VMTranslator.fileName = directory.getName().substring(0,indexOfSuffix) + ".asm";
                 fileArray.add(directory.getAbsolutePath());
                 System.out.println(directory.getAbsolutePath());
             }
