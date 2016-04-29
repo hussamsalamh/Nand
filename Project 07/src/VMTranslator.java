@@ -7,6 +7,7 @@ import java.io.File;
  * Created by Era on 19/04/2016.
  */
 public class VMTranslator {
+    //TODO: Fix path of file created
     // Static String containing the name of the current vm file being translated
     private static String fileName;
 
@@ -56,7 +57,7 @@ public class VMTranslator {
         if (directory.isDirectory())
         {
             // If the path is a directory, the name of the asm file to write to is the name of the directory.
-            VMTranslator.fileName= pathName + ".asm";
+            VMTranslator.fileName= pathName + File.separator + directory.getName() + ".asm";
             for (File file : directory.listFiles())
             {
                 // append to array all the files that end with vm
