@@ -52,14 +52,20 @@ public class Parser {
         {
             return false;
         }
-        while ("".equals(currentLine) || "\n".equals(currentLine) || "\r".equals(currentLine))
+        currentLine = currentLine.trim().replaceAll("[ \t\r\n]+", COMMAND_DELIMITER);
+        while ("".equals(currentLine) || " ".equals(currentLine))
         {
             currentLine = file.readLine();
+            if (currentLine == null)
+            {
+                break;
+            }
+            currentLine = currentLine.trim().replaceAll("[ \t\r\n]+", COMMAND_DELIMITER);
         }
         if (currentLine != null)
         {
             // Strip multiple spaces and replace with single space
-            currentLine = currentLine.trim().replaceAll(" +", COMMAND_DELIMITER);
+
             int indexOfComment = currentLine.indexOf("//");
             if (indexOfComment > 0)
             {
