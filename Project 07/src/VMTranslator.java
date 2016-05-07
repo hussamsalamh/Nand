@@ -6,7 +6,7 @@ import java.io.File;
 /**
  * Created by Era on 19/04/2016.
  */
-public class VMTranslator {
+public class VMtranslator {
     //TODO: Fix path of file created
     // Static String containing the name of the current vm file being translated
     private static String fileName;
@@ -57,7 +57,7 @@ public class VMTranslator {
         if (directory.isDirectory())
         {
             // If the path is a directory, the name of the asm file to write to is the name of the directory.
-            VMTranslator.fileName= pathName + File.separator + directory.getName() + ".asm";
+            VMtranslator.fileName= pathName + File.separator + directory.getName() + ".asm";
             for (File file : directory.listFiles())
             {
                 // append to array all the files that end with vm
@@ -81,7 +81,7 @@ public class VMTranslator {
             // return array with single file, check that has asm vm
             if (directory.getAbsolutePath().substring(indexOfSuffix).equals(".vm")) {
                 // If the path is a file, the .asm file to translate to is the same as the file name.
-                VMTranslator.fileName = directory.getAbsolutePath().substring(0,indexOfSuffix) + ".asm";
+                VMtranslator.fileName = directory.getAbsolutePath().substring(0,indexOfSuffix) + ".asm";
                 fileArray.add(directory.getAbsolutePath());
             }
         }
@@ -91,7 +91,7 @@ public class VMTranslator {
     public static void main(String[] args) {
         String[] fileNameArray = getFileArray(args[0]);
         // Safely open a fileWriter and BufferedWriter to write into, according to name set by getFileArray
-        try(FileWriter fw1 = new FileWriter(VMTranslator.fileName); BufferedWriter bw = new BufferedWriter(fw1))
+        try(FileWriter fw1 = new FileWriter(VMtranslator.fileName); BufferedWriter bw = new BufferedWriter(fw1))
         {
             // New codeWriter using the buffered writer we opened
             CodeWriter cw = new CodeWriter(bw);

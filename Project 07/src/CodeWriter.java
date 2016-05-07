@@ -125,6 +125,8 @@ public class CodeWriter
      * @param command
      */
     public void writeArithmetic(String command, Boolean... params) throws IOException {
+        // Checks whether this function is being called from within the function
+        // (used for the sign difference check)
         boolean safe = params.length > 0 ? params[0].booleanValue() : false;
         // Splits the command line according to the spaces (the command is already parsed to have single spaces only)
         String[] commands = command.split(Parser.COMMAND_DELIMITER);
@@ -153,33 +155,44 @@ public class CodeWriter
             {
             // Load y to D (pop)
             popToD();
+            // Write y to R13
             outputFile.write("@R13\n");
             outputFile.write("M=D\n");
+            // Push y back to D
             pushD();
             incrementSP();
+
+            // Check whether y is bigger than 0
             WritePushPop(Parser.CommandType.C_PUSH, "constant", 0);
             outputFile.write("@inboundsFlow" + flowCounter + "\n");
             outputFile.write("0;JMP\n");
             writeArithmetic("gt", true);
             popToD();
+            // Writer (-1) to R14 if bigger than 0, else 0.
             outputFile.write("@R14\n");
             outputFile.write("M=D\n");
 
             // Load x to D (pop)
             popToD();
+            // Write x to R15
             outputFile.write("@R15\n");
             outputFile.write("M=D\n");
+            // Write x back to top of stack
             pushD();
             incrementSP();
+
+            // Check whether x is bigger than 0
             WritePushPop(Parser.CommandType.C_PUSH, "constant", 0);
             outputFile.write("@inboundsFlow" + flowCounter + "\n");
             outputFile.write("0;JMP\n");
             writeArithmetic("gt", true);
             popToD();
+
+            // Write -1 to R16 if x is bigger than 0, else 0
             outputFile.write("@R16\n");
             outputFile.write("M=D\n");
 
-            // Check difference
+            // Check difference between R14 and R16 to check sign difference
             outputFile.write("@R14\n");
             outputFile.write("D=M\n");
             pushD();
@@ -192,18 +205,20 @@ public class CodeWriter
             // Difference is either -1 or 0
             writeArithmetic("sub");
 
-            // Check if difference equal to 0
+            // Check if difference equal to 0, if so proceed as usual (since no overflow can happen)
             popToD();
             outputFile.write("@inboundsFlow" + flowCounter + "\n");
             outputFile.write("D;JEQ\n");
+            // If the sign is different, load R15 (value of X)
             outputFile.write("@R15\n");
             outputFile.write("D=M\n");
             outputFile.write("@" + "condJump" + flowCounter+"\n");
+            // Write the correct condition according to gt or lt
             if (commands[0].equals("gt"))
             {
                 outputFile.write("D;JGT\n");
             }
-            else
+            else if (commands[0].equals("lt"))
             {
                 outputFile.write("D;JLT\n");
             }
