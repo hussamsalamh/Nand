@@ -124,7 +124,8 @@ public class CodeWriter
      * translation of the given arithmetic command.
      * @param command
      */
-    public void writeArithmetic(String command) throws IOException {
+    public void writeArithmetic(String command, Boolean... params) throws IOException {
+        boolean safe = params.length > 0 ? params[0].booleanValue() : false;
         // Splits the command line according to the spaces (the command is already parsed to have single spaces only)
         String[] commands = command.split(Parser.COMMAND_DELIMITER);
         // Handle case where the command is binary
@@ -148,6 +149,89 @@ public class CodeWriter
         // Handle case where the command is binary, but is conditional
         else if(conditionalArithmetic.containsKey(commands[0]))
         {
+            if (!safe)
+            {
+            // Load y to D (pop)
+            popToD();
+            outputFile.write("@R13\n");
+            outputFile.write("M=D\n");
+            pushD();
+            incrementSP();
+            WritePushPop(Parser.CommandType.C_PUSH, "constant", 0);
+            outputFile.write("@inboundsFlow" + flowCounter + "\n");
+            outputFile.write("0;JMP\n");
+            writeArithmetic("gt", true);
+            popToD();
+            outputFile.write("@R14\n");
+            outputFile.write("M=D\n");
+
+            // Load x to D (pop)
+            popToD();
+            outputFile.write("@R15\n");
+            outputFile.write("M=D\n");
+            pushD();
+            incrementSP();
+            WritePushPop(Parser.CommandType.C_PUSH, "constant", 0);
+            outputFile.write("@inboundsFlow" + flowCounter + "\n");
+            outputFile.write("0;JMP\n");
+            writeArithmetic("gt", true);
+            popToD();
+            outputFile.write("@R16\n");
+            outputFile.write("M=D\n");
+
+            // Check difference
+            outputFile.write("@R14\n");
+            outputFile.write("D=M\n");
+            pushD();
+            incrementSP();
+            outputFile.write("@R16\n");
+            outputFile.write("D=M\n");
+            pushD();
+            incrementSP();
+
+            // Difference is either -1 or 0
+            writeArithmetic("sub");
+
+            // Check if difference equal to 0
+            popToD();
+            outputFile.write("@inboundsFlow" + flowCounter + "\n");
+            outputFile.write("D;JEQ\n");
+            outputFile.write("@R15\n");
+            outputFile.write("D=M\n");
+            outputFile.write("@" + "condJump" + flowCounter+"\n");
+            if (commands[0].equals("gt"))
+            {
+                outputFile.write("D;JGT\n");
+            }
+            else
+            {
+                outputFile.write("D;JLT\n");
+            }
+            // If condition is not met, the flow will continue here:
+            // Set top of stack to be 0, and increment SP
+            outputFile.write("@SP\n");
+            outputFile.write("A=M\n");
+            outputFile.write("M=0\n");
+            incrementSP();
+
+            // Jump to end of flow
+            outputFile.write("@endJump" + flowCounter+"\n");
+            outputFile.write("0;JMP\n");
+
+
+            }
+            outputFile.write("(inboundsFlow" + flowCounter + ")\n");
+            if (!safe)
+            {
+                outputFile.write("@R15\n");
+                outputFile.write("D=M\n");
+                pushD();
+                incrementSP();
+                outputFile.write("@R13\n");
+                outputFile.write("D=M\n");
+                pushD();
+                incrementSP();
+            }
             // Load y to D (pop)
             popToD();
 
@@ -213,12 +297,15 @@ public class CodeWriter
         {
             if (segment.equals("constant"))
             {
-                // Load index to A and set D=A
-                setDtoIndex(index);
-                // Dereference pointer and set its value to D
-                pushD();
-                // Increment SP
-                incrementSP();
+                if (index >= 0)
+                {
+                    // Load index to A and set D=A
+                    setDtoIndex(index);
+                    // Dereference pointer and set its value to D
+                    pushD();
+                    // Increment SP
+                    incrementSP();
+                }
             }
             // Handle case where segment is LOCAL,ARGUMENT,THIS,THAT
             else if (segments.containsKey(segment))
