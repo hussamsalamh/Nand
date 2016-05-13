@@ -1,0 +1,19 @@
+yonilipman,irahi
+===============================================================================
+Yonatan Lipman, ID 305629750, yonatan.lipman@mail.huji.ac.il
+Era Choshen, ID 302907761, era.choshen@mail.huji.ac.il
+===============================================================================
+
+project07
+===============================================================================
+
+Submitted Files
+--------------------------
+README
+
+Makefile
+
+VMtranslator.java - The main module of the project, contains the main. when given a path (either a directory containing
+.vm files or a .vm file), translates it into an assembly file.
+CodeWriter.java - The module that produces the code and translates as necessary into HACK commands.
+Parser.java - Contains methods that parse different needed parts of the VM code.
