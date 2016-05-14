@@ -18,6 +18,13 @@ public class CodeWriter {
     // The buffered writer used to write the file to
     private BufferedWriter outputFile;
 
+    /**
+     * counter for giving labels different unique names
+     */
+    private int funcLabelCounter = 0;
+
+    private String curFunc;
+
 
     // Translates to the proper HACK commands
     static final Hashtable<String, String> conditionalArithmetic = new Hashtable<String,String>() {{
@@ -464,24 +471,33 @@ public class CodeWriter {
      * writes the assembly code that is the translation of the LABEL command
      * @param label
      */
-    public void writeLabel(String label) {
-
+    public void writeLabel(String label) throws IOException {
+        outputFile.write("(" + label + ")" + "\n"); //TODO check if needed to append the encapsulating func name
     }
 
     /**
      * writes the assembly code that is the translation of the GOTO command
      * @param label
      */
-    public void writeGoto(String label) {
-
+    public void writeGoto(String label) throws IOException {
+        outputFile.write("@" + label + "\n");
+        outputFile.write("0;JMP" + "\n");
     }
 
     /**
      * writes the assembly code that is the translation of the IF-GOTO command
      * @param label
      */
-    public void writeIf(String label) {
-
+    public void writeIf(String label) throws IOException {
+        //outputFile.write("if-goto " + label + "\n");
+        /*
+        stacks topmost val is popped. if the val isnt 0 (eq?), exec cont from the location marked by the label,
+        else, exec cont from the next cmd in the prog. jmp dest must be in the same func
+         */
+        popToD();
+        outputFile.write("@" + label + "\n");
+        outputFile.write("D;JEQ\n");
+        pushD(); //in case that jump didnt happen
     }
 
     /**
@@ -489,22 +505,71 @@ public class CodeWriter {
      * @param funcName
      * @param numArgs
      */
-    public void writeCall(String funcName, int numArgs) {
+    public void writeCall(String funcName, int numArgs) throws IOException {
     /*
      * call f n
      * (Calling a function f after n args have been pushed to the stack)
      *
      * push return-address // using the label declared below
-     * push LCL // save LSL of the calling func
+     * push LCL // save LCL of the calling func
      * push ARG // save ARG of the calling func
      * push THIS // save THIS of the calling func
-     * push THAT // sace THAT of the calling func
-     * ARG = SP - n - 5 //Repostion ARG (n=num of args) TODO check why 5
+     * push THAT // save THAT of the calling func
+     * ARG = SP - n - 5 //Reposition ARG (n=num of args)
      * LCL = SP // Reposition LCL
      * goto f // transfer control
      * (return-address) // declare a label fo the return-address
      *
      */
+        //assign D with the item to push, then push and move one
+        //push return-address
+        String returnAddress = curFunc + "$return" + Integer.toString(funcLabelCounter);
+        ++funcLabelCounter;
+        outputFile.write("@" + returnAddress + "\n");
+        outputFile.write("D=A\n");
+        pushD();
+        incrementSP();
+        //TODO the return address thing, its label should be some unique name (have a counter?)
+
+        //push LCL
+        outputFile.write("@LCL\n");
+        outputFile.write("D=M\n");
+        pushD();
+        incrementSP();
+
+        //push ARG
+        outputFile.write("@ARG\n");
+        outputFile.write("D=M\n");
+        pushD();
+        incrementSP();
+
+        //push THIS
+        outputFile.write("@THIS\n");
+        outputFile.write("D=M\n");
+        pushD();
+        incrementSP();
+
+        //push THAT
+        outputFile.write("@THAT\n");
+        outputFile.write("D=M\n");
+        pushD();
+        incrementSP();
+
+        //ARG = SP - n - 5
+        outputFile.write("@SP\n");
+        outputFile.write("D=M\n");
+
+        outputFile.write("@LCL\n"); // LCL = SP
+        outputFile.write("M=D\n");
+
+        String n = Integer.toString(numArgs +5);
+        outputFile.write("@" + n + "\n");
+        outputFile.write("D=D-A\n");
+        outputFile.write("@ARG\n");
+        outputFile.write("M=D\n");
+
+        writeGoto(funcName);
+        writeLabel(returnAddress);
     }
 
     /**
@@ -526,6 +591,8 @@ public class CodeWriter {
      * goto RET //goto return address (in the callers code)
      *
      */
+
+
     }
 
     /**
@@ -536,12 +603,13 @@ public class CodeWriter {
     public void writeFunction(String funcName, int numLocals) {
     /*
      * function f k
-     * (declaring a function f that hsa k local vars)
+     * (declaring a function f that has k local vars)
      *
      * (f) //declare a label for the func entry
      * repeat k times: //k == numLocals
      * push 0 //init all of them to 0
      */
+
     }
 
 }
