@@ -23,7 +23,7 @@ public class CodeWriter {
      */
     private int funcLabelCounter = 0;
 
-    private String curFunc;
+    private String curFunc = null;
 
 
     // Translates to the proper HACK commands
@@ -460,6 +460,13 @@ public class CodeWriter {
     }
 
     /**
+     * @return the current func name with $ sign if not null
+     */
+    private String getCurFunc() {
+        return curFunc != null ? curFunc + "$" : "";
+    }
+
+    /**
      * writes the assembly code that effects the VM initialization, also called
      * "bootstrap code". This code must be placed at the beginning of the output file.
      * called from the constructor
@@ -482,7 +489,7 @@ public class CodeWriter {
         outputFile.write("M=-1\n");
 
         //init curFunc
-        curFunc = "Sys.init";
+        //curFunc = "Sys.init";
         writeCall("Sys.init", 0);
     }
 
@@ -491,7 +498,7 @@ public class CodeWriter {
      * @param label
      */
     public void writeLabel(String label) throws IOException {
-        outputFile.write("(" + curFunc + "$" + label + ")\n");
+        outputFile.write("(" + getCurFunc() + label + ")\n");
     }
 
     /**
@@ -499,7 +506,7 @@ public class CodeWriter {
      * @param label
      */
     public void writeGoto(String label) throws IOException {
-        outputFile.write("@" + curFunc + "$" + label + "\n");
+        outputFile.write("@" + getCurFunc() + label + "\n");
         outputFile.write("0;JMP" + "\n");
     }
 
@@ -513,7 +520,7 @@ public class CodeWriter {
         else, exec cont from the next cmd in the prog. jmp dest must be in the same func
          */
         popToD();
-        outputFile.write("@" + curFunc + "$" + label + "\n");
+        outputFile.write("@" + getCurFunc() + label + "\n");
         outputFile.write("D;JNE\n");
     }
 
@@ -540,7 +547,7 @@ public class CodeWriter {
      */
         //assign D with the item to push, then push and move one
         //push return-address
-        String returnAddress = "RETURN" + funcName + Integer.toString(funcLabelCounter);
+        String returnAddress = "RETURN_" + funcName + Integer.toString(funcLabelCounter);
         ++funcLabelCounter;
         outputFile.write("@" + returnAddress + "\n");
         outputFile.write("D=A\n");
@@ -590,8 +597,11 @@ public class CodeWriter {
         outputFile.write("@LCL\n");
         outputFile.write("M=D\n");
 
-        writeGoto(funcName);
-        writeLabel(returnAddress);
+        //writeGoto(funcName);
+        //writeLabel(returnAddress);
+        outputFile.write("@" + funcName + "\n");
+        outputFile.write("0;JMP\n");
+        outputFile.write("(" + returnAddress + ")\n");
     }
 
     /**
@@ -616,20 +626,20 @@ public class CodeWriter {
         //Frame = LCL
         outputFile.write("@LCL\n");
         outputFile.write("D=M\n");
-        //outputFile.write("@R15\n"); // @R15 is the FRAME var
-        //outputFile.write("M=D\n"); // R15 = LCL
+        outputFile.write("@R14\n"); // @R14 is the FRAME var
+        outputFile.write("M=D\n"); // R14 = LCL
 
         //RET = *(FRAME-5)
         outputFile.write("@5\n"); // D already holds the address that LCL held
-        outputFile.write("A=D-A\n"); //address of frame-5
+        outputFile.write("D=A\n");
+        outputFile.write("@R14\n"); //address of frame-5
+        outputFile.write("A=M-D\n");
         outputFile.write("D=M\n");
-        outputFile.write("@R14\n"); // @R14 is RET
+        outputFile.write("@R15\n"); // @R15 is RET
         outputFile.write("M=D\n"); //RET = *(FRAME-5)
 
         // *ARG = POP
         popToD();
-        //outputFile.write("@R13\n");
-        //outputFile.write("M=D\n"); //@R13 holds the ret val
         outputFile.write("@ARG\n");
         outputFile.write("A=M\n");
         outputFile.write("M=D\n");
@@ -641,44 +651,41 @@ public class CodeWriter {
         outputFile.write("M=D+1\n");
 
         //THAT=*(FRAME-1)
-        outputFile.write("@LCL\n"); //TODO notice that prob dont need R15, del if so (commented)
-        outputFile.write("D=M\n");
-        outputFile.write("A=D-1\n");
+        outputFile.write("@R14\n");
+        outputFile.write("M=M-1\n");
+        outputFile.write("A=M\n");
         outputFile.write("D=M\n");
         outputFile.write("@THAT\n");
         outputFile.write("M=D\n");
 
         //THIS=*(FRAME-2)
-        outputFile.write("@LCL\n");
-        outputFile.write("D=M\n");
-        outputFile.write("@2\n");
-        outputFile.write("A=D-A\n");
+        outputFile.write("@R14\n");
+        outputFile.write("M=M-1\n");
+        outputFile.write("A=M\n");
         outputFile.write("D=M\n");
         outputFile.write("@THIS\n");
         outputFile.write("M=D\n");
 
-        //ARG=*(FRAME-3)
-        outputFile.write("@LCL\n");
-        outputFile.write("D=M\n");
-        outputFile.write("@3\n");
-        outputFile.write("A=D-A\n");
+        outputFile.write("@R14\n");
+        outputFile.write("M=M-1\n");
+        outputFile.write("A=M\n");
         outputFile.write("D=M\n");
         outputFile.write("@ARG\n");
         outputFile.write("M=D\n");
 
         //LCL=*(FRAME-4)
-        outputFile.write("@LCL\n");
-        outputFile.write("D=M\n");
-        outputFile.write("@4\n");
-        outputFile.write("A=D-A\n");
+        outputFile.write("@R14\n");
+        outputFile.write("M=M-1\n");
+        outputFile.write("A=M\n");
         outputFile.write("D=M\n");
         outputFile.write("@LCL\n");
         outputFile.write("M=D\n");
 
         //goto RET
-        outputFile.write("@R14\n"); //@R14 is RET
+        outputFile.write("@R15\n"); //@R15 is RET
         outputFile.write("A=M\n");
         outputFile.write("0;JMP\n");
+
     }
 
     /**

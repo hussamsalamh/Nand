@@ -35,11 +35,11 @@ public class VMTranslator {
                 }
                 else if (p.commandType() == Parser.CommandType.C_LABEL)
                 {
-                    cw.writeLabel(p.arg1()); //TODO check the whole function$label thing
+                    cw.writeLabel(p.arg1());
                 }
                 else if (p.commandType() == Parser.CommandType.C_GOTO)
                 {
-                    cw.writeGoto(p.arg1()); //TODO same, check function$label
+                    cw.writeGoto(p.arg1());
                 }
                 else if (p.commandType() == Parser.CommandType.C_IF)
                 {
