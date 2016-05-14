@@ -471,9 +471,19 @@ public class CodeWriter {
         outputFile.write("@SP\n");
         outputFile.write("M=D\n");
 
+        //init all other pointers to -1
+        outputFile.write("@LCL\n");
+        outputFile.write("M=-1\n");
+        outputFile.write("@ARG\n");
+        outputFile.write("M=-1\n");
+        outputFile.write("@THIS\n");
+        outputFile.write("M=-1\n");
+        outputFile.write("@THAT\n");
+        outputFile.write("M=-1\n");
+
         //init curFunc
         curFunc = "Sys.init";
-        outputFile.write("call Sys.init\n");
+        writeCall("Sys.init", 0);
     }
 
     /**
@@ -503,11 +513,8 @@ public class CodeWriter {
         else, exec cont from the next cmd in the prog. jmp dest must be in the same func
          */
         popToD();
-        outputFile.write("D=!D\n");
         outputFile.write("@" + curFunc + "$" + label + "\n");
-        outputFile.write("D;JEQ\n"); //TODO check if "!D;JEQ" would work
-        outputFile.write("D=!D\n");
-        pushD(); //in case that jump didnt happen
+        outputFile.write("D;JNE\n");
     }
 
     /**
@@ -533,7 +540,7 @@ public class CodeWriter {
      */
         //assign D with the item to push, then push and move one
         //push return-address
-        String returnAddress = "return" + Integer.toString(funcLabelCounter);
+        String returnAddress = "RETURN" + funcName + Integer.toString(funcLabelCounter);
         ++funcLabelCounter;
         outputFile.write("@" + returnAddress + "\n");
         outputFile.write("D=A\n");
@@ -575,6 +582,12 @@ public class CodeWriter {
         outputFile.write("@" + n + "\n");
         outputFile.write("D=D-A\n");
         outputFile.write("@ARG\n");
+        outputFile.write("M=D\n");
+
+        //LCL = SP
+        outputFile.write("@SP\n");
+        outputFile.write("D=M\n");
+        outputFile.write("@LCL\n");
         outputFile.write("M=D\n");
 
         writeGoto(funcName);
@@ -622,9 +635,10 @@ public class CodeWriter {
         outputFile.write("M=D\n");
 
         //SP = ARG+1
-        outputFile.write("D=A+1\n"); // A = ARG
+        outputFile.write("@ARG\n");
+        outputFile.write("D=M\n");
         outputFile.write("@SP\n");
-        outputFile.write("M=D\n");
+        outputFile.write("M=D+1\n");
 
         //THAT=*(FRAME-1)
         outputFile.write("@LCL\n"); //TODO notice that prob dont need R15, del if so (commented)
@@ -685,9 +699,10 @@ public class CodeWriter {
 
         outputFile.write("(" + funcName + ")\n");
         for (int i = 0; i < numLocals; i++) {
-            outputFile.write("@0\n");
-            outputFile.write("D=A\n");
+            //outputFile.write("@0\n");
+            outputFile.write("D=0\n");
             pushD();
+            incrementSP();
         }
     }
 

@@ -145,8 +145,6 @@ public class VMTranslator {
 
 
 /*
-TODO update makefile
-TODO update README
 TODO pass tests and talk about edge cases
 TODO make sure all instructions have new line
 
