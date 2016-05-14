@@ -472,7 +472,7 @@ public class CodeWriter {
      * @param label
      */
     public void writeLabel(String label) throws IOException {
-        outputFile.write("(" + label + ")" + "\n"); //TODO check if needed to append the encapsulating func name
+        outputFile.write("(" + label + ")\n"); //TODO check if needed to append the encapsulating func name
     }
 
     /**
@@ -495,8 +495,10 @@ public class CodeWriter {
         else, exec cont from the next cmd in the prog. jmp dest must be in the same func
          */
         popToD();
+        outputFile.write("D=!D\n");
         outputFile.write("@" + label + "\n");
-        outputFile.write("D;JEQ\n");
+        outputFile.write("D;JEQ\n"); //TODO check if "!D;JEQ" would work
+        outputFile.write("D=!D\n");
         pushD(); //in case that jump didnt happen
     }
 
@@ -575,7 +577,7 @@ public class CodeWriter {
     /**
      * writes the assembly code that is the translation of the RETURN command
      */
-    public void writeReturn() {
+    public void writeReturn() throws IOException {
     /*
      * return
      * (from a func)
@@ -591,8 +593,71 @@ public class CodeWriter {
      * goto RET //goto return address (in the callers code)
      *
      */
+        //Frame = LCL
+        outputFile.write("@LCL\n");
+        outputFile.write("D=M\n");
+        //outputFile.write("@R15\n"); // @R15 is the FRAME var
+        //outputFile.write("M=D\n"); // R15 = LCL
 
+        //RET = *(FRAME-5)
+        outputFile.write("@5\n"); // D already holds the address that LCL held
+        outputFile.write("A=D-A\n"); //address of frame-5
+        outputFile.write("D=M\n");
+        outputFile.write("@R14\n"); // @R14 is RET
+        outputFile.write("M=D\n"); //RET = *(FRAME-5)
 
+        // *ARG = POP
+        popToD();
+        //outputFile.write("@R13\n");
+        //outputFile.write("M=D\n"); //@R13 holds the ret val
+        outputFile.write("@ARG\n");
+        outputFile.write("A=M\n");
+        outputFile.write("M=D\n");
+
+        //SP = ARG+1
+        outputFile.write("D=A+1\n"); // A = ARG
+        outputFile.write("@SP\n");
+        outputFile.write("M=D\n");
+
+        //THAT=*(FRAME-1)
+        outputFile.write("@LCL\n"); //TODO notice that prob dont need R15, del if so (commented)
+        outputFile.write("D=M\n");
+        outputFile.write("A=D-1\n");
+        outputFile.write("D=M\n");
+        outputFile.write("@THAT\n");
+        outputFile.write("M=D\n");
+
+        //THIS=*(FRAME-2)
+        outputFile.write("@LCL\n");
+        outputFile.write("D=M\n");
+        outputFile.write("@2\n");
+        outputFile.write("A=D-A\n");
+        outputFile.write("D=M\n");
+        outputFile.write("@THIS\n");
+        outputFile.write("M=D\n");
+
+        //ARG=*(FRAME-3)
+        outputFile.write("@LCL\n");
+        outputFile.write("D=M\n");
+        outputFile.write("@3\n");
+        outputFile.write("A=D-A\n");
+        outputFile.write("D=M\n");
+        outputFile.write("@ARG\n");
+        outputFile.write("M=D\n");
+
+        //LCL=*(FRAME-4)
+        outputFile.write("@LCL\n");
+        outputFile.write("D=M\n");
+        outputFile.write("@4\n");
+        outputFile.write("A=D-A\n");
+        outputFile.write("D=M\n");
+        outputFile.write("@LCL\n");
+        outputFile.write("M=D\n");
+
+        //goto RET
+        outputFile.write("@R14\n"); //@R14 is RET
+        outputFile.write("A=M\n");
+        outputFile.write("0;JMP\n");
     }
 
     /**
@@ -600,7 +665,7 @@ public class CodeWriter {
      * @param funcName
      * @param numLocals
      */
-    public void writeFunction(String funcName, int numLocals) {
+    public void writeFunction(String funcName, int numLocals) throws IOException {
     /*
      * function f k
      * (declaring a function f that has k local vars)
@@ -609,7 +674,12 @@ public class CodeWriter {
      * repeat k times: //k == numLocals
      * push 0 //init all of them to 0
      */
-
+        outputFile.write("(" + funcName + ")\n");
+        for (int i = 0; i < numLocals; i++) {
+            outputFile.write("@0\n");
+            outputFile.write("D=A\n");
+            pushD();
+        }
     }
 
 }
