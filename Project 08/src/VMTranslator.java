@@ -24,16 +24,38 @@ public class VMTranslator {
             while (p.hasMoreCommands())
             {
                 p.advance();
-                // If an arithmetic command, use codewriter and input first argument (which is the command itself)
+                // If an arithmetic command, use codewriter and input fithis!!!rst argument (which is the command itself)
                 if (p.commandType() == Parser.CommandType.C_ARITHMETIC)
                 {
                     cw.writeArithmetic(p.arg1());
                 }
-                // TODO: change the cases here to fit pr8's
-                // If other command, do writePushPop
-                else
+                else if (p.commandType() == Parser.CommandType.C_PUSH || p.commandType() == Parser.CommandType.C_POP)
                 {
                     cw.WritePushPop(p.commandType(), p.arg1(), p.arg2());
+                }
+                else if (p.commandType() == Parser.CommandType.C_LABEL)
+                {
+                    cw.writeLabel(p.arg1()); //TODO check the whole function$label thing
+                }
+                else if (p.commandType() == Parser.CommandType.C_GOTO)
+                {
+                    cw.writeGoto(p.arg1()); //TODO same, check function$label
+                }
+                else if (p.commandType() == Parser.CommandType.C_IF)
+                {
+                    cw.writeIf(p.arg1());
+                }
+                else if (p.commandType() == Parser.CommandType.C_FUNCTION)
+                {
+                    cw.writeFunction(p.arg1(), p.arg2());
+                }
+                else if (p.commandType() == Parser.CommandType.C_CALL)
+                {
+                    cw.writeCall(p.arg1(), p.arg2());
+                }
+                else if (p.commandType() == Parser.CommandType.C_RETURN)
+                {
+                    cw.writeReturn();
                 }
             }
         }

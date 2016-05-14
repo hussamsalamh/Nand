@@ -115,8 +115,30 @@ public class Parser {
         {
             this.commandType = CommandType.C_POP;
         }
-        // Probably going to need to fill in more commands for Project 8
-        //TODO add commandTypes cases
+        else if (currentCommands[0].equals("goto"))
+        {
+            this.commandType = CommandType.C_GOTO;
+        }
+        else if (currentCommands[0].equals("label"))
+        {
+            this.commandType = CommandType.C_LABEL;
+        }
+        else if (currentCommands[0].equals("if-goto"))
+        {
+            this.commandType = CommandType.C_IF;
+        }
+        else if (currentCommands[0].equals("function"))
+        {
+            this.commandType = CommandType.C_FUNCTION;
+        }
+        else if (currentCommands[0].equals("call"))
+        {
+            this.commandType = CommandType.C_CALL;
+        }
+        else if (currentCommands[0].equals("return"))
+        {
+            this.commandType = CommandType.C_RETURN;
+        }
         return this.commandType;
     }
 

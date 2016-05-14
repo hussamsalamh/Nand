@@ -60,9 +60,9 @@ public class CodeWriter {
      * Writes into the output file
      * @param outputFile
      */
-    public CodeWriter(BufferedWriter outputFile)
-    {
+    public CodeWriter(BufferedWriter outputFile) throws IOException {
         this.outputFile = outputFile;
+        writeInit();
     }
 
     /**
@@ -462,9 +462,18 @@ public class CodeWriter {
     /**
      * writes the assembly code that effects the VM initialization, also called
      * "bootstrap code". This code must be placed at the beginning of the output file.
+     * called from the constructor
      */
-    public void writeInit() {
+    public void writeInit() throws IOException {
+        //Init Sp to 256
+        outputFile.write("@256\n");
+        outputFile.write("D=A\n");
+        outputFile.write("@SP\n");
+        outputFile.write("M=D\n");
 
+        //init curFunc
+        curFunc = "Sys.init";
+        outputFile.write("call Sys.init\n");
     }
 
     /**
@@ -472,7 +481,7 @@ public class CodeWriter {
      * @param label
      */
     public void writeLabel(String label) throws IOException {
-        outputFile.write("(" + label + ")\n"); //TODO check if needed to append the encapsulating func name
+        outputFile.write("(" + curFunc + "$" + label + ")\n");
     }
 
     /**
@@ -480,7 +489,7 @@ public class CodeWriter {
      * @param label
      */
     public void writeGoto(String label) throws IOException {
-        outputFile.write("@" + label + "\n");
+        outputFile.write("@" + curFunc + "$" + label + "\n");
         outputFile.write("0;JMP" + "\n");
     }
 
@@ -489,14 +498,13 @@ public class CodeWriter {
      * @param label
      */
     public void writeIf(String label) throws IOException {
-        //outputFile.write("if-goto " + label + "\n");
         /*
         stacks topmost val is popped. if the val isnt 0 (eq?), exec cont from the location marked by the label,
         else, exec cont from the next cmd in the prog. jmp dest must be in the same func
          */
         popToD();
         outputFile.write("D=!D\n");
-        outputFile.write("@" + label + "\n");
+        outputFile.write("@" + curFunc + "$" + label + "\n");
         outputFile.write("D;JEQ\n"); //TODO check if "!D;JEQ" would work
         outputFile.write("D=!D\n");
         pushD(); //in case that jump didnt happen
@@ -525,13 +533,12 @@ public class CodeWriter {
      */
         //assign D with the item to push, then push and move one
         //push return-address
-        String returnAddress = curFunc + "$return" + Integer.toString(funcLabelCounter);
+        String returnAddress = "return" + Integer.toString(funcLabelCounter);
         ++funcLabelCounter;
         outputFile.write("@" + returnAddress + "\n");
         outputFile.write("D=A\n");
         pushD();
         incrementSP();
-        //TODO the return address thing, its label should be some unique name (have a counter?)
 
         //push LCL
         outputFile.write("@LCL\n");
@@ -674,6 +681,8 @@ public class CodeWriter {
      * repeat k times: //k == numLocals
      * push 0 //init all of them to 0
      */
+        curFunc = funcName;
+
         outputFile.write("(" + funcName + ")\n");
         for (int i = 0; i < numLocals; i++) {
             outputFile.write("@0\n");
