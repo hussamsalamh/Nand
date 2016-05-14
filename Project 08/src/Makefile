@@ -11,12 +11,12 @@
 JAVAC=javac
 JAVACFLAGS=
 
-SRCS=VMtranslator.java Parser.java CodeWriter.java
-EXEC=VMtranslator
+SRCS=VMTranslator.java Parser.java CodeWriter.java
+EXEC=VMTranslator
 
 TAR=tar
 TARFLAGS=cvf
-TARNAME=project7.tar
+TARNAME=project8.tar
 TARSRCS=$(SRCS) $(EXEC) README Makefile
 
 all: compile
@@ -29,5 +29,5 @@ tar:
 	$(TAR) $(TARFLAGS) $(TARNAME) $(TARSRCS)
 
 clean:
-	rm -f project7.tar
+	rm -f project8.tar
 	rm -f *.class

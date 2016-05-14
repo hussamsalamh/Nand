@@ -148,8 +148,6 @@ public class VMTranslator {
 TODO update makefile
 TODO update README
 TODO pass tests and talk about edge cases
-TODO check the bootstrap thing including the sys.init thing
-TODO are we supposed to handle static vars?
 TODO make sure all instructions have new line
 
  */
