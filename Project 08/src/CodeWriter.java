@@ -109,6 +109,12 @@ public class CodeWriter {
         outputFile.write("M=D\n");
     }
 
+
+
+
+
+
+
     /**
      * Writes HACK commands to the buffer which set the value of D to index
      * @param index - the value to set
@@ -479,17 +485,16 @@ public class CodeWriter {
         outputFile.write("M=D\n");
 
         //init all other pointers to -1
-        outputFile.write("@LCL\n");
+/*        outputFile.write("@LCL\n");
         outputFile.write("M=-1\n");
         outputFile.write("@ARG\n");
         outputFile.write("M=-1\n");
         outputFile.write("@THIS\n");
         outputFile.write("M=-1\n");
         outputFile.write("@THAT\n");
-        outputFile.write("M=-1\n");
+        outputFile.write("M=-1\n");*/
 
         //init curFunc
-        //curFunc = "Sys.init";
         writeCall("Sys.init", 0);
     }
 
@@ -533,7 +538,7 @@ public class CodeWriter {
     /*
      * call f n
      * (Calling a function f after n args have been pushed to the stack)
-     *
+     *        //curFunc = "Sys.init";
      * push return-address // using the label declared below
      * push LCL // save LCL of the calling func
      * push ARG // save ARG of the calling func
@@ -630,7 +635,7 @@ public class CodeWriter {
         outputFile.write("M=D\n"); // R14 = LCL
 
         //RET = *(FRAME-5)
-        outputFile.write("@5\n"); // D already holds the address that LCL held
+        outputFile.write("@5\n");
         outputFile.write("D=A\n");
         outputFile.write("@R14\n"); //address of frame-5
         outputFile.write("A=M-D\n");
@@ -666,6 +671,7 @@ public class CodeWriter {
         outputFile.write("@THIS\n");
         outputFile.write("M=D\n");
 
+        //ARG=*(FRAME-3)
         outputFile.write("@R14\n");
         outputFile.write("M=M-1\n");
         outputFile.write("A=M\n");
