@@ -236,7 +236,7 @@ public class CodeWriter {
                 }
                 else if (commands[0].equals("lt"))
                 {
-                    outputFile.write("D;JLT\n");
+                    outputFile.write("D;JLE\n");
                 }
                 // If condition is not met, the flow will continue here:
                 // Set top of stack to be 0, and increment SP
