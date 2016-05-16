@@ -29,10 +29,94 @@ class Board {
     }
 
     /**
-     * Returns true if above and below given sign and place
+     * Returns true if above (-3) and below (+3) of cell are same as given sign
      */
-    method bool checkVertical(int sign) {
+    method bool checkVertical(int cell, int sign) {
+        var int above, below, aboveSign, belowSign;
+        let above = cell - 3;
+        let below = cell + 3;
 
+        if ((above < 0) | (below > 8)) { //check bounds
+            return false;
+        }
+
+        let aboveSign = boardCells[above];
+        let belowSign = boardCells[below];
+
+        if ((sign = aboveSign) & (sign = belowSign)) {
+            let winner = sign;
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * Returns true if left (-1) and right (+1) of cell are same as given sign
+     */
+    method bool checkHorizontal(int cell, int sign) {
+        var int left, right, leftSign, rightSign;
+        let left = cell - 1;
+        let right = cell + 1;
+
+        if ((left < 0) | (right > 8)) { //check bounds
+            return false;
+        }
+
+        let leftSign = boardCells[left];
+        let rightSign = boardCells[right];
+
+        if ((sign = leftSign) & (sign = rightSign)) {
+            let winner = sign;
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * Returns true if left above (-4) and right below (+4) of cell are same as given sign
+     */
+    method bool checkFirstDiag(int cell, int sign) {
+        var int left, right, leftSign, rightSign;
+        let left = cell - 4;
+        let right = cell + 4;
+
+        if ((left < 0) | (right > 8)) { //check bounds
+            return false;
+        }
+
+        let leftSign = boardCells[left];
+        let rightSign = boardCells[right];
+
+        if ((sign = leftSign) & (sign = rightSign)) {
+            let winner = sign;
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * Returns true if right above (-2) and left below (+2) of cell are same as given sign
+     */
+    method bool checkSecondDiag(int cell, int sign) {
+        var int left, right, leftSign, rightSign;
+        let right = cell - 2;
+        let left = cell + 2;
+
+        if ((right < 0) | (left > 8)) { //check bounds
+            return false;
+        }
+
+        let leftSign = boardCells[left];
+        let rightSign = boardCells[right];
+
+        if ((sign = leftSign) & (sign = rightSign)) {
+            let winner = sign;
+            return true;
+        }
+        return false;
     }
 
 
@@ -53,25 +137,25 @@ class Board {
 
             let sign = boardCells[i];
 
-            if (~(sign = 0)) {
+            if (~(sign = 0)) { // if one of these wins, it updates the winner (global field)
                 var bool win;
 
-                let win = checkVertical(sign);
+                let win = checkVertical(i, sign);
                 if (win = true) {
                     return true;
                 }
 
-                let win = checkHorizontal(sign);
+                let win = checkHorizontal(i, sign);
                 if (win = true) {
                     return true;
                 }
 
-                let win = checkFirstDiag(sign);
+                let win = checkFirstDiag(i, sign);
                 if (win = true) {
                     return true;
                 }
 
-                let win = checkSecondDiag(sign);
+                let win = checkSecondDiag(i, sign);
                 if (win = true) {
                     return true;
                 }
@@ -123,3 +207,7 @@ class Board {
 
 
 }
+
+
+
+//TODO: check if board is full, makeMove, checkValidMove
