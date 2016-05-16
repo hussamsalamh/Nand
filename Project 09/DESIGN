@@ -27,7 +27,7 @@ drawMove(boardCell, shape)
 
 BOARD:
     STATUS
-    checkEndGame()
+    bool checkEndGame()
     void makeMove(boardCell, player)
     bool checkValidMove(boardCell)
 

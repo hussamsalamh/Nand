@@ -1,0 +1,125 @@
+
+
+/**
+ * Implements the Board of the game TicTacToe
+ * Board is initialized to zeros, meaning its empty
+ * X is int 1, O is int 2
+ */
+class Board {
+
+
+    field Array boardCells;
+    field int winner;
+
+    /** Constructs a new board. */
+    constructor Board new() {
+        let boardCells = Array.new(9);
+        //initialize array with zeros
+
+
+        return this;
+    }
+
+
+    /** Deallocates the object's memory. */
+    method void dispose() {
+        do boardCells.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    /**
+     * Returns true if above and below given sign and place
+     */
+    method bool checkVertical(int sign) {
+
+    }
+
+
+
+    /**
+     * Checks if there is a consecutive three in a row
+     * updates the global field winner if there is a win
+     * returns true if there is a win, else false
+     */
+    method bool checkIfThereIsWin() {
+        var int i;
+        var int sign;
+        let i = 0;
+
+        while (~(i=9)) {
+            //get the number in the array slot i
+            // if its not zero, check three in a row
+
+            let sign = boardCells[i];
+
+            if (~(sign = 0)) {
+                var bool win;
+
+                let win = checkVertical(sign);
+                if (win = true) {
+                    return true;
+                }
+
+                let win = checkHorizontal(sign);
+                if (win = true) {
+                    return true;
+                }
+
+                let win = checkFirstDiag(sign);
+                if (win = true) {
+                    return true;
+                }
+
+                let win = checkSecondDiag(sign);
+                if (win = true) {
+                    return true;
+                }
+
+            }
+        }
+        return false;
+    }
+
+
+
+
+    /**
+     * Check if there is a three in a row or if the board is full
+     * return true if game should end, else false
+     */
+    method bool checkEndGame() {
+
+        //Check if X or O won
+        var bool win;
+        let win = checkIfThereIsWin();
+
+        if (win = true) {
+            return true;
+        }
+
+
+        //Check if the board is full
+
+        var int i;
+        var int counter;
+        let i = 0;
+        let counter = 0;
+
+        while (~(i = 8)) {
+            if ((boardCells[i] = 1) | (boardCells[i] = 2) ) {
+                let counter = counter + 1;
+            }
+            let i = i + 1;
+        }
+
+        if (counter = 9) {
+            let winner = 3; //tie
+            return true;
+        }
+
+
+    }
+
+
+}
