@@ -11,8 +11,8 @@
 JAVAC=javac
 JAVACFLAGS=
 
-SRCS=VMTranslator.java Parser.java CodeWriter.java
-EXEC=VMTranslator
+SRCS=VMtranslator.java Parser.java CodeWriter.java
+EXEC=VMtranslator
 
 TAR=tar
 TARFLAGS=cvf
