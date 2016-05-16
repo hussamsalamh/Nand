@@ -147,7 +147,7 @@ public class Parser {
      * command. In the case of C_ARITHMETIC,
      * the command itself (add, sub, etc.) is
      * returned. Should not be called if the current
-     * command is C_RETURN.
+     * command is C_RETURN..
      * @return
      */
     public String arg1()
