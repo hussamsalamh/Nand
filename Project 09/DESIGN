@@ -1,0 +1,33 @@
+MAIN:
+    func drawBoard(){};
+    func getPlayerInput()
+    {
+        checkValidMove!
+    };
+Flow:
+    OPTIONAL: have field for num wins for both players
+    drawBoard(){};
+    getPlayerInput(){};
+    create a board;
+    while (bool keepPlaying)
+    {
+        input = getPlayerInput();
+        bool valid = Board.makeMove();
+        Drawer.drawMove(input..);
+        keepPlaying = Board.checkWin();
+    }
+    print who won / tie;
+    OPTIONAL: ASK WHETHER TO CONTINUE, KEEP SCORE, ELSE TERMINATE
+
+
+DRAWER:
+drawBoard()
+drawMove(boardCell, shape)
+
+
+BOARD:
+    STATUS
+    checkEndGame()
+    void makeMove(boardCell, player)
+    bool checkValidMove(boardCell)
+
