@@ -21,8 +21,8 @@ Flow:
 
 
 DRAWER:
-drawBoard()
-drawMove(boardCell, shape)
+void drawBoard()
+void drawMove(boardCell, shape)
 
 
 BOARD:

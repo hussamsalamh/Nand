@@ -1,12 +1,19 @@
 class Main {
     /** Initializes a new game and starts it. */
-    function void main() {
-        var SquareGame game;
-
-        let game = SquareGame.new();
-        do game.run();
-        do game.dispose();
-
+    function void main()
+    {
+        var Drawer d;
+        let d = Drawer.new();
+        do d.drawBoard();
+        do d.drawMove(1,2);
+        do d.drawMove(2,2);
+        do d.drawMove(3,2);
+        do d.drawMove(4,2);
+        do d.drawMove(5,2);
+        do d.drawMove(6,2);
+        do d.drawMove(7,2);
+        do d.drawMove(8,2);
+        do d.drawMove(9,2);
         return;
     }
 }

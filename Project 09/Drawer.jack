@@ -1,0 +1,155 @@
+class Drawer
+{
+    // X is 1
+    // O is 2
+    field Array cells;
+    field int Player1Score;
+    field int Player2Score;
+    field Point scoreBoard;
+    constructor Drawer new()
+    {
+        var Point p1;
+        var Point p2;
+        var Point p3;
+        var Point p4;
+        var Point p5;
+        var Point p6;
+        var Point p7;
+        var Point p8;
+        var Point p9;
+        let cells = Array.new(9);
+        let Player1Score = 0;
+        let Player2Score = 0;
+
+        let p1 = Point.new(250, 212);
+        let p2 = Point.new(354, 212);
+        let p3 = Point.new(458, 212);
+
+        let p4 = Point.new(250, 128);
+        let p5 = Point.new(354, 128);
+        let p6 = Point.new(458, 128);
+
+        let p7 = Point.new(250,44);
+        let p8 = Point.new(354,44);
+        let p9 = Point.new(458, 44);
+
+        let cells[0] = p1;
+        let cells[1] = p2;
+        let cells[2] = p3;
+        let cells[3] = p4;
+        let cells[4] = p5;
+        let cells[5] = p6;
+        let cells[6] = p7;
+        let cells[7] = p8;
+        let cells[8] = p9;
+        let scoreBoard = Point.new(0,0);
+        return this;
+    }
+    method void drawBoard()
+    {
+        // 196 for user information
+        // Each cell - width is 50, height is 40
+       var int i;
+       var int j;
+       do Screen.clearScreen();
+       do writePlayerScore();
+       // Draw horizontal lines
+       let i = 0;
+       while (i < 256)
+       {
+          let j = 0;
+          while ( j < 4)
+          {
+             do Screen.drawLine(196, i+j, 511, i+j);
+             let j = j + 1;
+          }
+          let i = i + 84;
+      }
+
+     // Draw vertical lines
+     let i = 196;
+     while (i < 511)
+     {
+        let j = 0;
+        while ( j < 4)
+        {
+           do Screen.drawLine(i+j, 0, i+j,  255);
+           let j = j + 1;
+        }
+        let i = i + 104;
+    }
+       return;
+    }
+
+    method void drawMove(int boardCell, int shape)
+    {
+        if (shape = 1)
+        {
+            do drawX(boardCell);
+        }
+        if (shape = 2)
+        {
+            do drawMoveCircle(boardCell);
+        }
+        return;
+    }
+
+    method void drawX(int boardCell)
+    {
+        var Point currPoint;
+        var int ULCx;
+        var int ULCy;
+        var int URCx;
+        var int URCy;
+        var int LLCx;
+        var int LLCy;
+        var int LRCx;
+        var int LRCy;
+        let currPoint = cells[boardCell-1];
+        let ULCx = currPoint.getX() - 50;
+        let ULCy = currPoint.getY() - 40;
+
+        let URCx = currPoint.getX() + 50;
+        let URCy = currPoint.getY() - 40;
+
+        let LLCx = currPoint.getX() - 50;
+        let LLCy = currPoint.getY() + 40;
+
+        let LRCx = currPoint.getX() + 50;
+        let LRCy = currPoint.getY() + 40;
+
+        do Screen.drawLine(ULCx, ULCy, LRCx, LRCy);
+        do Screen.drawLine(URCx, URCy, LLCx, LLCy);
+        return;
+    }
+
+    method void drawMoveCircle(int boardCell)
+    {
+        var Point currPoint;
+        var int xC;
+        var int yC;
+        let currPoint = cells[boardCell -1];
+        let xC = currPoint.getX();
+        let yC = currPoint.getY();
+        do Screen.drawCircle(xC, yC, 5);
+        return;
+    }
+
+    method void writePlayerScore()
+    {
+        var int xLocation;
+        var int yLocation;
+        var int secondyLocation;
+        let xLocation = scoreBoard.getX();
+        let yLocation = scoreBoard.getY();
+        do Output.moveCursor(xLocation, yLocation);
+        do Output.printString("Player 1: 0");
+        // Why is is switched?
+        let secondyLocation = xLocation + 3;
+        do Output.moveCursor(secondyLocation, xLocation);
+        do Output.printString("Player 2: 0");
+        return;
+    }
+   //  TODO: REMEMBER TO WRITE DISPOSE!!
+
+}
