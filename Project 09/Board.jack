@@ -3,7 +3,7 @@
 /**
  * Implements the Board of the game TicTacToe
  * Board is initialized to zeros, meaning its empty
- * X is int 1, O is int 2
+ * X is int 1, O is int 2, tie is int 3
  */
 class Board {
 
@@ -131,7 +131,7 @@ class Board {
         var int sign;
         let i = 0;
 
-        while (~(i=9)) {
+        while (~(i = 9)) {
             //get the number in the array slot i
             // if its not zero, check three in a row
 
@@ -159,38 +159,22 @@ class Board {
                 if (win = true) {
                     return true;
                 }
-
             }
+            let i = i + 1;
         }
         return false;
     }
 
-
-
-
     /**
-     * Check if there is a three in a row or if the board is full
-     * return true if game should end, else false
+     * return true if board is full, else false
      */
-    method bool checkEndGame() {
-
-        //Check if X or O won
-        var bool win;
-        let win = checkIfThereIsWin();
-
-        if (win = true) {
-            return true;
-        }
-
-
-        //Check if the board is full
-
+    method bool checkIfBoardFull() {
         var int i;
         var int counter;
         let i = 0;
         let counter = 0;
 
-        while (~(i = 8)) {
+        while (~(i = 9)) {
             if ((boardCells[i] = 1) | (boardCells[i] = 2) ) {
                 let counter = counter + 1;
             }
@@ -202,7 +186,43 @@ class Board {
             return true;
         }
 
+        return false;
 
+    }
+
+
+    /**
+     * Check if there is a three in a row or if the board is full
+     * return true if game should end, else false
+     */
+    method bool checkEndGame() {
+
+        //Check if X or O won
+        var bool win, tie;
+        let win = checkIfThereIsWin();
+
+        if (win = true) {
+            return true;
+        }
+
+
+        //Check if the board is full
+
+        let tie = checkIfBoardFull();
+        if (tie = true) {
+            return true;
+        }
+
+        // No winner and no tie, keep on playing
+        return false;
+    }
+
+
+    /**
+     * return int for winner status: 0 = No winner, 1 = X wins, 2 = O wins, 3 = Tie
+     */
+    method int getWinner() {
+        return winner;
     }
 
 
