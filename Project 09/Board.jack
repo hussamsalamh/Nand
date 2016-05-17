@@ -22,6 +22,18 @@ class Board {
         return this;
     }
 
+    method void clearBoard()
+    {
+       var int i;
+       let i = 0;
+       while (i < 9)
+       {
+            let boardCells[i] = 0;
+            let i = i + 1;
+       }
+       return;
+    }
+
 
     /** Deallocates the object's memory. */
     method void dispose() {

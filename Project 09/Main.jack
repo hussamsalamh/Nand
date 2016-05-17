@@ -8,15 +8,16 @@ class Main {
     static bool keepPlaying;
     static int player;
     static int input;
+    static char nextChoice;
     static bool move;
 
 
     /** Returns the int gotten from player keyboard input */
     function int getPlayerInput() {
         var int input; //TODO this might raise bug if mixed with field above
-       do Output.moveCursor(20,7);
+       do Output.moveCursor(18,7);
        do Output.printInt(player);
-       do Output.moveCursor(21,7);
+       do Output.moveCursor(19,7);
        let input = Keyboard.readInt("");
         return input;
     }
@@ -60,12 +61,14 @@ class Main {
     function void main()
     {
         var int winner;
-
+        var bool anotherGame;
+        let anotherGame = true;
         let drawer = Drawer.new();
         let board = Board.new(drawer);
+
+        while (anotherGame = true)
+        {
         do drawer.drawBoard();
-
-
         do Main.gameFlow();
 
         //get winner from board, check if tie or win, print
@@ -77,16 +80,27 @@ class Main {
         {
             do Output.printString("Player 1 won! Game Over!");
         }
-        else (winner = 2)
+        else
         {
             do Output.printString("Player 2 won! Game Over!");
         }
-        do board.updateScore(winner);
-
+        // Maybe this needs to be somewhere else...
+        do drawer.updateScore(winner);
+        do Output.moveCursor(21,0);
+        do Output.printString("Another game? y/n ");
+        let nextChoice = Keyboard.readChar();
+        if (nextChoice = 78)
+        {
+            let anotherGame = false;
+        }
+        else
+        {
+            do board.clearBoard();
+        }
+        }
         //TODO check leaks!
         do drawer.dispose();
         do board.dispose();
-
         return;
     }
 }
