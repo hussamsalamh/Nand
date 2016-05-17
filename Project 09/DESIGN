@@ -28,6 +28,6 @@ void drawMove(boardCell, shape)
 BOARD:
     STATUS
     bool checkEndGame()
-    void makeMove(boardCell, player)
+    bool makeMove(boardCell, player)
     bool checkValidMove(boardCell)
 

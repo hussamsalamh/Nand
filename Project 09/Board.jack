@@ -131,7 +131,7 @@ class Board {
         var int sign;
         let i = 0;
 
-        while (~(i = 9)) {
+        while (i < 9) {
             //get the number in the array slot i
             // if its not zero, check three in a row
 
@@ -174,7 +174,7 @@ class Board {
         let i = 0;
         let counter = 0;
 
-        while (~(i = 9)) {
+        while (i < 9) {
             if ((boardCells[i] = 1) | (boardCells[i] = 2) ) {
                 let counter = counter + 1;
             }
@@ -226,8 +226,44 @@ class Board {
     }
 
 
+    /**
+     * return true if move is valid, else false
+     */
+    method bool checkValidMove(int boardCell) {
+
+        //check if cell is legal position
+        if (boardCell < 0 | boardCell > 8) {
+            return false;
+        }
+
+        //check if cell is taken
+        if (~(boardCells[boardCell] = 0)) {
+            return false;
+        }
+
+        return true;
+    }
+
+
+
+    /**
+     * checks if move is legal, if so update the board and draw
+     * returns true if move is made, else false
+     */
+    method bool makeMove(int boardCell, int player) {
+        var bool legal;
+        let legal = checkValidMove(boardCell);
+
+        if (~(legal)) {
+            return false;
+        }
+
+        //move is legal, update board state and draw
+        let boardCells[boardCell] = player;
+        do Drawer.drawMove(boardCell, player);
+
+        return true;
+    }
+
 }
 
-
-
-//TODO: check if board is full, makeMove, checkValidMove

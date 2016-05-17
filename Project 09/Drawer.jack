@@ -6,6 +6,7 @@ class Drawer
     field int Player1Score;
     field int Player2Score;
     field Point scoreBoard;
+
     constructor Drawer new()
     {
         var Point p1;

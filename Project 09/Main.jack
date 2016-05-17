@@ -1,19 +1,83 @@
+
+
 class Main {
+
+    field Board board;
+    field Drawer drawer;
+    field bool keepPlaying;
+    field int player;
+    field int input;
+    field bool move;
+
+
+    /** Returns the int gotten from player keyboard input */
+    method int getPlayerInput() {
+        var int input; //TODO this might raise bug if mixed with field above
+
+        let input = Keyboard.readInt("Enter number between 1 and 9");
+        return input;
+    }
+
+    /**
+     *
+     */
+    function void gameFlow() {
+
+        var bool isEndGame;
+
+        let player = 1; //first player first
+        let keepPlaying = true;
+
+        while (keepPlaying = true) {
+            let input = getPlayerInput();
+            let move = board.makeMove(input, player); //this will also draw
+
+            if (move = true) {
+                let isEndGame = board.checkEndGame();
+                if (isEndGame = true) {
+                    let keepPlaying = false;
+                    return;
+                }
+
+                //update player
+                if (player = 1) {
+                    let player = 2;
+                }
+                else {
+                    let player = 1;
+                }
+            }
+        }
+    }
+
+
+
     /** Initializes a new game and starts it. */
     function void main()
     {
-        var Drawer d;
-        let d = Drawer.new();
+        var int winner;
+
+        let board = Board.new();
+        let drawer = Drawer.new();
         do d.drawBoard();
-        do d.drawMove(1,2);
-        do d.drawMove(2,2);
-        do d.drawMove(3,2);
-        do d.drawMove(4,2);
-        do d.drawMove(5,2);
-        do d.drawMove(6,2);
-        do d.drawMove(7,2);
-        do d.drawMove(8,2);
-        do d.drawMove(9,2);
+
+
+        do gameFlow();
+
+        //get winner from board, check if tie or win, print
+        let winner = board.getWinner();
+        if (winner = 3) {
+            do Output.printString("Its a tie! Game Over!");
+            return;
+        }
+        if (winner = 1) {
+            do Output.printString("Player X won! Game Over!");
+            return;
+        }
+        if (winner = 2) {
+            do Output.printString("Player O won! Game Over!");
+            return;
+        }
         return;
     }
 }
