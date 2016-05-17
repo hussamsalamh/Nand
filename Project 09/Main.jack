@@ -14,13 +14,10 @@ class Main {
     /** Returns the int gotten from player keyboard input */
     function int getPlayerInput() {
         var int input; //TODO this might raise bug if mixed with field above
-        do Output.moveCursor(20,0);
-        do Output.printString("Player ");
-        do Output.printInt(player);
-        do Output.printString("'s turn.");
-        do Output.println();
-        let input = Keyboard.readInt("Input: ");
-
+       do Output.moveCursor(20,7);
+       do Output.printInt(player);
+       do Output.moveCursor(21,7);
+       let input = Keyboard.readInt("");
         return input;
     }
 

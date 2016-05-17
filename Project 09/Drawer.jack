@@ -105,6 +105,12 @@ class Drawer
        do Output.println();
        do Output.printString("1 2 3");
        do Output.println();
+
+       do Output.moveCursor(20,0);
+       do Output.printString("Player ");
+       do Output.printString("1's turn.");
+       do Output.println();
+       do Output.printString("Input: ");
        // Draw horizontal lines
        let i = 0;
        while (i < 256)
@@ -183,9 +189,9 @@ class Drawer
         let currPoint = cells[boardCell -1];
         let xC = currPoint.getX();
         let yC = currPoint.getY();
-        do Screen.drawCircle(xC, yC, 9);
+        do Screen.drawCircle(xC, yC, 35);
         do Screen.setColor(false);
-        do Screen.drawCircle(xC, yC, 8);
+        do Screen.drawCircle(xC, yC, 30);
         do Screen.setColor(true);
         return;
     }
