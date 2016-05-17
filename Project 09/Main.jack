@@ -14,8 +14,13 @@ class Main {
     /** Returns the int gotten from player keyboard input */
     function int getPlayerInput() {
         var int input; //TODO this might raise bug if mixed with field above
+        do Output.moveCursor(20,0);
+        do Output.printString("Player ");
+        do Output.printInt(player);
+        do Output.printString("'s turn.");
+        do Output.println();
+        let input = Keyboard.readInt("Input: ");
 
-        let input = Keyboard.readInt("Enter number between 1 and 9");
         return input;
     }
 
@@ -70,15 +75,15 @@ class Main {
         //get winner from board, check if tie or win, print
         let winner = board.getWinner();
         if (winner = 3) {
-            do Output.printString("Its a tie! Game Over!");
+            do Output.printString("It's a tie! Game Over!");
             return;
         }
         if (winner = 1) {
-            do Output.printString("Player X won! Game Over!");
+            do Output.printString("Player 1 won! Game Over!");
             return;
         }
         if (winner = 2) {
-            do Output.printString("Player O won! Game Over!");
+            do Output.printString("Player 2 won! Game Over!");
             return;
         }
 
