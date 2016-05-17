@@ -1,5 +1,5 @@
 class Drawer
-{
+{ //TODO 9 dosent draw!!!!!
     // X is 1
     // O is 2
     field Array cells;
@@ -46,6 +46,47 @@ class Drawer
         let scoreBoard = Point.new(0,0);
         return this;
     }
+
+    /** Deallocates the object's memory. */
+    method void dispose() {
+        var Point p1;
+        var Point p2;
+        var Point p3;
+        var Point p4;
+        var Point p5;
+        var Point p6;
+        var Point p7;
+        var Point p8;
+        var Point p9;
+
+        let p1 = cells[0];
+        let p2 = cells[1];
+        let p3 = cells[2];
+        let p4 = cells[3];
+        let p5 = cells[4];
+        let p6 = cells[5];
+        let p7 = cells[6];
+        let p8 = cells[7];
+        let p9 = cells[8];
+
+        do p1.dispose();
+        do p2.dispose();
+        do p3.dispose();
+        do p4.dispose();
+        do p5.dispose();
+        do p6.dispose();
+        do p7.dispose();
+        do p8.dispose();
+        do p9.dispose();
+
+
+        do scoreBoard.dispose();
+        do cells.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
+
+
     method void drawBoard()
     {
         // 196 for user information

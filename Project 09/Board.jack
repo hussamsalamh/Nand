@@ -10,12 +10,14 @@ class Board {
 
     field Array boardCells;
     field int winner;
+    field Drawer drawer;
 
     /** Constructs a new board. */
-    constructor Board new() {
+    constructor Board new(Drawer givenDrawer) {
         let boardCells = Array.new(9);
         //initialize array with zeros
 
+        let drawer = givenDrawer;
 
         return this;
     }
@@ -33,10 +35,10 @@ class Board {
      */
     method bool checkVertical(int cell, int sign) {
         var int above, below, aboveSign, belowSign;
-        let above = cell - 3;
-        let below = cell + 3;
+        let above = cell + 3;
+        let below = cell - 3;
 
-        if ((above < 0) | (below > 8)) { //check bounds
+        if ((below < 0) | (above > 8)) { //check bounds
             return false;
         }
 
@@ -79,10 +81,10 @@ class Board {
      */
     method bool checkFirstDiag(int cell, int sign) {
         var int left, right, leftSign, rightSign;
-        let left = cell - 4;
-        let right = cell + 4;
+        let left = cell + 2;
+        let right = cell - 2;
 
-        if ((left < 0) | (right > 8)) { //check bounds
+        if ((right < 0) | (left > 8)) { //check bounds
             return false;
         }
 
@@ -102,10 +104,10 @@ class Board {
      */
     method bool checkSecondDiag(int cell, int sign) {
         var int left, right, leftSign, rightSign;
-        let right = cell - 2;
-        let left = cell + 2;
+        let right = cell + 4;
+        let left = cell - 4;
 
-        if ((right < 0) | (left > 8)) { //check bounds
+        if ((left < 0) | (right > 8)) { //check bounds
             return false;
         }
 
@@ -129,6 +131,7 @@ class Board {
     method bool checkIfThereIsWin() {
         var int i;
         var int sign;
+        var bool win;
         let i = 0;
 
         while (i < 9) {
@@ -137,8 +140,8 @@ class Board {
 
             let sign = boardCells[i];
 
-            if (~(sign = 0)) { // if one of these wins, it updates the winner (global field)
-                var bool win;
+            // if one of these wins, it updates the winner (global field)
+            if (~(sign = 0)) {
 
                 let win = checkVertical(i, sign);
                 if (win = true) {
@@ -252,6 +255,8 @@ class Board {
      */
     method bool makeMove(int boardCell, int player) {
         var bool legal;
+
+        let boardCell = boardCell - 1;
         let legal = checkValidMove(boardCell);
 
         if (~(legal)) {
@@ -260,7 +265,8 @@ class Board {
 
         //move is legal, update board state and draw
         let boardCells[boardCell] = player;
-        do Drawer.drawMove(boardCell, player);
+        let boardCell = boardCell + 1;
+        do drawer.drawMove(boardCell, player);
 
         return true;
     }

@@ -1,17 +1,18 @@
-
-
+/**
+ *
+ */
 class Main {
 
-    field Board board;
-    field Drawer drawer;
-    field bool keepPlaying;
-    field int player;
-    field int input;
-    field bool move;
+    static Board board;
+    static Drawer drawer;
+    static bool keepPlaying;
+    static int player;
+    static int input;
+    static bool move;
 
 
     /** Returns the int gotten from player keyboard input */
-    method int getPlayerInput() {
+    function int getPlayerInput() {
         var int input; //TODO this might raise bug if mixed with field above
 
         let input = Keyboard.readInt("Enter number between 1 and 9");
@@ -29,7 +30,8 @@ class Main {
         let keepPlaying = true;
 
         while (keepPlaying = true) {
-            let input = getPlayerInput();
+            let input = Main.getPlayerInput();
+            //let input = input - 1; // for aligning with the array
             let move = board.makeMove(input, player); //this will also draw
 
             if (move = true) {
@@ -48,6 +50,7 @@ class Main {
                 }
             }
         }
+        return;
     }
 
 
@@ -57,12 +60,12 @@ class Main {
     {
         var int winner;
 
-        let board = Board.new();
         let drawer = Drawer.new();
-        do d.drawBoard();
+        let board = Board.new(drawer);
+        do drawer.drawBoard();
 
 
-        do gameFlow();
+        do Main.gameFlow();
 
         //get winner from board, check if tie or win, print
         let winner = board.getWinner();
@@ -78,6 +81,13 @@ class Main {
             do Output.printString("Player O won! Game Over!");
             return;
         }
+
+
+        //TODO check leaks!
+        do drawer.dispose();
+        do board.dispose();
+
+
         return;
     }
 }
