@@ -1,5 +1,5 @@
 class Drawer
-{ //TODO 9 dosent draw!!!!!
+{
     // X is 1
     // O is 2
     field Array cells;
@@ -138,7 +138,21 @@ class Drawer
     }
        return;
     }
-
+    method void updateScore(int player)
+    {
+        do Output.moveCursor(player, 10);
+        if (player1 = 1)
+        {
+            let Player1Score = Player1Score + 1;
+            do Output.printInt(Player1Score);
+        }
+        else
+        {
+            let Player2Score = Player2Score + 1;
+            do Output.printInt(Player2Score);
+        }
+        return;
+    }
     method void drawMove(int boardCell, int shape)
     {
         if (shape = 1)

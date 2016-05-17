@@ -33,8 +33,7 @@ class Main {
 
         while (keepPlaying = true) {
             let input = Main.getPlayerInput();
-            //let input = input - 1; // for aligning with the array
-            let move = board.makeMove(input, player); //this will also draw
+            let move = board.makeMove(input, player);
 
             if (move = true) {
                 let isEndGame = board.checkEndGame();
@@ -73,22 +72,20 @@ class Main {
         let winner = board.getWinner();
         if (winner = 3) {
             do Output.printString("It's a tie! Game Over!");
-            return;
         }
-        if (winner = 1) {
+        if (winner = 1)
+        {
             do Output.printString("Player 1 won! Game Over!");
-            return;
         }
-        if (winner = 2) {
+        else (winner = 2)
+        {
             do Output.printString("Player 2 won! Game Over!");
-            return;
         }
-
+        do board.updateScore(winner);
 
         //TODO check leaks!
         do drawer.dispose();
         do board.dispose();
-
 
         return;
     }
