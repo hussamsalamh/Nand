@@ -99,7 +99,6 @@ class Board {
         if ((right < 0) | (left > 8)) { //check bounds
             return false;
         }
-
         let leftSign = boardCells[left];
         let rightSign = boardCells[right];
 
@@ -164,16 +163,19 @@ class Board {
                 if (win = true) {
                     return true;
                 }
+                if (i = 4)
+                {
+                    let win = checkFirstDiag(i, sign);
+                    if (win = true) {
+                        return true;
+                    }
 
-                let win = checkFirstDiag(i, sign);
-                if (win = true) {
-                    return true;
+                    let win = checkSecondDiag(i, sign);
+                    if (win = true) {
+                        return true;
+                    }
                 }
 
-                let win = checkSecondDiag(i, sign);
-                if (win = true) {
-                    return true;
-                }
             }
             let i = i + 1;
         }
