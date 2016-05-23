@@ -14,7 +14,7 @@ class Main {
 
     /** Returns the int gotten from player keyboard input */
     function int getPlayerInput() {
-        var int input; //TODO this might raise bug if mixed with field above
+       var int input;
        do Output.moveCursor(18,7);
        do Output.printInt(player);
        do Output.moveCursor(19,7);
@@ -79,13 +79,13 @@ class Main {
         if (winner = 1)
         {
             do Output.printString("Player 1 won! Game Over!");
+            do drawer.updateScore(winner);
         }
-        else
+        if (winner = 2)
         {
             do Output.printString("Player 2 won! Game Over!");
+            do drawer.updateScore(winner);
         }
-        // Maybe this needs to be somewhere else...
-        do drawer.updateScore(winner);
         do Output.moveCursor(21,0);
         do Output.printString("Another game? y/n ");
         let nextChoice = Keyboard.readChar();
@@ -98,7 +98,6 @@ class Main {
             do board.clearBoard();
         }
         }
-        //TODO check leaks!
         do drawer.dispose();
         do board.dispose();
         return;

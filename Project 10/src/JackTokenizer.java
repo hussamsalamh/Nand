@@ -1,6 +1,4 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StreamTokenizer;
+import java.io.*;
 import java.util.HashSet;
 
 /**
@@ -16,7 +14,7 @@ public class JackTokenizer {
 
      */
 
-    public enum LexicalElements {KEYWORD, SYMBOL, IDENTIFIER, INT_CONST, STRING_CONST}
+    private enum LexicalElements {KEYWORD, SYMBOL, IDENTIFIER, INT_CONST, STRING_CONST}
 
     public enum Keyword {CLASS, METHOD, FUNCTION,CONSTRUCTOR, INT, BOOLEAN, CHAR, VOID, VAR, STATIC, FIELD, LET,
         DO ,IF, ELSE, WHILE, RETURN, TRUE, FALSE, NULL, THIS}
@@ -69,9 +67,9 @@ public class JackTokenizer {
     }};
 
     private BufferedReader file;
-    private StreamTokenizer streamTokenizer;
-    private int currentToken;
-    private LexicalElements curTokenType;
+    public StreamTokenizer streamTokenizer;
+    public int currentToken;
+    public LexicalElements curTokenType;
 
 
     /**
@@ -84,7 +82,30 @@ public class JackTokenizer {
         streamTokenizer = new StreamTokenizer(file);
     }
 
+    //TODO: delete
+    public JackTokenizer() throws IOException {
 
+        String text = "yoni1     sdlkjslk  < > { } era; era<>; abc' era{ era} (){}";
+        try {
+            // create a new file with an ObjectOutputStream
+            FileOutputStream out = new FileOutputStream("test.txt");
+            ObjectOutputStream oout = new ObjectOutputStream(out);
+
+            // write something in the file
+            oout.writeUTF(text);
+            oout.flush();
+
+            ObjectInputStream ois =
+                    new ObjectInputStream(new FileInputStream("test.txt"));
+
+            // create a new tokenizer
+            Reader r = new BufferedReader(new InputStreamReader(ois));
+            streamTokenizer = new StreamTokenizer(r);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
     /**
      * Do we have more tokens in the input?
      * @return
@@ -107,6 +128,7 @@ public class JackTokenizer {
      * Returns the type of the current token
      * @return
      */
+/*
     public LexicalElements tokenType() {
         if (currentToken == StreamTokenizer.TT_WORD) {
             // use streamTokenizer.sval
@@ -121,52 +143,48 @@ public class JackTokenizer {
             return LexicalElements.SYMBOL;
         }
     }
+*/
 
-    /**
+ /*   *//**
      * Returns the keyword which is the current token. Should be called only when tokenType() is KEYWORD .
      * @return
-     */
+     *//*
     public Keyword keyWord() {
 
     }
 
-    /**
+    *//**
      * Returns the character which is the current token. Should be called only when tokenType() is SYMBOL .
      * @return
-     */
+     *//*
     public char symbol() {
 
     }
 
-    /**
+    *//**
      * Returns the identifier which is the current token. Should be called only when tokenType() is IDENTIFIER .
      * @return
-     */
+     *//*
     public String identifier() {
 
     }
 
-    /**
+    *//**
      * Returns the integer value of the current token. Should be called only when tokenType() is INT_CONST .
      * @return
-     */
+     *//*
     public int intVal() {
 
     }
 
-    /**
+    *//**
      * Returns the string value of the current token, without the double quotes. Should be called only when
      * tokenType() is STRING_CONST .
      * @return
-     */
+     *//*
     public String stringVal() {
         //TODO dont forget to make sure throws away double quote chars
     }
-
-
-
-
-
-
+*/
 
 }

@@ -22,6 +22,7 @@ class Drawer
         let Player1Score = 0;
         let Player2Score = 0;
 
+        // Construct initial center points for all game cells
         let p1 = Point.new(250, 212);
         let p2 = Point.new(354, 212);
         let p3 = Point.new(458, 212);
@@ -90,12 +91,15 @@ class Drawer
     method void drawBoard()
     {
         // 196 for user information
-        // Each cell - width is 50, height is 40
+
+        // Clears screen and draws all game cells
        var int i;
        var int j;
        do Screen.clearScreen();
        do writePlayerScore();
 
+
+        // Writes game instructions
        do Output.moveCursor(10,0);
        do Output.printString("Game cells:");
        do Output.println();
@@ -106,38 +110,65 @@ class Drawer
        do Output.printString("1 2 3");
        do Output.println();
 
+        // Writes game status
        do Output.moveCursor(18,0);
        do Output.printString("Player ");
        do Output.printString("1's turn.");
        do Output.println();
        do Output.printString("Input: ");
-       // Draw horizontal lines
-       let i = 0;
-       while (i < 256)
-       {
-          let j = 0;
-          while ( j < 4)
-          {
-             do Screen.drawLine(196, i+j, 511, i+j);
-             let j = j + 1;
-          }
-          let i = i + 84;
-      }
 
-     // Draw vertical lines
-     let i = 196;
-     while (i < 511)
-     {
-        let j = 0;
-        while ( j < 4)
-        {
-           do Screen.drawLine(i+j, 0, i+j,  255);
-           let j = j + 1;
-        }
-        let i = i + 104;
+      // Each cell - width is 100, height is 80
+      // All cells are drawn
+        do Screen.drawRectangle(196,0,304,88);
+        do Screen.setColor(false);
+        do Screen.drawRectangle(200,4,300,84);
+        do Screen.setColor(true);
+
+        do Screen.drawRectangle(300,0,408,88);
+        do Screen.setColor(false);
+        do Screen.drawRectangle(304,4,404,84);
+        do Screen.setColor(true);
+
+        do Screen.drawRectangle(404,0,511,88);
+        do Screen.setColor(false);
+        do Screen.drawRectangle(408,4,507,84);
+        do Screen.setColor(true);
+
+
+        do Screen.drawRectangle(196,84,304,172);
+        do Screen.setColor(false);
+        do Screen.drawRectangle(200,88,300,168);
+        do Screen.setColor(true);
+
+        do Screen.drawRectangle(300,84,408,172);
+        do Screen.setColor(false);
+        do Screen.drawRectangle(304,88,404,168);
+        do Screen.setColor(true);
+
+        do Screen.drawRectangle(404,84,511,172);
+        do Screen.setColor(false);
+        do Screen.drawRectangle(408,88,507,168);
+        do Screen.setColor(true);
+
+
+        do Screen.drawRectangle(196,168,304,255);
+        do Screen.setColor(false);
+        do Screen.drawRectangle(200,172,300,251);
+        do Screen.setColor(true);
+
+        do Screen.drawRectangle(300,168,408,255);
+        do Screen.setColor(false);
+        do Screen.drawRectangle(304,172,404,251);
+        do Screen.setColor(true);
+
+        do Screen.drawRectangle(404,168,511,255);
+        do Screen.setColor(false);
+        do Screen.drawRectangle(408,172,507,251);
+        do Screen.setColor(true);
+        return;
     }
-       return;
-    }
+
+    // Updates the score for the given player.
     method void updateScore(int player)
     {
         var int currLine;
@@ -155,6 +186,7 @@ class Drawer
         }
         return;
     }
+    // Draws a shape in the given cell
     method void drawMove(int boardCell, int shape)
     {
         if (shape = 1)
@@ -167,7 +199,7 @@ class Drawer
         }
         return;
     }
-
+    // Draws an X in the given cell
     method void drawX(int boardCell)
     {
         var Point currPoint;
@@ -180,6 +212,7 @@ class Drawer
         var int LRCx;
         var int LRCy;
         let currPoint = cells[boardCell-1];
+        // Calculates corners
         let ULCx = currPoint.getX() - 50;
         let ULCy = currPoint.getY() - 40;
 
@@ -196,7 +229,7 @@ class Drawer
         do Screen.drawLine(URCx, URCy, LLCx, LLCy);
         return;
     }
-
+    // Draws a circle in the given cell
     method void drawMoveCircle(int boardCell)
     {
         var Point currPoint;
@@ -212,6 +245,7 @@ class Drawer
         return;
     }
 
+    // Writes the score of the player
     method void writePlayerScore()
     {
         var int xLocation;
@@ -229,6 +263,5 @@ class Drawer
         do Output.printInt(Player2Score);
         return;
     }
-   //  TODO: REMEMBER TO WRITE DISPOSE!!
 
 }

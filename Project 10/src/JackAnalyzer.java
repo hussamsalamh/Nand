@@ -1,3 +1,6 @@
+import java.io.IOException;
+import java.io.StreamTokenizer;
+
 /**
  * Created by yonilip on 5/23/16.
  *
@@ -24,7 +27,18 @@
  * You can assume the files are a legal jack files ( you do not need to handle illegal files).
  */
 public class JackAnalyzer {
-
+    public static void main(String[] args) throws IOException {
+        JackTokenizer a = new JackTokenizer();
+        while (a.hasMoreTokens()) {
+            if (a.currentToken == StreamTokenizer.TT_WORD) {
+                System.out.println(a.streamTokenizer.sval);
+            }
+            else if (a.currentToken == StreamTokenizer.TT_NUMBER) System.out.println(a.streamTokenizer.nval);
+            else {
+                System.out.println((char) a.currentToken);
+            }
+        }
+    }
 
 
 

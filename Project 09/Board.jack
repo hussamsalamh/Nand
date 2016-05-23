@@ -126,6 +126,7 @@ class Board {
         let rightSign = boardCells[right];
 
         if ((sign = leftSign) & (sign = rightSign)) {
+
             let winner = sign;
             return true;
         }
@@ -143,6 +144,7 @@ class Board {
         var int i;
         var int sign;
         var bool win;
+        var bool getIn;
         let i = 0;
 
         while (i < 9) {
@@ -153,15 +155,34 @@ class Board {
 
             // if one of these wins, it updates the winner (global field)
             if (~(sign = 0)) {
-
+                if  (i > 2 & i <6 )
+                {
                 let win = checkVertical(i, sign);
                 if (win = true) {
                     return true;
                 }
-
-                let win = checkHorizontal(i, sign);
-                if (win = true) {
-                    return true;
+                }
+                let getIn = false;
+                if (i =1)
+                {
+                    let getIn = true;
+                }
+                if (i = 4)
+                {
+                    let getIn = true;
+                }
+                if (i = 7)
+                {
+                    let getIn = true;
+                }
+                if (getIn = true)
+                {
+                    let getIn = false;
+                    let win = checkHorizontal(i, sign);
+                    if (win = true)
+                     {
+                        return true;
+                    }
                 }
                 if (i = 4)
                 {

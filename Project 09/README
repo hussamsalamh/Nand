@@ -1,0 +1,17 @@
+yonilipman,irahi
+===============================================================================
+Yonatan Lipman, ID 305629750, yonatan.lipman@mail.huji.ac.il
+Era Choshen, ID 302907761, era.choshen@mail.huji.ac.il
+===============================================================================
+
+project09
+===============================================================================
+
+Submitted Files
+--------------------------
+README
+
+Board.jack - A class designed to control the board and monitor wins/ties/illegal moves etc...
+Drawer.jack - A class designed to draw on the playing board, and update the GUI
+Point.jack - A class used by Drawer to refer to the points on the board.
+Main.jack - This is the driver that runs the game.
