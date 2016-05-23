@@ -27,6 +27,7 @@ import java.io.StreamTokenizer;
  * You can assume the files are a legal jack files ( you do not need to handle illegal files).
  */
 public class JackAnalyzer {
+/*
     public static void main(String[] args) throws IOException {
         JackTokenizer a = new JackTokenizer();
         while (a.hasMoreTokens()) {
@@ -41,6 +42,7 @@ public class JackAnalyzer {
     }
 
 
+*/
 
 
 
