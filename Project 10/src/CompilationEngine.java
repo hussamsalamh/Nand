@@ -31,7 +31,7 @@ public class CompilationEngine {
      * @param outputFile
      */
     public CompilationEngine(BufferedReader inputFile, BufferedWriter outputFile) {
-
+        //TODO add <tokens> to start of file and make sure file ends with </tokens>
     }
 
     /**
