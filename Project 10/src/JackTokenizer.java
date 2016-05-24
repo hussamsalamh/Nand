@@ -22,7 +22,7 @@ public class JackTokenizer {
     public enum Keyword {CLASS, METHOD, FUNCTION,CONSTRUCTOR, INT, BOOLEAN, CHAR, VOID, VAR, STATIC, FIELD, LET,
         DO ,IF, ELSE, WHILE, RETURN, TRUE, FALSE, NULL, THIS}
 
-    private static final HashMap<String, Keyword> keywordsSet = new HashMap<String, Keyword>() {{
+    /*private static final HashMap<String, Keyword> keywordsSet = new HashMap<String, Keyword>() {{
         put("class", Keyword.CLASS);
         put("constructor", Keyword.CONSTRUCTOR);
         put("function", Keyword.FUNCTION);
@@ -44,6 +44,30 @@ public class JackTokenizer {
         put("else", Keyword.ELSE);
         put("while", Keyword.WHILE);
         put("return", Keyword.RETURN);
+    }};
+    */
+    private static final HashSet<String> keywordsSet = new HashSet<String>() {{
+        add("class");
+        add("constructor");
+        add("function");
+        add("method");
+        add("field");
+        add("static");
+        add("var");
+        add("int");
+        add("char");
+        add("boolean");
+        add("void");
+        add("true");
+        add("false");
+        add("null");
+        add("this");
+        add("let");
+        add("do");
+        add("if");
+        add("else");
+        add("while");
+        add("return");
     }};
 
 
@@ -113,7 +137,8 @@ public class JackTokenizer {
     public LexicalElements tokenType() throws IOException {
         if (currentToken == StreamTokenizer.TT_WORD) {
             // use streamTokenizer.sval
-            if (keywordsSet.containsKey(streamTokenizer.sval.toLowerCase())) {
+            //if (keywordsSet.containsKey(streamTokenizer.sval.toLowerCase())) {
+            if (keywordsSet.contains(streamTokenizer.sval.toLowerCase())) {
                 return LexicalElements.KEYWORD;
             }
             else return LexicalElements.IDENTIFIER;
@@ -140,8 +165,9 @@ public class JackTokenizer {
      * Returns the keyword which is the current token. Should be called only when tokenType() is KEYWORD .
      * @return
      */
-    public Keyword keyWord() {
-        return keywordsSet.get(streamTokenizer.sval.toLowerCase());
+    public String keyWord() {
+        //return keywordsSet.get(streamTokenizer.sval.toLowerCase());
+        return streamTokenizer.sval.toLowerCase();
     }
 
     /**
@@ -177,7 +203,11 @@ public class JackTokenizer {
         return stringValue;
     }
 
-
+    /**
+     * Test!
+     * TODO dont submit this!
+     * @param args
+     */
     public static void main(String[] args) {
         String str = args[0];
         try(FileReader fr1 = new FileReader(str); BufferedReader r = new BufferedReader(fr1)) {

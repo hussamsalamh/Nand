@@ -1,5 +1,6 @@
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.IOException;
 // fix for git
 /**
  * Created by yonilip on 5/23/16.
@@ -24,49 +25,216 @@ import java.io.BufferedWriter;
 public class CompilationEngine {
 
 
+    private BufferedReader inputFile;
+    private BufferedWriter outputFile;
+    private int indentation;
+    JackTokenizer jackTokenizer;
+
     /**
      * Creates a new compilation engine with the given input and output. The next routine called
      * must be compileClass() .
      * @param inputFile
      * @param outputFile
      */
-    public CompilationEngine(BufferedReader inputFile, BufferedWriter outputFile) {
-        //TODO add <tokens> to start of file and make sure file ends with </tokens>
+    public CompilationEngine(BufferedReader inputFile, BufferedWriter outputFile) throws IOException {
+        //TODO create the jack tokenizer
+        this.inputFile = inputFile;
+        this.outputFile = outputFile;
+        indentation = 0;
+
+        jackTokenizer = new JackTokenizer(this.inputFile);
+        compileClass();
+    }
+
+    private void writeScopeOpener(String strToWrite) throws IOException {
+        String string = "";
+
+        //Add the indentation tabs
+        for (int i = 0; i < indentation; i++) {
+            string += "\t";
+        }
+        string += "<" + strToWrite +">\n";
+        outputFile.write(string);
+        indentation++;
+    }
+
+    private void writeScopeCloser(String strToWrite) throws IOException {
+        String string = "";
+        indentation--;
+
+        for (int i = 0; i < indentation; i++) {
+            string += "\t";
+        }
+        string += "</" + strToWrite +">\n";
+        outputFile.write(string);
+    }
+
+    private void writeInScope() throws IOException {
+        String string = "";
+
+        //Add the indentation tabs
+        for (int i = 0; i < indentation; i++) {
+            string += "\t";
+        }
+        JackTokenizer.LexicalElements type = jackTokenizer.tokenType();
+
+        //update string according to token type
+        switch (jackTokenizer.tokenType()) {
+            case KEYWORD:
+                string += "<" + type +"> " + jackTokenizer.keyWord() + "</" + type +">\n";
+                break;
+            case IDENTIFIER:
+                string += "<" + type +"> " + jackTokenizer.identifier() + "</" + type +">\n";
+                break;
+            case SYMBOL:
+                string += "<" + type +"> " + jackTokenizer.symbol() + "</" + type +">\n";
+                break;
+            case STRING_CONST:
+                string += "<" + type +"> " + jackTokenizer.stringVal() + "</" + type +">\n";
+                break;
+            case INT_CONST:
+                string += "<" + type +"> " + jackTokenizer.intVal() + "</" + type +">\n";
+                break;
+        }
+        outputFile.write(string);
     }
 
     /**
      * Compiles a complete class.
      */
-    public void compileClass() {
+    public void compileClass() throws IOException {
+        //TODO starts with <class> and ends with </class> thus whole run should callback here and end here
+        writeScopeOpener("class");
 
+        jackTokenizer.hasMoreTokens(); //class
+        writeInScope();
+        jackTokenizer.hasMoreTokens(); //class name
+        writeInScope();
+        jackTokenizer.hasMoreTokens(); //open curly
+        writeInScope();
+
+        jackTokenizer.hasMoreTokens(); //classVarDec
+        if (jackTokenizer.keyWord().equals("static") || jackTokenizer.keyWord().equals("field")) {
+            writeScopeOpener("classVarDec");
+            compileClassVarDec();
+            writeScopeCloser("classVarDec");
+            jackTokenizer.hasMoreTokens(); // get next for comp
+        }
+        if (jackTokenizer.keyWord().matches("constructor|function|method")) {
+            writeScopeOpener("subroutineDec");
+            compileSubroutine();
+            writeScopeCloser("subroutineDec");
+        }
     }
 
     /**
      * Compiles a static declaration or a field declaration.
      */
-    public void compileClassVarDec() {
+    public void compileClassVarDec() throws IOException {
+        while (jackTokenizer.keyWord().equals("static") || jackTokenizer.keyWord().equals("field")) {
+            writeInScope(); //field/static
+            jackTokenizer.hasMoreTokens(); //type
+            compileParameterList();
+/*
+            jackTokenizer.hasMoreTokens(); // varName TODO when more
+            writeInScope();
 
+            jackTokenizer.hasMoreTokens(); // next var
+            while (jackTokenizer.symbol() == ',') { //TODO make sure this compare works
+                writeInScope(); //write the symbol
+                jackTokenizer.hasMoreTokens(); //next var
+                writeInScope(); //write the var name identifier
+                jackTokenizer.hasMoreTokens();
+            }*/
+            writeInScope(); //write symbol ;
+        }
     }
 
     /**
      * Compiles a complete method, function, or constructor.
      */
-    public void compileSubroutine() {
+    public void compileSubroutine() throws IOException {
+        while (jackTokenizer.keyWord().matches("constructor|function|method")) {
+            writeInScope(); //constructor|function|method
 
+            jackTokenizer.hasMoreTokens(); //type
+            writeInScope();
+
+            jackTokenizer.hasMoreTokens(); //name
+            writeInScope();
+
+            jackTokenizer.hasMoreTokens(); // (
+            writeInScope();
+
+            //params list
+            jackTokenizer.hasMoreTokens();
+            writeScopeOpener("parameterList");
+            compileParameterList();
+            writeScopeCloser("parameterList");
+
+            jackTokenizer.hasMoreTokens(); // )
+            writeInScope();
+
+            writeScopeOpener("subroutineBody");
+            jackTokenizer.hasMoreTokens(); // {
+            writeInScope();
+
+
+
+
+
+
+            jackTokenizer.hasMoreTokens(); // }
+            writeInScope();
+            writeScopeCloser("subroutineBody");
+
+        }
     }
 
     /**
      * Compiles a (possibly empty) parameter list, not including the enclosing ‘‘ () ’’.
      */
-    public void compileParameterList() {
+    public void compileParameterList() throws IOException {
+        //jackTokenizer.hasMoreTokens(); //type
+        if (jackTokenizer.keyWord().matches("int|char|boolean") ||
+                jackTokenizer.tokenType().equals(JackTokenizer.LexicalElements.IDENTIFIER)) { //TODO check if last comparison works
+            writeInScope();
 
+            jackTokenizer.hasMoreTokens(); // varName TODO when more
+            writeInScope();
+
+            jackTokenizer.hasMoreTokens(); // next var
+            while (jackTokenizer.symbol() == ',') { //TODO make sure this compare works
+                writeInScope(); //write the symbol
+                jackTokenizer.hasMoreTokens(); //next var
+                writeInScope(); //write the var name identifier
+                jackTokenizer.hasMoreTokens();
+            }
+        }
     }
 
     /**
      * Compiles a var declaration.
      */
-    public void compileVarDec() {
+    public void compileVarDec() throws IOException {
+        if (jackTokenizer.keyWord().matches("int|char|boolean") ||
+                jackTokenizer.tokenType().equals(JackTokenizer.LexicalElements.IDENTIFIER)) { //TODO check if last comparison works
+            writeScopeOpener("varDec");
 
+            writeInScope();
+
+            jackTokenizer.hasMoreTokens(); // varName TODO when more
+            writeInScope();
+
+            jackTokenizer.hasMoreTokens(); // next var
+            while (jackTokenizer.symbol() == ',') { //TODO make sure this compare works
+                writeInScope(); //write the symbol
+                jackTokenizer.hasMoreTokens(); //next var
+                writeInScope(); //write the var name identifier
+                jackTokenizer.hasMoreTokens();
+            }
+            writeScopeCloser("varDec");
+        }
     }
 
     /**
@@ -97,7 +265,7 @@ public class CompilationEngine {
 
     }
 
-    /**
+    /**class
      * Compiles a return declaration.
      */
     public void compileReturn() {
