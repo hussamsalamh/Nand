@@ -10,7 +10,7 @@ import java.util.HashSet;
  * breaks it into Jack-language tokens, as specified by the Jack grammar
  */
 public class JackTokenizer {
-    /* TODO make sure < is &lt, > is &gt, " is &quot, & is &amp
+    /* TODO make sure < is &lt, > is &gt, " is &quot, & is &amp even in const_string
 
      */
 
@@ -71,7 +71,7 @@ public class JackTokenizer {
     }};
 
 
-    private static final HashSet<Character> symbolSet = new HashSet<Character>() {{
+    protected static final HashSet<Character> symbolSet = new HashSet<Character>() {{
         add('{');
         add('}');
         add('(');

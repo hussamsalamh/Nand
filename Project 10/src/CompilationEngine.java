@@ -172,12 +172,18 @@ public class CompilationEngine {
             compileParameterList();
             writeScopeCloser("parameterList");
 
-            jackTokenizer.hasMoreTokens(); // )
+            jackTokenizer.hasMoreTokens(); // ) TODO if there is bug maybe del this and find similar
             writeInScope();
 
             writeScopeOpener("subroutineBody");
             jackTokenizer.hasMoreTokens(); // {
             writeInScope();
+
+            jackTokenizer.hasMoreTokens();
+            compileVarDec(); //scope opener in here
+
+
+            compileStatements();
 
 
 
@@ -240,8 +246,45 @@ public class CompilationEngine {
     /**
      * Compiles a sequence of statements, not including the enclosing ‘‘{}’’.
      */
-    public void compileStatements() {
+    public void compileStatements() throws IOException {
+        writeScopeOpener("statements");
+        while (jackTokenizer.keyWord().matches("let|if|while|do|return")) {
 
+            if (jackTokenizer.keyWord().equals("let")) {
+                writeScopeOpener("letStatement");
+                writeInScope(); //write the keyword
+                jackTokenizer.hasMoreTokens();
+                writeInScope(); // write varName
+                jackTokenizer.hasMoreTokens();
+                if (jackTokenizer.symbol() == '[') {
+                    writeInScope();
+                    compileExpression();
+
+                    jackTokenizer.hasMoreTokens();
+                    writeInScope(); // ]
+                }
+
+
+                writeScopeCloser("letStatement");
+            } else if (jackTokenizer.keyWord().equals("if")) {
+                writeScopeOpener("ifStatement");
+                //TODO
+                writeScopeCloser("ifStatement");
+            } else if (jackTokenizer.keyWord().equals("while")) {
+                writeScopeOpener("whileStatement");
+                //TODO
+                writeScopeCloser("whileStatement");
+            } else if (jackTokenizer.keyWord().equals("do")) {
+                writeScopeOpener("doStatement");
+                //TODO
+                writeScopeCloser("doStatement");
+            } else if (jackTokenizer.keyWord().equals("return")) {
+                writeScopeOpener("returnStatement");
+                //TODO
+                writeScopeCloser("returnStatement");
+            }
+        }
+        writeScopeCloser("statements");
     }
 
     /**
@@ -282,8 +325,45 @@ public class CompilationEngine {
     /**
      * Compiles an expression.
      */
-    public void compileExpression() {
+    public void compileExpression() throws IOException {
 
+        writeScopeOpener("expression");
+        compileTerm();
+
+        while (JackTokenizer.symbolSet.contains(jackTokenizer.symbol())) {
+            compileOP();
+            compileTerm();
+        }
+        writeScopeCloser("expression");
+    }
+
+    private void compileOP() throws IOException {
+        //TODO make sure < is &lt, > is &gt, " is &quot, & is &amp even in const_string
+        String string = "";
+
+        //Add the indentation tabs
+        for (int i = 0; i < indentation; i++) {
+            string += "\t";
+        }
+        JackTokenizer.LexicalElements type = jackTokenizer.tokenType();
+
+        switch (jackTokenizer.symbol()) {
+            case '<':
+                string += "<" + type +"> " + "&lt" + "</" + type +">\n";
+                break;
+            case '>':
+                string += "<" + type +"> " + "&gt" + "</" + type +">\n";
+                break;
+            case '\"':
+                string += "<" + type +"> " + "&quot" + "</" + type +">\n";
+                break;
+            case '&':
+                string += "<" + type +"> " + "&amp" + "</" + type +">\n";
+                break;
+            default:
+                string += "<" + type +"> " + jackTokenizer.symbol() + "</" + type +">\n";
+        }
+        outputFile.write(string);
     }
 
     /**
