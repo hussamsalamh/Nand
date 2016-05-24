@@ -374,15 +374,25 @@ public class CompilationEngine {
      * distinguish between the three possibilities. Any other token is not part of this term and should not
      * be advanced over.
      */
-    public void compileTerm() {
-
+    public void compileTerm() throws IOException {
+        //most cases are calling writeInScope except for subroutineCall, varName with [] and unaryOp term
+        if (jackTokenizer.symbol() == '-' || jackTokenizer.symbol() == '~') {
+            writeInScope();
+            compileTerm();
+        }
     }
 
     /**
      * Compiles a (possibly empty) comma-separated list of expressions.
      */
-    public void compileExpressionList() {
-
+    public void compileExpressionList() throws IOException {
+        compileExpression();
+        jackTokenizer.hasMoreTokens();
+        while (jackTokenizer.symbol() == ',') {
+            writeInScope();
+            compileExpression();
+            jackTokenizer.hasMoreTokens();
+        }
     }
 
 }
