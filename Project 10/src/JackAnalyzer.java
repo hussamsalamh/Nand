@@ -50,7 +50,8 @@ public class JackAnalyzer {
                     }
                 }
             }
-        } else
+        }
+        else
         {
             int indexOfSuffix = directory.getAbsolutePath().lastIndexOf(".");
             if (indexOfSuffix == -1)
@@ -82,9 +83,10 @@ public class JackAnalyzer {
 
 
     public static void main(String[] args) {
-        String[] fileNameArray = getFileArray(args[0]);
-
-        for (int i = 0; i < fileNameArray.length; i++) {
+        String[] fileNameArray = JackAnalyzer.getFileArray(args[0]);
+        System.out.println(fileNameArray.length);
+        for (int i = 0; i < fileNameArray.length; i++)
+        {
                 String outputName = replaceSuffix(fileNameArray[i], ".xml"); //TODO change this in pr11
             try(FileReader fr = new FileReader(fileNameArray[i]);BufferedReader br = new BufferedReader(fr);
                 FileWriter fw = new FileWriter(outputName); BufferedWriter bw = new BufferedWriter(fw))

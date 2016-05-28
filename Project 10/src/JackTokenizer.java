@@ -1,5 +1,4 @@
 import java.io.*;
-import java.util.HashMap;
 import java.util.HashSet;
 // era fix for git
 /**
@@ -10,14 +9,9 @@ import java.util.HashSet;
  * breaks it into Jack-language tokens, as specified by the Jack grammar
  */
 public class JackTokenizer {
-    /* TODO make sure < is &lt, > is &gt, " is &quot, & is &amp even in const_string
-
-     */
 
 
-
-    public enum LexicalElements {KEYWORD, SYMBOL, IDENTIFIER, INT_CONST, STRING_CONST}
-    //TODO maybe make enums names lowercase
+    public enum LexicalElements {KEYWORD, SYMBOL, IDENTIFIER, integerConstant, stringConstant}
 
     public enum Keyword {CLASS, METHOD, FUNCTION,CONSTRUCTOR, INT, BOOLEAN, CHAR, VOID, VAR, STATIC, FIELD, LET,
         DO ,IF, ELSE, WHILE, RETURN, TRUE, FALSE, NULL, THIS}
@@ -108,6 +102,11 @@ public class JackTokenizer {
     public JackTokenizer(BufferedReader file) {
         streamTokenizer = new StreamTokenizer(file);
         streamTokenizer.quoteChar('\"'); //TODO make sure that dont need to catch single quote
+        streamTokenizer.ordinaryChar('-');
+        streamTokenizer.ordinaryChar('.');
+        streamTokenizer.ordinaryChar('/');
+        streamTokenizer.slashSlashComments(true);
+        streamTokenizer.slashStarComments(true);
     }
 
 
@@ -116,18 +115,9 @@ public class JackTokenizer {
      * Do we have more tokens in the input?
      * @return
      */
-    public boolean hasMoreTokens() throws IOException {
+    public boolean advance() throws IOException {
         currentToken = streamTokenizer.nextToken();
         return currentToken != StreamTokenizer.TT_EOF;
-    }
-
-    /**
-     * Gets the next token from the input and makes it the current token. This
-     * method should only be called if hasMoreTokens() is true. Initially
-     * there is no current token.
-     */
-    public void advance() {
-        //TODO is there a use for this here? we could use streamTokenizer.pushBack() for going a step back...
     }
 
     /**
@@ -144,19 +134,21 @@ public class JackTokenizer {
             else return LexicalElements.IDENTIFIER;
         }
         else if (currentToken == StreamTokenizer.TT_NUMBER) {
-            return LexicalElements.INT_CONST;
+            return LexicalElements.integerConstant;
         }
         else if (symbolSet.contains((char)currentToken)) {
             return LexicalElements.SYMBOL;
         }
         else if (currentToken == '\"') {
-            stringValue = "";
-            hasMoreTokens();
-            while (currentToken != '\"') {
-                hasMoreTokens();
-                stringValue += (char)currentToken;
-            }
-            return LexicalElements.STRING_CONST;
+            stringValue = streamTokenizer.toString();
+            int findEnd = stringValue.indexOf("]");
+         stringValue = stringValue.substring(6,findEnd);
+            //advance();
+         //   while (currentToken != '\"') {
+         //       advance();
+         //       stringValue += (char)currentToken;
+         //   }
+            return LexicalElements.stringConstant;
         }
         return null; // case shouldnt happen
     }
@@ -187,7 +179,7 @@ public class JackTokenizer {
     }
 
     /**
-     * Returns the integer value of the current token. Should be called only when tokenType() is INT_CONST .
+     * Returns the integer value of the current token. Should be called only when tokenType() is integerConstant .
      * @return
      */
     public int intVal() {
@@ -196,7 +188,7 @@ public class JackTokenizer {
 
     /**
      * Returns the string value of the current token, without the double quotes. Should be called only when
-     * tokenType() is STRING_CONST .
+     * tokenType() is stringConstant .
      * @return
      */
     public String stringVal() {
@@ -211,9 +203,8 @@ public class JackTokenizer {
     public static void main(String[] args) {
         String str = args[0];
         try(FileReader fr1 = new FileReader(str); BufferedReader r = new BufferedReader(fr1)) {
-
             JackTokenizer a = new JackTokenizer(r);
-            while (a.hasMoreTokens()) {
+            while (a.advance()) {
                 switch (a.tokenType()) {
                     case KEYWORD:
                         System.out.println("KEYWORD: " + a.keyWord());
@@ -224,10 +215,10 @@ public class JackTokenizer {
                     case IDENTIFIER:
                         System.out.println("IDENT: " + a.identifier());
                         break;
-                    case INT_CONST:
+                    case integerConstant:
                         System.out.println("INT: " + a.intVal() );
                         break;
-                    case STRING_CONST:
+                    case stringConstant:
                         System.out.println("STRING: " + a.stringVal());
                         break;
                 }
