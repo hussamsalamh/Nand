@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.HashSet;
+import java.util.concurrent.SynchronousQueue;
 // era fix for git
 /**
  * Created by yonilip on 5/23/16.
@@ -105,6 +106,9 @@ public class JackTokenizer {
         streamTokenizer.ordinaryChar('-');
         streamTokenizer.ordinaryChar('.');
         streamTokenizer.ordinaryChar('/');
+        streamTokenizer.wordChars('_', '_');
+        streamTokenizer.ordinaryChar(':');
+        streamTokenizer.wordChars(':', ':');
         streamTokenizer.slashSlashComments(true);
         streamTokenizer.slashStarComments(true);
     }
@@ -140,14 +144,26 @@ public class JackTokenizer {
             return LexicalElements.SYMBOL;
         }
         else if (currentToken == '\"') {
+            //String originalString = streamTokenizer.toString();
             stringValue = streamTokenizer.toString();
-            int findEnd = stringValue.indexOf("]");
-         stringValue = stringValue.substring(6,findEnd);
+            int findEnd = 0;
+            while (stringValue.indexOf("]", findEnd+1) != -1)
+            {
+                findEnd = stringValue.indexOf("]", findEnd+1);
+            }
+            stringValue = stringValue.substring(6, findEnd);
             //advance();
          //   while (currentToken != '\"') {
          //       advance();
          //       stringValue += (char)currentToken;
          //   }
+            stringValue = stringValue.replace("\t", "\\t");
+            stringValue = stringValue.replace("&", "&amp;");
+            stringValue = stringValue.replace("<", "&lt;");
+            stringValue = stringValue.replace(">", "&gt;");
+            stringValue = stringValue.replace("\"", "&quot;");
+            stringValue = stringValue.replace("\n", "\\n");
+
             return LexicalElements.stringConstant;
         }
         return null; // case shouldnt happen

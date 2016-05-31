@@ -105,19 +105,19 @@ public class CompilationEngine {
         //update string according to token type
         switch (type) {
             case KEYWORD:
-                string += "<" + stringType +"> " + jackTokenizer.keyWord() + "</" + stringType +">\n";
+                string += "<" + stringType +"> " + jackTokenizer.keyWord() + " </" + stringType +">\n";
                 break;
             case IDENTIFIER:
-                string += "<" + stringType +"> " + jackTokenizer.identifier() + "</" + stringType +">\n";
+                string += "<" + stringType +"> " + jackTokenizer.identifier() + " </" + stringType +">\n";
                 break;
             case SYMBOL:
-                string += "<" + stringType +"> " + jackTokenizer.symbol() + "</" + stringType +">\n";
+                string += "<" + stringType +"> " + jackTokenizer.symbol() + " </" + stringType +">\n";
                 break;
             case stringConstant:
-                string += "<" + stringType +"> " + jackTokenizer.stringVal() + "</" + stringType +">\n";
+                string += "<" + stringType +"> " + jackTokenizer.stringVal() + " </" + stringType +">\n";
                 break;
             case integerConstant:
-                string += "<" + stringType +"> " + jackTokenizer.intVal() + "</" + stringType +">\n";
+                string += "<" + stringType +"> " + jackTokenizer.intVal() + " </" + stringType +">\n";
                 break;
         }
         outputFile.write(string);
@@ -408,6 +408,7 @@ public class CompilationEngine {
             writeInScope(); // else
             jackTokenizer.advance();
             writeInScope(); // {
+            jackTokenizer.advance();
             compileStatements();
             writeInScope(); // }
             jackTokenizer.advance();
