@@ -30,7 +30,7 @@ import java.util.List;
  */
 public class JackAnalyzer {
 
-sdlfkjlk
+
     private static String[] getFileArray(String pathName)
     {
         File directory = new File(pathName);
@@ -87,11 +87,13 @@ sdlfkjlk
         System.out.println(fileNameArray.length);
         for (int i = 0; i < fileNameArray.length; i++)
         {
-            String outputName = replaceSuffix(fileNameArray[i], ".xml"); //TODO change this in pr11
+            String outputName = replaceSuffix(fileNameArray[i], ".xml");
+            String outputName1 = replaceSuffix(fileNameArray[i], ".vm");
             try(FileReader fr = new FileReader(fileNameArray[i]);BufferedReader br = new BufferedReader(fr);
-                FileWriter fw = new FileWriter(outputName); BufferedWriter bw = new BufferedWriter(fw))
+                FileWriter fw = new FileWriter(outputName); BufferedWriter bw = new BufferedWriter(fw);
+            FileWriter fw1 = new FileWriter(outputName1); BufferedWriter bw1 = new BufferedWriter(fw1))
             {
-                CompilationEngine ce = new CompilationEngine(br, bw); //should create JackTokenizer
+                CompilationEngine ce = new CompilationEngine(br, bw, bw1); //should create JackTokenizer
 
             } catch (Exception e) {
                 e.printStackTrace();
