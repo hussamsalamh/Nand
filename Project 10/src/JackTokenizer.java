@@ -102,10 +102,11 @@ public class JackTokenizer {
      */
     public JackTokenizer(BufferedReader file) {
         streamTokenizer = new StreamTokenizer(file);
-        streamTokenizer.quoteChar('\"'); //TODO make sure that dont need to catch single quote
+        streamTokenizer.quoteChar('"');
         streamTokenizer.ordinaryChar('-');
         streamTokenizer.ordinaryChar('.');
         streamTokenizer.ordinaryChar('/');
+        streamTokenizer.ordinaryChar((char)92);
         streamTokenizer.wordChars('_', '_');
         streamTokenizer.ordinaryChar(':');
         streamTokenizer.wordChars(':', ':');
@@ -152,18 +153,19 @@ public class JackTokenizer {
                 findEnd = stringValue.indexOf("]", findEnd+1);
             }
             stringValue = stringValue.substring(6, findEnd);
-            //advance();
-         //   while (currentToken != '\"') {
-         //       advance();
-         //       stringValue += (char)currentToken;
-         //   }
+            if (stringValue.equals("\\"))
+            {
+                stringValue = "\\\\";
+                return LexicalElements.stringConstant;
+            }
+            stringValue = stringValue.replace("\\", "\\\\" );
             stringValue = stringValue.replace("\t", "\\t");
             stringValue = stringValue.replace("&", "&amp;");
             stringValue = stringValue.replace("<", "&lt;");
             stringValue = stringValue.replace(">", "&gt;");
             stringValue = stringValue.replace("\"", "&quot;");
+            stringValue = stringValue.replace("\\n", "\\\n" );
             stringValue = stringValue.replace("\n", "\\n");
-
             return LexicalElements.stringConstant;
         }
         return null; // case shouldnt happen
@@ -211,41 +213,5 @@ public class JackTokenizer {
         return stringValue;
     }
 
-    /**
-     * Test!
-     * TODO dont submit this!
-     * @param args
-     */
-    public static void main(String[] args) {
-        String str = args[0];
-        try(FileReader fr1 = new FileReader(str); BufferedReader r = new BufferedReader(fr1)) {
-            JackTokenizer a = new JackTokenizer(r);
-            while (a.advance()) {
-                switch (a.tokenType()) {
-                    case KEYWORD:
-                        System.out.println("KEYWORD: " + a.keyWord());
-                        break;
-                    case SYMBOL:
-                        System.out.println("SYMBOL: " + a.symbol());
-                        break;
-                    case IDENTIFIER:
-                        System.out.println("IDENT: " + a.identifier());
-                        break;
-                    case integerConstant:
-                        System.out.println("INT: " + a.intVal() );
-                        break;
-                    case stringConstant:
-                        System.out.println("STRING: " + a.stringVal());
-                        break;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
-
-
-
-
-}

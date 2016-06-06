@@ -24,7 +24,7 @@ import java.util.HashSet;
  *
  */
 public class CompilationEngine {
-
+    //TODO: Decide about /t - make sure it's ok
 
     private BufferedReader inputFile;
     private VMWriter vmWriter;
@@ -58,148 +58,52 @@ public class CompilationEngine {
      * @param inputFile
      * @param outputFile
      */
-    public CompilationEngine(BufferedReader inputFile, BufferedWriter outputFile, BufferedWriter outputFile1) throws IOException {
+    public CompilationEngine(BufferedReader inputFile, BufferedWriter outputFile) throws IOException {
         this.inputFile = inputFile;
-        this.outputFile = outputFile;
-        this.vmWriter = new VMWriter(outputFile1);
+        this.vmWriter = new VMWriter(outputFile);
         indentation = 0;
 
         jackTokenizer = new JackTokenizer(this.inputFile);
         compileClass();
     }
 
-    private void writeScopeOpener(String strToWrite) throws IOException {
-        String string = "";
 
-        //Add the indentation tabs
-        for (int i = 0; i < indentation; i++) {
-            string += "\t";
-        }
-        string += "<" + strToWrite +">\n";
-        outputFile.write(string);
-        indentation++;
-    }
 
-    private void writeScopeCloser(String strToWrite) throws IOException {
-        String string = "";
-        indentation--;
 
-        for (int i = 0; i < indentation; i++) {
-            string += "\t";
-        }
-        string += "</" + strToWrite +">\n";
-        outputFile.write(string);
-    }
-
-    private void writeInScope() throws IOException {
-
-        //Strings[0] == category
-        // Strings[1] == defined
-        // strings[2] == kind
-        String string = "";
-        //Add the indentation tabs
-        for (int i = 0; i < indentation; i++) {
-            string += "\t";
-        }
-        JackTokenizer.LexicalElements type = jackTokenizer.tokenType();
-        String stringType = jackTokenizer.tokenType().toString();
-        if (!stringType.equals("integerConstant") && !stringType.equals("stringConstant"))
-        {
-            stringType = stringType.toLowerCase();
-        }
-
-        //update string according to token type
-        switch (type) {
-            case KEYWORD:
-                string += "<" + stringType +"> " + jackTokenizer.keyWord() + " </" + stringType +">\n";
-                break;
-            case IDENTIFIER:
-                    String category;
-                    boolean relevant = false;
-                    if (st.classDefinition == true)
-                    {
-                        category = "class";
-                    }
-                    else
-                    {
-                        if (st.KindOf(jackTokenizer.identifier()) == SymbolTable.kind.NONE)
-                        {
-                            category = "subroutine";
-                        }
-                        else {
-                            category = st.KindOf(jackTokenizer.identifier()).toString();
-                            relevant = true;
-                        }
-                    }
-                    string += "<" + stringType + " category:" + category + ", relevant:" + relevant;
-                    if (relevant)
-                    {
-                        string += ", running index:" + st.IndexOf(jackTokenizer.identifier()) + ", currently defined: "
-                                + st.varDec;
-                    }
-                    string += "> " + jackTokenizer.identifier() +
-                        " </" + stringType +">\n";
-                    break;
-            case SYMBOL:
-                string += "<" + stringType +"> " + jackTokenizer.symbol() + " </" + stringType +">\n";
-                break;
-            case stringConstant:
-                string += "<" + stringType +"> " + jackTokenizer.stringVal() + " </" + stringType +">\n";
-                break;
-            case integerConstant:
-                string += "<" + stringType +"> " + jackTokenizer.intVal() + " </" + stringType +">\n";
-                break;
-        }
-        st.classDefinition = false;
-        st.varDec = false;
-        outputFile.write(string);
-    }
 
     /**
      * Compiles a complete class.
      */
     public void compileClass() throws IOException {
-        writeScopeOpener("class");
 
-        jackTokenizer.advance(); //class
-        writeInScope();
+        jackTokenizer.advance(); // class
         jackTokenizer.advance(); //class name
         st.setClassName(jackTokenizer.identifier());
         st.classDefinition = true;
-        writeInScope();
-        jackTokenizer.advance(); //open curly
-        writeInScope();
+        jackTokenizer.advance(); // {
 
 
         jackTokenizer.advance(); //classVarDec
         while( jackTokenizer.tokenType() == JackTokenizer.LexicalElements.KEYWORD &&
                 (jackTokenizer.keyWord().equals("static") || jackTokenizer.keyWord().equals("field")))
         {
-            writeScopeOpener("classVarDec");
-            compileClassVarDec();
-            writeInScope(); // ;
-            writeScopeCloser("classVarDec");
+            compileClassVarDec(); // Finishes at ;
             jackTokenizer.advance(); // get next for comp
         }
         while (jackTokenizer.tokenType() == JackTokenizer.LexicalElements.KEYWORD &&
                 jackTokenizer.keyWord().matches("constructor|function|method"))
         {
-            writeScopeOpener("subroutineDec");
-            compileSubroutine();
-            //    jackTokenizer.advance();
-            writeScopeCloser("subroutineDec");
+            compileSubroutine(); // Ends at next subroutine if exists, otherwise at }
         }
-        writeInScope(); // Close curly
-        writeScopeCloser("class");
     }
 
     /**
      * Compiles a static declaration or a field declaration.
      */
     public void compileClassVarDec() throws IOException {
+        // Starts at field/static if exists
         if (jackTokenizer.keyWord().equals("static") || jackTokenizer.keyWord().equals("field"))
         {
-            writeInScope(); //field/static
             SymbolTable.kind currKind;
             if (jackTokenizer.keyWord().equals("static"))
             {
@@ -209,9 +113,7 @@ public class CompilationEngine {
             {
                 currKind = SymbolTable.kind.FIELD;
             }
-            jackTokenizer.advance();
-            st.classDefinition = true;
-            writeInScope(); //write type
+            jackTokenizer.advance(); // Move to type
             String type;
             if (jackTokenizer.tokenType() == JackTokenizer.LexicalElements.KEYWORD)
             {
@@ -221,12 +123,10 @@ public class CompilationEngine {
             {
                 type = jackTokenizer.identifier().toString();
             }
-            jackTokenizer.advance();
+            jackTokenizer.advance(); // Move to varName
             String name = jackTokenizer.identifier().toString();
             st.Define(name, type, currKind);
-            st.varDec = true;
-            writeInScope(); // write varName
-            jackTokenizer.advance();
+            jackTokenizer.advance(); // Moves to beginning of var list if exists
             compileVarList(type, currKind); // Compile var list if necessary
         }
     }
@@ -240,95 +140,74 @@ public class CompilationEngine {
      * Compiles a complete method, function, or constructor.
      */
     public void compileSubroutine() throws IOException {
+        // Starts at keyword constructor / function / method if subroutine
         if (jackTokenizer.keyWord().matches("constructor|function|method")) {
-            st.startSubroutine();
-            writeInScope(); //constructor|function|method
-            String subRoutinetype = jackTokenizer.keyWord();
-            jackTokenizer.advance();
-            st.classDefinition = true;
-            String returnType = "nvoid";
-            if (jackTokenizer.tokenType() == JackTokenizer.LexicalElements.KEYWORD && jackTokenizer.keyWord().toString().
-                    equals("void"))
+            st.startSubroutine(); // clear symbol table
+            if (jackTokenizer.keyWord().equals("method"))
             {
-                returnType = "void";
+                st.numArg += 1; // It's a method so it has more arguments
             }
-            writeInScope(); // void or type
+            String subRoutinetype = jackTokenizer.keyWord();
+            jackTokenizer.advance(); // Moves to void or type
+
 
             jackTokenizer.advance(); //name
             String subroutineName = jackTokenizer.identifier();
-            writeInScope();
 
             jackTokenizer.advance(); // (
-            writeInScope();
 
             //params list
-            jackTokenizer.advance();
-            writeScopeOpener("parameterList");
-            compileParameterList();
-            writeScopeCloser("parameterList");
-            writeInScope(); // )
+            jackTokenizer.advance(); // Gors to beginning of parameter list
+            compileParameterList(); // Ends at )
 
             String funcName = st.className + "." + subroutineName;
-            writeScopeOpener("subroutineBody");
             jackTokenizer.advance(); // {
-            writeInScope();
-            jackTokenizer.advance();
-            int numLocals = 0;
+            jackTokenizer.advance(); // Goes to var if exists
             while(jackTokenizer.tokenType() == JackTokenizer.LexicalElements.KEYWORD && jackTokenizer.keyWord().equals("var"))
             {
-                numLocals += compileVarDec();
+                compileVarDec();
             }
+            int numLocals = st.VarCount(SymbolTable.kind.VAR);
             vmWriter.writeFunction(funcName, numLocals);
             if (subRoutinetype.equals("constructor"))
             {
                 int numFields = st.VarCount(SymbolTable.kind.FIELD);
                 vmWriter.writePush(VMWriter.SEGMENT.CONSTANT, numFields);
                 vmWriter.writeCall("Memory.alloc", 1);
-                vmWriter.writePop(VMWriter.SEGMENT.THIS, 0);
+                vmWriter.writePop(VMWriter.SEGMENT.POINTER, 0);
             }
             if (subRoutinetype.equals("method"))
             {
-                pointToThis();
+                pointToThis(); // If it's a method, start by pointing to this
             }
             compileStatements();
-            writeInScope(); // returns
-            writeScopeCloser("subroutineBody");
             jackTokenizer.advance();
 
         }
     }
 
-    public int compileVarList(String type, SymbolTable.kind varKind) throws IOException
+    public void compileVarList(String type, SymbolTable.kind varKind) throws IOException
     {
-        int numLocals = 0;
         while (jackTokenizer.symbol() == ',') {
-            writeInScope(); //write the symbol
             jackTokenizer.advance(); //next var
             String name = jackTokenizer.identifier();
             st.Define(name, type, varKind);
-            st.varDec = true;
-            writeInScope(); //write the var name identifier
             jackTokenizer.advance();
-            numLocals += 1;
         }
-        return numLocals;
     }
-    private void pushParam(String name)
-    {
-    }
+
     /**
      * Compiles a (possibly empty) parameter list, not including the enclosing ‘‘ () ’’.
      */
     public int compileParameterList() throws IOException
     {
         int numParameters = 0;
+        // Starts with var type
         // Parameter list is empty
         if (jackTokenizer.tokenType() == JackTokenizer.LexicalElements.SYMBOL &&  jackTokenizer.symbol() == ')')
         {
             return numParameters;
         }
-        st.classDefinition = true;
-        writeInScope(); // write var type
         String type;
         if (jackTokenizer.tokenType() == JackTokenizer.LexicalElements.KEYWORD)
         {
@@ -338,19 +217,14 @@ public class CompilationEngine {
         {
             type = jackTokenizer.identifier().toString();
         }
-        jackTokenizer.advance();
+        jackTokenizer.advance(); // goes to var name
         String name = jackTokenizer.identifier();
         st.Define(name, type, SymbolTable.kind.ARG);
-        st.varDec = true;
-        writeInScope(); // write var name
-        jackTokenizer.advance();
+        jackTokenizer.advance(); // Goes to , if exists
         numParameters += 1;
         while (jackTokenizer.symbol() == ',')
         {
-            writeInScope(); //write the symbol
-            jackTokenizer.advance();
-            st.classDefinition = true;
-            writeInScope(); //write the var type
+            jackTokenizer.advance(); // Goes to var type
             if (jackTokenizer.tokenType() == JackTokenizer.LexicalElements.KEYWORD)
             {
                 type = jackTokenizer.keyWord().toString();
@@ -359,12 +233,11 @@ public class CompilationEngine {
             {
                 type = jackTokenizer.identifier().toString();
             }
-            jackTokenizer.advance();
+            jackTokenizer.advance(); // Goes to var name
             name = jackTokenizer.identifier();
             st.Define(name, type, SymbolTable.kind.ARG);
-            st.varDec = true;
-            writeInScope(); // write the var name
-            jackTokenizer.advance();
+
+            jackTokenizer.advance(); // Goes to next ,
             numParameters += 1;
         }
         return numParameters;
@@ -374,16 +247,12 @@ public class CompilationEngine {
     /**
      * Compiles a var declaration.
      */
-    public int compileVarDec() throws IOException
+    public void compileVarDec() throws IOException
     {
-        int numLocals = 0;
+        // Starts with var if there is a variable declaration
         if (jackTokenizer.tokenType().equals(JackTokenizer.LexicalElements.KEYWORD)
                 && jackTokenizer.keyWord().equals("var")) {
-            writeScopeOpener("varDec");
-            writeInScope(); // write var
-            jackTokenizer.advance();
-            st.classDefinition = true;
-            writeInScope(); // write type
+            jackTokenizer.advance(); // Goes to type
             String type;
             if (jackTokenizer.tokenType() == JackTokenizer.LexicalElements.KEYWORD)
             {
@@ -393,28 +262,21 @@ public class CompilationEngine {
             {
                 type = jackTokenizer.identifier().toString();
             }
-            jackTokenizer.advance();
+            jackTokenizer.advance(); // Goes to varName
             String name = jackTokenizer.identifier();
             st.Define(name, type, SymbolTable.kind.VAR);
-            st.varDec = true;
-            writeInScope(); // write varName
-            jackTokenizer.advance();
-            numLocals += 1;
-            int moreLocals = compileVarList(type, SymbolTable.kind.VAR); // compiles var list if necessary
-            numLocals += moreLocals;
-            writeInScope(); // Should catch ';'
-            writeScopeCloser("varDec");
+
+            jackTokenizer.advance(); // Goes to beginning of var list
+            compileVarList(type, SymbolTable.kind.VAR); // compiles var list if necessary, ends at ;
             jackTokenizer.advance();
         }
-        return numLocals;
     }
 
     /**
      * Compiles a sequence of statements, not including the enclosing ‘‘{}’’.
      */
     public void compileStatements() throws IOException {
-        writeScopeOpener("statements");
-        //jackTokenizer.advance();
+
         while (jackTokenizer.tokenType() == JackTokenizer.LexicalElements.KEYWORD &&
                 jackTokenizer.keyWord().matches("let|if|while|do|return"))
         {
@@ -438,7 +300,6 @@ public class CompilationEngine {
                 compileReturn();
             }
         }
-        writeScopeCloser("statements");
     }
 
     /**
@@ -446,67 +307,108 @@ public class CompilationEngine {
      */
     public void compileDo() throws IOException
     {
-        writeScopeOpener("doStatement");
-        writeInScope(); // do
-        jackTokenizer.advance();
-        jackTokenizer.peek();
-        if (jackTokenizer.isPeekedDot())
-        {
-            st.classDefinition = true;
-        }
-        writeInScope(); // Write name of subroutine
+        // Starts at do
+        jackTokenizer.advance(); // Moves to function or variable name
+        jackTokenizer.peek(); // Peek at next
+
         String subRoutineName = jackTokenizer.identifier();
-        jackTokenizer.advance();
-        compileSubroutineCall(subRoutineName);
+        jackTokenizer.advance(); // Move to . or (
+        String typeOf = st.TypeOf(subRoutineName); // Check if identifier was subroutine
+        if (typeOf != null) // if not, it was a variable, and its type is needed to call subroutine properly
+        {
+            SymbolTable.kind currKind = st.KindOf(subRoutineName);
+            switch (currKind)
+            {
+                case VAR:
+                    vmWriter.writePush(VMWriter.SEGMENT.LOCAL, st.IndexOf(subRoutineName));
+                    break;
+                case FIELD:
+                    vmWriter.writePush(VMWriter.SEGMENT.THIS, st.IndexOf(subRoutineName));
+                    break;
+                case STATIC:
+                    vmWriter.writePush(VMWriter.SEGMENT.STATIC, st.IndexOf(subRoutineName));
+                    break;
+                default:
+                    System.out.println("wtf?");
+                    break;
+            }
+        }
+        compileSubroutineCall(subRoutineName); // Moves to ; after compilation
         vmWriter.writePop(VMWriter.SEGMENT.TEMP, 0);
-        writeInScope(); // ;
-        jackTokenizer.advance();
-        writeScopeCloser("doStatement");
+        jackTokenizer.advance(); // Advances to next line
     }
 
     /**
      * Compiles a let declaration.
      */
     public void compileLet() throws IOException {
-        writeScopeOpener("letStatement");
-        writeInScope(); //write the keyword
-        jackTokenizer.advance();
-        /*
-        Get varname
-         */
+        // Starts with let
+        jackTokenizer.advance(); // Goes to var name
+
         String varName = jackTokenizer.identifier();
-        writeInScope(); // write varName
-        jackTokenizer.advance();
-        if (jackTokenizer.symbol() == '[') {
-            writeInScope(); // Write [
-            jackTokenizer.advance();
-            compileExpression();
-            writeInScope(); // Write ']'
-            jackTokenizer.advance();
-        }
-        writeInScope(); // Write =
-        jackTokenizer.advance();
-        compileExpression();
-        writeInScope(); // ;
-        SymbolTable.kind currKind = st.KindOf(varName);
-        switch (currKind)
+        jackTokenizer.advance(); // Goes to type
+        boolean isArray = false;
+        SymbolTable.kind currKind = st.KindOf(varName); // Check which segment the variable is on
+        if (jackTokenizer.symbol() == '[') // Check if is array
         {
-            case VAR:
-                vmWriter.writePop(VMWriter.SEGMENT.LOCAL, st.IndexOf(varName));
-                break;
-            case FIELD:
-                vmWriter.writePop(VMWriter.SEGMENT.THIS, st.IndexOf(varName));
-                break;
-            case STATIC:
-                vmWriter.writePop(VMWriter.SEGMENT.STATIC, st.IndexOf(varName));
-                break;
-            default:
-                System.out.println("why am I here1???");
-                System.out.println(varName);
-                break;
+            // Puts it on stack ahead of time (conforms with Jack Compiler)
+            isArray = true;
+            switch (currKind)
+            {
+                case VAR:
+                    vmWriter.writePush(VMWriter.SEGMENT.LOCAL, st.IndexOf(varName));
+                    break;
+                case FIELD:
+                    vmWriter.writePush(VMWriter.SEGMENT.THIS, st.IndexOf(varName));
+                    break;
+                case STATIC:
+                    vmWriter.writePush(VMWriter.SEGMENT.STATIC, st.IndexOf(varName));
+                    break;
+                case ARG:
+                    vmWriter.writePush(VMWriter.SEGMENT.ARGUMENT, st.IndexOf(varName));
+                    break;
+                default:
+                    System.out.println("wtf?");
+                    break;
+            }
+
+            jackTokenizer.advance();
+            compileExpression(); // Puts expression
+            vmWriter.writeArithmetic(VMWriter.COMMAND.ADD); // Puts base + index at top of stack
+            jackTokenizer.advance(); // Goes to = after ]
         }
-        writeScopeCloser("letStatement");
-        jackTokenizer.advance();
+        jackTokenizer.advance(); // Go to expression after =
+        compileExpression(); // Compiles Expression
+        // If it was an array put base in the that segment
+        if (isArray)
+        {
+            vmWriter.writePop(VMWriter.SEGMENT.TEMP, 0);
+            vmWriter.writePop(VMWriter.SEGMENT.POINTER, 1);
+            vmWriter.writePush(VMWriter.SEGMENT.TEMP, 0);
+            vmWriter.writePop(VMWriter.SEGMENT.THAT, 0);
+        }
+        // Otherwise proceed as usual
+        else
+        {
+            switch (currKind)
+            {
+                case VAR:
+                    vmWriter.writePop(VMWriter.SEGMENT.LOCAL, st.IndexOf(varName));
+                    break;
+                case FIELD:
+                    vmWriter.writePop(VMWriter.SEGMENT.THIS, st.IndexOf(varName));
+                    break;
+                case STATIC:
+                    vmWriter.writePop(VMWriter.SEGMENT.STATIC, st.IndexOf(varName));
+                    break;
+                case ARG:
+                    vmWriter.writePop(VMWriter.SEGMENT.ARGUMENT, st.IndexOf(varName));
+                default:
+                    // This is ok, class name is not supposed to be found when calling function
+                    break;
+            }
+        }
+        jackTokenizer.advance(); // Pass ; to nxt line
     }
 
     /**
@@ -514,20 +416,29 @@ public class CompilationEngine {
      */
     public void compileWhile() throws IOException
     {
-        writeScopeOpener("whileStatement");
-        writeInScope(); // while
-        jackTokenizer.advance();
-        writeInScope(); // (
-        jackTokenizer.advance();
+        // Keyword while is first
+        jackTokenizer.advance(); // Go to (
+        jackTokenizer.advance(); // Go to expression
+        int numFlow = st.getNumControlFlow(); // Get number of flow control
+        st.incrementFlow(); // Increment
+
+        // Logic is written according to the book (which is a bit counterintuitive but works
+        /*
+         Compiles ~cond
+         */
+        vmWriter.writeLabel("flow" + numFlow + "F");
         compileExpression();
-        writeInScope(); // )
-        jackTokenizer.advance();
-        writeInScope(); // {
-        jackTokenizer.advance();
+        vmWriter.writeArithmetic(VMWriter.COMMAND.NOT);
+
+        // If true jump to end (it's the opposite)
+        vmWriter.writeIf("flow" + numFlow + "T");
+        jackTokenizer.advance(); // Goes to {
+        jackTokenizer.advance(); // Goes to statements
         compileStatements();
-        writeInScope(); // }
+
+        vmWriter.writeGoto("flow" + numFlow + "F");
         jackTokenizer.advance();
-        writeScopeCloser("whileStatement");
+        vmWriter.writeLabel("flow" + numFlow + "T");
     }
 
     /**class
@@ -535,23 +446,22 @@ public class CompilationEngine {
      */
     public void compileReturn() throws IOException
     {
+        // Starts at return
         boolean isVoid = true;
-        writeScopeOpener("returnStatement");
-        writeInScope(); // return
-        jackTokenizer.advance();
+        jackTokenizer.advance(); // Goes to ; or return value
         if (!(jackTokenizer.tokenType() == JackTokenizer.LexicalElements.SYMBOL && jackTokenizer.symbol() == ';'))
         {
+            // If it's not ;, then method is not void, compile expression and put on top of stack
             isVoid = false;
-            compileExpression();
+            compileExpression(); // End at ;
         }
-        writeInScope(); // ;
+        // If void, put 0 on top of stack and return
         if  (isVoid)
         {
             vmWriter.writePush(VMWriter.SEGMENT.CONSTANT, 0);
         }
         vmWriter.writeReturn();
-        writeScopeCloser("returnStatement");
-        jackTokenizer.advance();
+        jackTokenizer.advance(); // Go to end of statement
     }
 
     /**
@@ -559,46 +469,50 @@ public class CompilationEngine {
      */
     public void compileIf()  throws IOException
     {
-        writeScopeOpener("ifStatement");
-        writeInScope(); // if
-        jackTokenizer.advance();
-        writeInScope(); // (
-        jackTokenizer.advance();
-        compileExpression();
-        /*
-        Write control flow logic here
+        // Starts with if keyword
+
+        jackTokenizer.advance(); // Goes to (
+
+        jackTokenizer.advance(); // Goes to start of condition
+        compileExpression(); // Compile Condition, ends with )
+
+        // VM flow according to book, (for if)
         vmWriter.writeArithmetic(VMWriter.COMMAND.NOT);
-        vmWriter.writeGoto();
-         */
-        writeInScope(); // )
-        jackTokenizer.advance();
-        writeInScope(); // {
-        jackTokenizer.advance();
-        compileStatements();
-        writeInScope(); // }
-        jackTokenizer.advance();
+        int numFlow = st.getNumControlFlow();
+        st.incrementFlow();
+
+        vmWriter.writeIf("flow" + numFlow + "F");
+
+        jackTokenizer.advance(); // Goes to {
+        jackTokenizer.advance(); // Goes to statement
+
+        compileStatements(); // Goes to }
+        vmWriter.writeGoto("flow" + numFlow + "T");
+
+        jackTokenizer.advance(); // Goes to else
+        vmWriter.writeLabel("flow" + numFlow + "F");
         if (jackTokenizer.tokenType() == JackTokenizer.LexicalElements.KEYWORD &&
                 jackTokenizer.keyWord().equals("else"))
         {
-            writeInScope(); // else
-            jackTokenizer.advance();
-            writeInScope(); // {
-            jackTokenizer.advance();
-            compileStatements();
-            writeInScope(); // }
-            jackTokenizer.advance();
+            jackTokenizer.advance(); // Goes to {
+            jackTokenizer.advance(); // Goes to statements
+
+            compileStatements(); // Goes to }
+
+            jackTokenizer.advance(); // Go to next part of statement
         }
-        writeScopeCloser("ifStatement");
+        vmWriter.writeLabel("flow" + numFlow + "T");
     }
 
     /**
      * Compiles an expression.
      */
-    public void compileExpression() throws IOException {
+    public void compileExpression() throws IOException
+    {
+        // Starts with term
+        compileTerm(); // Ends at end of expression of op
 
-        writeScopeOpener("expression");
-        compileTerm();
-
+        // do (op term)*
         while (jackTokenizer.tokenType() == JackTokenizer.LexicalElements.SYMBOL &&
                 opTable.contains(jackTokenizer.symbol()))
         {
@@ -606,17 +520,12 @@ public class CompilationEngine {
             compileTerm();
             vmWriter.writeArithmetic(op);
         }
-        writeScopeCloser("expression");
     }
 
     private VMWriter.COMMAND compileOP() throws IOException {
-        //TODO make sure < is &lt, > is &gt, " is &quot, & is &amp even in const_string
         String string = "";
 
-        //Add the indentation tabs
-        for (int i = 0; i < indentation; i++) {
-            string += "\t";
-        }
+
         JackTokenizer.LexicalElements type = jackTokenizer.tokenType();
         String stringType = jackTokenizer.tokenType().toString();
         if (!stringType.equals("integerConstant") && !stringType.equals("stringConstant"))
@@ -626,50 +535,48 @@ public class CompilationEngine {
         VMWriter.COMMAND currCommand = null;
         switch (jackTokenizer.symbol()) {
             case '<':
-                string += "<" + stringType +"> " + "&lt;" + "</" + stringType +">\n";
-                currCommand = VMWriter.COMMAND.GT;
+             //   string += "<" + stringType +"> " + "&lt;" + "</" + stringType +">\n";
+                currCommand = VMWriter.COMMAND.LT;
                 break;
             case '>':
-                string += "<" + stringType +"> " + "&gt;" + "</" + stringType +">\n";
-                currCommand = VMWriter.COMMAND.LT;
+             //   string += "<" + stringType +"> " + "&gt;" + "</" + stringType +">\n";
+                currCommand = VMWriter.COMMAND.GT;
                 break;
             case '\"':
                 //TODO: look into this
-                string += "<" + stringType +"> " + "&quot;" + "</" + stringType +">\n";
+            //    string += "<" + stringType +"> " + "&quot;" + "</" + stringType +">\n";
                 break;
             case '&':
-                string += "<" + stringType +"> " + "&amp;" + "</" + stringType +">\n";
+            //    string += "<" + stringType +"> " + "&amp;" + "</" + stringType +">\n";
                 currCommand = VMWriter.COMMAND.AND;
                 break;
             case '*':
-                string += "<" + stringType +"> " + jackTokenizer.symbol() + "</" + stringType +">\n";
+            //    string += "<" + stringType +"> " + jackTokenizer.symbol() + "</" + stringType +">\n";
                 currCommand = VMWriter.COMMAND.MULT;
                 break;
             case '|':
-                string += "<" + stringType +"> " + jackTokenizer.symbol() + "</" + stringType +">\n";
+           //     string += "<" + stringType +"> " + jackTokenizer.symbol() + "</" + stringType +">\n";
                 currCommand = VMWriter.COMMAND.OR;
                 break;
             case '/':
-                string += "<" + stringType +"> " + jackTokenizer.symbol() + "</" + stringType +">\n";
+         //       string += "<" + stringType +"> " + jackTokenizer.symbol() + "</" + stringType +">\n";
                 currCommand = VMWriter.COMMAND.DIVIDE;
                 break;
             case  '=':
-                string += "<" + stringType +"> " + jackTokenizer.symbol() + "</" + stringType +">\n";
+          //      string += "<" + stringType +"> " + jackTokenizer.symbol() + "</" + stringType +">\n";
                 currCommand = VMWriter.COMMAND.EQ;
                 break;
             case '-':
-                string += "<" + stringType +"> " + jackTokenizer.symbol() + "</" + stringType +">\n";
+         //       string += "<" + stringType +"> " + jackTokenizer.symbol() + "</" + stringType +">\n";
                 currCommand = VMWriter.COMMAND.SUB;
                 break;
             case '+':
-                string += "<" + stringType +"> " + jackTokenizer.symbol() + "</" + stringType +">\n";
+         //       string += "<" + stringType +"> " + jackTokenizer.symbol() + "</" + stringType +">\n";
                 currCommand = VMWriter.COMMAND.ADD;
                 break;
             default:
-                string += "<" + stringType +"> " + jackTokenizer.symbol() + "</" + stringType +">\n";
-                currCommand = VMWriter.COMMAND.MULT;
+                System.out.println("Fuck my life");
         }
-        outputFile.write(string);
         jackTokenizer.advance();
         return currCommand;
     }
@@ -682,25 +589,23 @@ public class CompilationEngine {
      * distinguish between the three possibilities. Any other token is not part of this term and should not
      * be advanced over.
      */
-    public void compileTerm() throws IOException {
-
-        writeScopeOpener("term");
+    public void compileTerm() throws IOException
+    {
+        // Start with term
         if (jackTokenizer.tokenType() == JackTokenizer.LexicalElements.SYMBOL &&
                 (jackTokenizer.symbol() == '(' || jackTokenizer.symbol() == '['))
         {
-            writeInScope();
-            jackTokenizer.advance();
-            compileExpression();
-            writeInScope(); // Write ) or ]
+            jackTokenizer.advance(); // Move to expression
+            compileExpression(); // Moves at end to )
             jackTokenizer.advance();
         }
         else if (jackTokenizer.tokenType() == JackTokenizer.LexicalElements.SYMBOL &&
                 unaryOpTable.contains(jackTokenizer.symbol()))
         {
-            writeInScope();
             Character unaryOp = jackTokenizer.symbol();
-            VMWriter.COMMAND unaryOpCommand;
-            switch (unaryOp)
+            jackTokenizer.advance(); // Moves to term
+            compileTerm(); // Put term on stack
+            switch (unaryOp) // Perform unary operation
             {
                 case ('-'):
                     vmWriter.writeArithmetic(VMWriter.COMMAND.NEG);
@@ -709,11 +614,8 @@ public class CompilationEngine {
                     vmWriter.writeArithmetic(VMWriter.COMMAND.NOT);
                     break;
                 default:
-                    //TODO: remove
-                    System.out.println("shouldn't be here");
+                    break;
             }
-            jackTokenizer.advance();
-            compileTerm();
 
         }
         else
@@ -721,10 +623,6 @@ public class CompilationEngine {
             if (jackTokenizer.tokenType() == JackTokenizer.LexicalElements.IDENTIFIER)
             {
                 jackTokenizer.peek();
-                if (jackTokenizer.isPeekedDot())
-                {
-                    st.classDefinition = true;
-                }
                 String varName = jackTokenizer.identifier();
                 SymbolTable.kind currKind = st.KindOf(varName);
                 switch (currKind)
@@ -742,42 +640,36 @@ public class CompilationEngine {
                         vmWriter.writePush(VMWriter.SEGMENT.ARGUMENT, st.IndexOf(varName));
                         break;
                     default:
-                        System.out.println("why am I here???");
-                        System.out.println(varName);
+                        // Class name not supposed to be found
                         break;
                 }
-                writeInScope();
-                jackTokenizer.advance();
-                //TODO handle special cases
+                jackTokenizer.advance(); // Move to next, handles arrays
                 if (jackTokenizer.tokenType() == JackTokenizer.LexicalElements.SYMBOL &&
                         jackTokenizer.symbol() == '[')
                 {
-                    writeInScope();
-                    jackTokenizer.advance();
-                    compileExpression();
-                    writeInScope();
-                    jackTokenizer.advance();
-                }
-                else if (jackTokenizer.tokenType() == JackTokenizer.LexicalElements.SYMBOL &&
-                        jackTokenizer.symbol() == '(')
-                {
-                    System.out.println("I got called");
-                    compileSubroutineCall(varName);
-                }
-                else if (jackTokenizer.tokenType() == JackTokenizer.LexicalElements.SYMBOL &&
-                        jackTokenizer.symbol() == '.')
-                {
+                    jackTokenizer.advance(); // Moves to expression in brackets
+                    compileExpression(); // Compiles expression in brackets and moves to ]
+
+
+                    vmWriter.writeArithmetic(VMWriter.COMMAND.ADD); // Put base + index on top of stack
                     /*
-                    writeInScope(); // .
-                    jackTokenizer.advance();
-                    writeInScope(); // write name of subroutine
-                    jackTokenizer.advance();
-                    */
+                    Moves arrayVar[k] to that
+                     */
+                    vmWriter.writePop(VMWriter.SEGMENT.POINTER, 1);
+                    vmWriter.writePush(VMWriter.SEGMENT.THAT, 0);
+                    jackTokenizer.advance(); // Move to end bracket
+                }
+                // Checks if subroutine call
+                else if (jackTokenizer.tokenType() == JackTokenizer.LexicalElements.SYMBOL &&
+                        jackTokenizer.symbol() == '(' || jackTokenizer.symbol() == '.')
+                {
                     compileSubroutineCall(varName);
                 }
+
             }
             else
             {
+                // Checks special cases
                 if (jackTokenizer.tokenType() == JackTokenizer.LexicalElements.KEYWORD)
                 {
                     if (jackTokenizer.keyWord().equals("this"))
@@ -788,35 +680,35 @@ public class CompilationEngine {
                     {
                         vmWriter.writePush(VMWriter.SEGMENT.CONSTANT, 1);
                         vmWriter.writeArithmetic(VMWriter.COMMAND.NEG);
+
                     }
                     else if (jackTokenizer.keyWord().equals("false") || jackTokenizer.keyWord().equals("null"))
                     {
                         vmWriter.writePush(VMWriter.SEGMENT.CONSTANT, 0);
                     }
                 }
-                else if (jackTokenizer.tokenType() == JackTokenizer.LexicalElements.integerConstant
-                        )
+                else if (jackTokenizer.tokenType() == JackTokenizer.LexicalElements.integerConstant)
                 {
                     vmWriter.writePush(VMWriter.SEGMENT.CONSTANT, jackTokenizer.intVal());
                 }
-
+                // If string allocate memory and append char
                 else
                 {
                     String constString = jackTokenizer.stringVal();
                     int stringLength = constString.length();
+                    // Put pointer to allocated string on top of stack
                     vmWriter.writePush(VMWriter.SEGMENT.CONSTANT, stringLength);
-                    vmWriter.writeCall("String.new", 0);
+                    vmWriter.writeCall("String.new", 1);
+                    // Append chars
                     for (int i =0; i < stringLength; i++)
                     {
                         vmWriter.writePush(VMWriter.SEGMENT.CONSTANT, constString.charAt(i));
                         vmWriter.writeCall("String.appendChar", 2);
                     }
                 }
-                writeInScope();
-                jackTokenizer.advance();
+                jackTokenizer.advance(); // Pass " to end of term
             }
         }
-        writeScopeCloser("term");
     }
 
     /**
@@ -824,61 +716,70 @@ public class CompilationEngine {
      */
     public int compileExpressionList() throws IOException
     {
+        // Start of expression list
         int numExpressions = 0;
         // Empty expression list
-        writeScopeOpener("expressionList");
         if (jackTokenizer.tokenType() == JackTokenizer.LexicalElements.SYMBOL &&
                 jackTokenizer.symbol() == ')')
         {
-            writeScopeCloser("expressionList");
             return numExpressions;
         }
         compileExpression();
         numExpressions += 1;
         while (jackTokenizer.tokenType() == JackTokenizer.LexicalElements.SYMBOL && jackTokenizer.symbol() == ',') {
-            writeInScope();
-            jackTokenizer.advance();
-            compileExpression();
+            jackTokenizer.advance(); // Move to expression after ,
+            compileExpression(); // Compile expression to top of stack and go to next , or ;
             numExpressions +=1;
         }
-        writeScopeCloser("expressionList");
-        return numExpressions;
+        return numExpressions; // Return nmber of expressions in list
     }
-    // Starts after name!!
+
     public void compileSubroutineCall(String routineName) throws IOException
     {
         boolean isMethod = false;
         String subroutineName = "";
         int numParams = 0;
+        // Checks what type of subroutine call
         if (jackTokenizer.tokenType() == JackTokenizer.LexicalElements.SYMBOL && jackTokenizer.symbol() == '(')
         {
+            // If a subroutine was called without . before, it's a method
             isMethod = true;
-            System.out.println("here?");
+            // Change name accordingly
             subroutineName = st.className + "." +  routineName;
-            writeInScope(); // (
+            // Move to expressionlist in subroutine
             jackTokenizer.advance();
-            numParams = compileExpressionList();
-            writeInScope(); // )
+            // This is the this of the class
+            vmWriter.writePush(VMWriter.SEGMENT.POINTER, 0);
+            numParams = compileExpressionList(); // Moves to )
         }
         else if (jackTokenizer.tokenType() == JackTokenizer.LexicalElements.SYMBOL && jackTokenizer.symbol() == '.')
         {
-            writeInScope(); // .
-            jackTokenizer.advance();
-            writeInScope(); // subroutine name
-            subroutineName = routineName + "." + jackTokenizer.identifier();
-            System.out.println(subroutineName);
-            jackTokenizer.advance();
-            writeInScope(); // (
-            jackTokenizer.advance();
-            numParams = compileExpressionList();
-            writeInScope(); // )
+            // If there is a . it could be a method
+            isMethod = true;
+            jackTokenizer.advance(); // Move to subroutine name
+
+            String typeOf = st.TypeOf(routineName);
+
+            // If type was not found, it's not a method
+            if (typeOf == null)
+            {
+                isMethod = false;
+                typeOf = routineName;
+            }
+            subroutineName = typeOf + "." + jackTokenizer.identifier();
+            jackTokenizer.advance(); // Move to (
+
+            jackTokenizer.advance(); // Move to expression expression list
+            numParams = compileExpressionList(); // Compile expression list and move to )
         }
+        // If it's a method, take into account that first argument is method that is calling the method
         if (isMethod)
         {
             numParams += 1;
         }
+        // Call the subroutine name with the correct number of parameters
         vmWriter.writeCall(subroutineName, numParams);
-        jackTokenizer.advance();
+        jackTokenizer.advance(); // Move past )
     }
 
 }

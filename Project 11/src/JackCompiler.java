@@ -17,9 +17,9 @@ import java.util.List;
  *
  *
  *
- * Notes from submission: TODO make sure this is accounted for
+ * Notes from submission:
  * The ' " ' sign is never translated.
- * The command is: JackAnalyzer source. Where source is either an .jack file or a directory where the *.jack file are.
+ * The command is: JackCompiler source. Where source is either an .jack file or a directory where the *.jack file are.
  * All .xml files should be inside this (where the .jack files are) directory.
  * A code is legal only if after removing the comment and replacing it with one white space it is a legal code.
  * The submitted project should not create the T.xml files.
@@ -28,7 +28,7 @@ import java.util.List;
  * Empty tags should be translated: "<xxx> \n </xxx>" where \n is a new line.
  * You can assume the files are a legal jack files ( you do not need to handle illegal files).
  */
-public class JackAnalyzer {
+public class JackCompiler {
 
 
     private static String[] getFileArray(String pathName)
@@ -83,17 +83,14 @@ public class JackAnalyzer {
 
 
     public static void main(String[] args) {
-        String[] fileNameArray = JackAnalyzer.getFileArray(args[0]);
-        System.out.println(fileNameArray.length);
+        String[] fileNameArray = JackCompiler.getFileArray(args[0]);
         for (int i = 0; i < fileNameArray.length; i++)
         {
-            String outputName = replaceSuffix(fileNameArray[i], ".xml");
-            String outputName1 = replaceSuffix(fileNameArray[i], ".vm");
+            String outputName = replaceSuffix(fileNameArray[i], ".vm");
             try(FileReader fr = new FileReader(fileNameArray[i]);BufferedReader br = new BufferedReader(fr);
-                FileWriter fw = new FileWriter(outputName); BufferedWriter bw = new BufferedWriter(fw);
-            FileWriter fw1 = new FileWriter(outputName1); BufferedWriter bw1 = new BufferedWriter(fw1))
+                FileWriter fw = new FileWriter(outputName); BufferedWriter bw = new BufferedWriter(fw);)
             {
-                CompilationEngine ce = new CompilationEngine(br, bw, bw1); //should create JackTokenizer
+                CompilationEngine ce = new CompilationEngine(br, bw); //should create JackTokenizer
 
             } catch (Exception e) {
                 e.printStackTrace();

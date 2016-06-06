@@ -1,4 +1,1 @@
-1. Handle flow-control - In scope of function?
-2. Handle arrays
-3. Use varCount instead of counting manually
-4. Fix compileSubroutine Logic
+1. Fix compileSubroutine Logic in EX10

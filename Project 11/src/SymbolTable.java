@@ -34,7 +34,14 @@ public class SymbolTable
         numVar = 0;
         numControlFlow = 0;
     }
-
+    public int getNumControlFlow()
+    {
+        return numControlFlow;
+    }
+    public void incrementFlow()
+    {
+        numControlFlow += 1;
+    }
     public void Define(String name, String type, kind kindIdentifier)
     {
         int currEntryNum = 0;
@@ -65,15 +72,7 @@ public class SymbolTable
         }
         else if (kindIdentifier == kind.STATIC || kindIdentifier == kind.FIELD)
         {
-            System.out.println("put check");
-            System.out.println(name);
             classTable.put(name, currEntry);
-            System.out.println(classTable.containsKey(name));
-        }
-        else
-        {
-            //TODO: REMOVE THIS
-            System.out.println("shouldn't be here");
         }
     }
 
@@ -127,7 +126,6 @@ public class SymbolTable
             }
             else
             {
-                // TODO: is this ok? should be..
                 return null;
             }
     }

@@ -17,7 +17,7 @@ import java.util.List;
  *
  *
  *
- * Notes from submission: TODO make sure this is accounted for
+ * Notes from submission:
  * The ' " ' sign is never translated.
  * The command is: JackAnalyzer source. Where source is either an .jack file or a directory where the *.jack file are.
  * All .xml files should be inside this (where the .jack files are) directory.
@@ -84,10 +84,9 @@ public class JackAnalyzer {
 
     public static void main(String[] args) {
         String[] fileNameArray = JackAnalyzer.getFileArray(args[0]);
-        System.out.println(fileNameArray.length);
         for (int i = 0; i < fileNameArray.length; i++)
         {
-                String outputName = replaceSuffix(fileNameArray[i], ".xml"); //TODO change this in pr11
+                String outputName = replaceSuffix(fileNameArray[i], ".xml");
             try(FileReader fr = new FileReader(fileNameArray[i]);BufferedReader br = new BufferedReader(fr);
                 FileWriter fw = new FileWriter(outputName); BufferedWriter bw = new BufferedWriter(fw))
             {

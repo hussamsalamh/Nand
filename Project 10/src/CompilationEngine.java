@@ -151,7 +151,6 @@ public class CompilationEngine {
         {
             writeScopeOpener("subroutineDec");
             compileSubroutine();
-        //    jackTokenizer.advance();
             writeScopeCloser("subroutineDec");
         }
         writeInScope(); // Close curly
@@ -202,7 +201,8 @@ public class CompilationEngine {
             jackTokenizer.advance(); // {
             writeInScope();
             jackTokenizer.advance();
-            while(jackTokenizer.tokenType() == JackTokenizer.LexicalElements.KEYWORD && jackTokenizer.keyWord().equals("var"))
+            while(jackTokenizer.tokenType() == JackTokenizer.LexicalElements.KEYWORD &&
+                    jackTokenizer.keyWord().equals("var"))
             {
                 compileVarDec();
             }
@@ -286,24 +286,7 @@ public class CompilationEngine {
 
                 if (jackTokenizer.keyWord().equals("let"))
                 {
-                    writeScopeOpener("letStatement");
-                    writeInScope(); //write the keyword
-                    jackTokenizer.advance();
-                    writeInScope(); // write varName
-                    jackTokenizer.advance();
-                    if (jackTokenizer.symbol() == '[') {
-                        writeInScope(); // Write [
-                        jackTokenizer.advance();
-                        compileExpression();
-                        writeInScope(); // Write ']'
-                        jackTokenizer.advance();
-                    }
-                    writeInScope(); // Write =
-                    jackTokenizer.advance();
-                    compileExpression();
-                    writeInScope(); // ;
-                    writeScopeCloser("letStatement");
-                    jackTokenizer.advance();
+                    compileLet();
                 }
                 else if (jackTokenizer.keyWord().equals("if")) {
                     compileIf();
@@ -342,7 +325,26 @@ public class CompilationEngine {
     /**
      * Compiles a let declaration.
      */
-    public void compileLet() {
+    public void compileLet() throws IOException
+    {
+        writeScopeOpener("letStatement");
+        writeInScope(); //write the keyword
+        jackTokenizer.advance();
+        writeInScope(); // write varName
+        jackTokenizer.advance();
+        if (jackTokenizer.symbol() == '[') {
+            writeInScope(); // Write [
+            jackTokenizer.advance();
+            compileExpression();
+            writeInScope(); // Write ']'
+            jackTokenizer.advance();
+        }
+        writeInScope(); // Write =
+        jackTokenizer.advance();
+        compileExpression();
+        writeInScope(); // ;
+        writeScopeCloser("letStatement");
+        jackTokenizer.advance();
 
     }
 
@@ -434,7 +436,6 @@ public class CompilationEngine {
     }
 
     private void compileOP() throws IOException {
-        //TODO make sure < is &lt, > is &gt, " is &quot, & is &amp even in const_string
         String string = "";
 
         //Add the indentation tabs
@@ -475,8 +476,8 @@ public class CompilationEngine {
      * distinguish between the three possibilities. Any other token is not part of this term and should not
      * be advanced over.
      */
-    public void compileTerm() throws IOException {
-
+    public void compileTerm() throws IOException
+    {
         writeScopeOpener("term");
         if (jackTokenizer.tokenType() == JackTokenizer.LexicalElements.SYMBOL &&
                 (jackTokenizer.symbol() == '(' || jackTokenizer.symbol() == '['))

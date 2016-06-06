@@ -1,5 +1,3 @@
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
-
 import java.io.*;
 import java.util.HashSet;
 // era fix for git
@@ -15,8 +13,10 @@ public class JackTokenizer {
 
     public enum LexicalElements {KEYWORD, SYMBOL, IDENTIFIER, integerConstant, stringConstant}
 
-    public enum Keyword {CLASS, METHOD, FUNCTION,CONSTRUCTOR, INT, BOOLEAN, CHAR, VOID, VAR, STATIC, FIELD, LET,
-        DO ,IF, ELSE, WHILE, RETURN, TRUE, FALSE, NULL, THIS}
+    public enum Keyword {
+        CLASS, METHOD, FUNCTION, CONSTRUCTOR, INT, BOOLEAN, CHAR, VOID, VAR, STATIC, FIELD, LET,
+        DO, IF, ELSE, WHILE, RETURN, TRUE, FALSE, NULL, THIS
+    }
 
     /*private static final HashMap<String, Keyword> keywordsSet = new HashMap<String, Keyword>() {{
         put("class", Keyword.CLASS);
@@ -103,12 +103,12 @@ public class JackTokenizer {
     /**
      * Opens the input file/stream and gets
      * ready to tokenize it.
+     *
      * @param file
      */
-    public JackTokenizer(BufferedReader file)
-    {
+    public JackTokenizer(BufferedReader file) {
         streamTokenizer = new StreamTokenizer(file);
-        streamTokenizer.quoteChar('\"'); //TODO make sure that dont need to catch single quote
+        streamTokenizer.quoteChar('\"');
         streamTokenizer.ordinaryChar('-');
         streamTokenizer.ordinaryChar('.');
         streamTokenizer.ordinaryChar('/');
@@ -120,35 +120,28 @@ public class JackTokenizer {
     }
 
 
-
     /**
      * Do we have more tokens in the input?
+     *
      * @return
      */
     public boolean advance() throws IOException {
-        if (!peeked)
-        {
+        if (!peeked) {
             currentToken = streamTokenizer.nextToken();
             return currentToken != StreamTokenizer.TT_EOF;
-        }
-        else
-        {
+        } else {
             peeked = false;
             return true;
         }
     }
 
-    public void peek() throws IOException
-    {
+    public void peek() throws IOException {
         peeked = true;
         formerToken = currentToken;
         formerTokenType = curTokenType;
-        if (curTokenType == LexicalElements.KEYWORD)
-        {
+        if (curTokenType == LexicalElements.KEYWORD) {
             formerSval = streamTokenizer.sval.toLowerCase();
-        }
-        else
-        {
+        } else {
             formerSval = streamTokenizer.sval;
         }
         formerToString = streamTokenizer.toString();
@@ -157,20 +150,18 @@ public class JackTokenizer {
 
     /**
      * Returns the type of the current token
+     *
      * @return
      */
     public LexicalElements tokenType() throws IOException {
         int usedToken;
         String usedSval;
         String usedToString;
-        if (peeked)
-        {
+        if (peeked) {
             usedToken = formerToken;
             usedSval = formerSval;
             usedToString = formerToString;
-        }
-        else
-        {
+        } else {
             usedToken = currentToken;
             usedSval = streamTokenizer.sval;
             usedToString = streamTokenizer.toString();
@@ -180,22 +171,17 @@ public class JackTokenizer {
             //if (keywordsSet.containsKey(streamTokenizer.sval.toLowerCase())) {
             if (keywordsSet.contains(usedSval.toLowerCase())) {
                 return LexicalElements.KEYWORD;
-            }
-            else return LexicalElements.IDENTIFIER;
-        }
-        else if (usedToken == StreamTokenizer.TT_NUMBER) {
+            } else return LexicalElements.IDENTIFIER;
+        } else if (usedToken == StreamTokenizer.TT_NUMBER) {
             return LexicalElements.integerConstant;
-        }
-        else if (symbolSet.contains((char)usedToken)) {
+        } else if (symbolSet.contains((char) usedToken)) {
             return LexicalElements.SYMBOL;
-        }
-        else if (usedToken == '\"') {
+        } else if (usedToken == '\"') {
             //String originalString = streamTokenizer.toString();
             stringValue = usedToString.toString();
             int findEnd = 0;
-            while (stringValue.indexOf("]", findEnd+1) != -1)
-            {
-                findEnd = stringValue.indexOf("]", findEnd+1);
+            while (stringValue.indexOf("]", findEnd + 1) != -1) {
+                findEnd = stringValue.indexOf("]", findEnd + 1);
             }
             stringValue = stringValue.substring(6, findEnd);
             //advance();
@@ -203,12 +189,12 @@ public class JackTokenizer {
             //       advance();
             //       stringValue += (char)currentToken;
             //   }
-            stringValue = stringValue.replace("\t", "\\t");
-            stringValue = stringValue.replace("&", "&amp;");
-            stringValue = stringValue.replace("<", "&lt;");
-            stringValue = stringValue.replace(">", "&gt;");
-            stringValue = stringValue.replace("\"", "&quot;");
-            stringValue = stringValue.replace("\n", "\\n");
+          //  stringValue = stringValue.replace("\t", "\\t");
+          //  stringValue = stringValue.replace("&", "&amp;");
+          //  stringValue = stringValue.replace("<", "&lt;");
+          //  stringValue = stringValue.replace(">", "&gt;");
+          //  stringValue = stringValue.replace("\"", "&quot;");
+          //  stringValue = stringValue.replace("\n", "\\n");
 
             return LexicalElements.stringConstant;
         }
@@ -217,21 +203,19 @@ public class JackTokenizer {
 
     /**
      * Returns the keyword which is the current token. Should be called only when tokenType() is KEYWORD .
+     *
      * @return
      */
     public String keyWord() {
         //return keywordsSet.get(streamTokenizer.sval.toLowerCase());
-        if (peeked)
-        {
+        if (peeked) {
             return formerSval;
         }
         return streamTokenizer.sval.toLowerCase();
     }
 
-    public boolean isPeekedDot()
-    {
-        if (symbolSet.contains((char)currentToken) && (char) currentToken == '.')
-        {
+    public boolean isPeekedDot() {
+        if (symbolSet.contains((char) currentToken) && (char) currentToken == '.') {
             System.out.println("hit here");
             return true;
         }
@@ -240,12 +224,11 @@ public class JackTokenizer {
 
     /**
      * Returns the character which is the current token. Should be called only when tokenType() is SYMBOL .
+     *
      * @return
      */
-    public char symbol()
-    {
-        if (peeked)
-        {
+    public char symbol() {
+        if (peeked) {
             return (char) formerToken;
         }
         return (char) currentToken;
@@ -253,22 +236,20 @@ public class JackTokenizer {
 
     /**
      * Returns the identifier which is the current token. Should be called only when tokenType() is IDENTIFIER .
+     *
      * @return
      */
-    public String identifier()
-    {
-        if (peeked)
-        {
+    public String identifier() {
+        if (peeked) {
             return formerSval;
-        }
-        else
-        {
+        } else {
             return streamTokenizer.sval;
         }
     }
 
     /**
      * Returns the integer value of the current token. Should be called only when tokenType() is integerConstant .
+     *
      * @return
      */
     public int intVal() {
@@ -278,48 +259,11 @@ public class JackTokenizer {
     /**
      * Returns the string value of the current token, without the double quotes. Should be called only when
      * tokenType() is stringConstant .
+     *
      * @return
      */
     public String stringVal() {
         return stringValue;
     }
-
-
-    /**
-     * Test!
-     * TODO dont submit this!
-     * @param args
-     */
-    public static void main(String[] args) {
-        String str = args[0];
-        try(FileReader fr1 = new FileReader(str); BufferedReader r = new BufferedReader(fr1)) {
-            JackTokenizer a = new JackTokenizer(r);
-            while (a.advance()) {
-                switch (a.tokenType()) {
-                    case KEYWORD:
-                        System.out.println("KEYWORD: " + a.keyWord());
-                        break;
-                    case SYMBOL:
-                        System.out.println("SYMBOL: " + a.symbol());
-                        break;
-                    case IDENTIFIER:
-                        System.out.println("IDENT: " + a.identifier());
-                        break;
-                    case integerConstant:
-                        System.out.println("INT: " + a.intVal() );
-                        break;
-                    case stringConstant:
-                        System.out.println("STRING: " + a.stringVal());
-                        break;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-
-
-
 
 }
