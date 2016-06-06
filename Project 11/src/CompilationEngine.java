@@ -332,8 +332,6 @@ public class CompilationEngine {
                     vmWriter.writePush(VMWriter.SEGMENT.ARGUMENT, st.IndexOf(subRoutineName));
                     break;
                 default:
-                    System.out.println(subRoutineName);
-                    System.out.println("wtf1?");
                     break;
             }
         }
@@ -372,8 +370,6 @@ public class CompilationEngine {
                     vmWriter.writePush(VMWriter.SEGMENT.ARGUMENT, st.IndexOf(varName));
                     break;
                 default:
-                    System.out.println(varName);
-                    System.out.println("wtf2?");
                     break;
             }
 
@@ -580,8 +576,7 @@ public class CompilationEngine {
                 currCommand = VMWriter.COMMAND.ADD;
                 break;
             default:
-                System.out.println(jackTokenizer.symbol());
-                System.out.println("Fuck my life");
+                break;
         }
         jackTokenizer.advance();
         return currCommand;
@@ -620,7 +615,6 @@ public class CompilationEngine {
                     vmWriter.writeArithmetic(VMWriter.COMMAND.NOT);
                     break;
                 default:
-                    System.out.println(unaryOp);
                     break;
             }
 

@@ -219,7 +219,6 @@ public class JackTokenizer {
 
     public boolean isPeekedDot() {
         if (symbolSet.contains((char) currentToken) && (char) currentToken == '.') {
-            System.out.println("hit here");
             return true;
         }
         return false;
