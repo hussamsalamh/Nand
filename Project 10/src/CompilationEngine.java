@@ -275,7 +275,7 @@ public class CompilationEngine {
     }
 
     /**
-     * Compiles a sequence of statements, not including the enclosing ‘‘{}’’.
+     * Compiles a sequence of statements, not including the enclosing ''{}''.
      */
     public void compileStatements() throws IOException {
         writeScopeOpener("statements");
