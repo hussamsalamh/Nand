@@ -32,7 +32,7 @@ public class SymbolTable
         subRoutineTable.clear();
         numArg = 0;;
         numVar = 0;
-        numControlFlow = 0;
+        //numControlFlow = 0;
     }
     public int getNumControlFlow()
     {

@@ -328,8 +328,12 @@ public class CompilationEngine {
                 case STATIC:
                     vmWriter.writePush(VMWriter.SEGMENT.STATIC, st.IndexOf(subRoutineName));
                     break;
+                case ARG:
+                    vmWriter.writePush(VMWriter.SEGMENT.ARGUMENT, st.IndexOf(subRoutineName));
+                    break;
                 default:
-                    System.out.println("wtf?");
+                    System.out.println(subRoutineName);
+                    System.out.println("wtf1?");
                     break;
             }
         }
@@ -368,7 +372,8 @@ public class CompilationEngine {
                     vmWriter.writePush(VMWriter.SEGMENT.ARGUMENT, st.IndexOf(varName));
                     break;
                 default:
-                    System.out.println("wtf?");
+                    System.out.println(varName);
+                    System.out.println("wtf2?");
                     break;
             }
 
@@ -426,19 +431,19 @@ public class CompilationEngine {
         /*
          Compiles ~cond
          */
-        vmWriter.writeLabel("flow" + numFlow + "F");
+        vmWriter.writeLabel("whileFlow" + numFlow + "F");
         compileExpression();
         vmWriter.writeArithmetic(VMWriter.COMMAND.NOT);
 
         // If true jump to end (it's the opposite)
-        vmWriter.writeIf("flow" + numFlow + "T");
+        vmWriter.writeIf("whileFlow" + numFlow + "T");
         jackTokenizer.advance(); // Goes to {
         jackTokenizer.advance(); // Goes to statements
         compileStatements();
 
-        vmWriter.writeGoto("flow" + numFlow + "F");
+        vmWriter.writeGoto("whileFlow" + numFlow + "F");
         jackTokenizer.advance();
-        vmWriter.writeLabel("flow" + numFlow + "T");
+        vmWriter.writeLabel("whileFlow" + numFlow + "T");
     }
 
     /**class
@@ -575,6 +580,7 @@ public class CompilationEngine {
                 currCommand = VMWriter.COMMAND.ADD;
                 break;
             default:
+                System.out.println(jackTokenizer.symbol());
                 System.out.println("Fuck my life");
         }
         jackTokenizer.advance();
@@ -614,6 +620,7 @@ public class CompilationEngine {
                     vmWriter.writeArithmetic(VMWriter.COMMAND.NOT);
                     break;
                 default:
+                    System.out.println(unaryOp);
                     break;
             }
 

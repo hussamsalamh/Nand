@@ -189,7 +189,10 @@ public class JackTokenizer {
             //       advance();
             //       stringValue += (char)currentToken;
             //   }
-          //  stringValue = stringValue.replace("\t", "\\t");
+            stringValue = stringValue.replace("\\", "\\\\" );
+            stringValue = stringValue.replace("\t", "\\t");
+            stringValue = stringValue.replace("\\n", "\\\n" );
+            stringValue = stringValue.replace("\n", "\\n");
           //  stringValue = stringValue.replace("&", "&amp;");
           //  stringValue = stringValue.replace("<", "&lt;");
           //  stringValue = stringValue.replace(">", "&gt;");
