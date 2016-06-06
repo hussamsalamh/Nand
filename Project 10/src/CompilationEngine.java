@@ -228,7 +228,7 @@ public class CompilationEngine {
     }
 
     /**
-     * Compiles a (possibly empty) parameter list, not including the enclosing ‘‘ () ’’.
+     * Compiles a (possibly empty) parameter list, not including the enclosing '' () ''.
      */
     public void compileParameterList() throws IOException
     {
