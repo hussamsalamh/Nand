@@ -22,8 +22,8 @@ class String {
 
     /** De-allocates the string and frees its space. */
     method void dispose() {
-        //TODO dont need to deAlloc array?
         deAlloc(this);
+        return;
     }
 
     /** Returns the current length of this String. */
@@ -132,11 +132,3 @@ class String {
         return 34;
     }
 }
-
-//Note that the ASCII codes of newline , backspace , and doubleQuote are 128, 129, and 34, respectively
-/* String.intValue , String.setInt :
-   These functions can be implemented using
-   the algorithms from figures 12.4 and 12.5, respectively. Note that both algo-269
-   Operating System
-   rithms don’t handle negative numbers—a detail that must be handled by the
-   implementation. */

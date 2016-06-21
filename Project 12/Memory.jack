@@ -5,28 +5,43 @@
 
 /**
  * Memory operations library.
+ * Heap resides at RAM locations 2048 - 16383;
  */ 
 class Memory {
 
+    static Array memory;
+    static Array freeList;
+
     /** Initializes memory parameters. */
     function void init() {
+        let memory = 2048;
+        let freeList = 2048;
+        let freeList[0] = 14336; // amount of free addresses
+        let freeList[1] = null; // the next
+        return;
     }
 
     /** Returns the value of the main memory at the given address. */
     function int peek(int address) {
+        return memory[address];
     }
 
     /** Sets the value of the main memory at this address
      *  to the given value. */
     function void poke(int address, int value) {
+        let memory[address] = value;
+        return;
     }
 
     /** finds and allocates from the heap a memory block of the 
      *  specified size and returns a reference to its base address. */
     function int alloc(int size) {
+        var Array segment;
+        var Array
     }
 
     /** De-allocates the given object and frees its space. */
     function void deAlloc(int object) {
+        //TODO
     }    
 }

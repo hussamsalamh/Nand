@@ -33,6 +33,7 @@ class Math {
         let twoToThe[14] = 16384;
         let twoToThe[15] = 32768;
 
+        return;
     }
 
     /** Returns the absolute value of x. */
