@@ -69,7 +69,7 @@ class Math {
     function int divideHelper(int x, int y) {
         var int q;
         var int qq;
-        if ((y < x) | (y < 0) ) {
+        if (y > x) { //TODO was different, see dans notes
             return 0;
         }
         let q = divideHelper(x, (y+y));
@@ -86,7 +86,7 @@ class Math {
 
     /** Returns the integer part of x/y. */
     function int divide(int x, int y) {
-        var bool neg;
+        var boolean neg;
         var absDivideVal;
         // if (neg or neg) and not (neg and neg)
         if (((x < 0) | (y < 0)) & ~((x < 0) & (y < 0)) ) {
@@ -144,7 +144,7 @@ class Math {
     }
 
     /** returns true if the j-th bit of the integer x is 1 else false . */
-    function bool bit(int x, int j) {
+    function boolean bit(int x, int j) {
         var int jBitOfX;
         
         let jBitOfX = x & twoToThe[j];
@@ -159,4 +159,9 @@ class Math {
     function int getTwoToThePowerOf(int j) {
         return twoToThe[j];
     }
+
+    function int mod(int a, int n) {
+        return (a - (n * (a / n))); //TODO if problem then use Math.divide
+    }
+
 }
