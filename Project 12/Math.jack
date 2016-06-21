@@ -8,31 +8,155 @@
  */
 class Math {
 
+    static Array twoToThe;
+
+
     /** Initializes the library. */
     function void init() {
+        
+        let twoToThe = Array.new(16);
+
+        let twoToThe[0] = 1;
+        let twoToThe[1] = 2;
+        let twoToThe[2] = 4;
+        let twoToThe[3] = 8;
+        let twoToThe[4] = 16;
+        let twoToThe[5] = 32;
+        let twoToThe[6] = 64;
+        let twoToThe[7] = 128;
+        let twoToThe[8] = 256;
+        let twoToThe[9] = 512;
+        let twoToThe[10] = 1024;
+        let twoToThe[11] = 2048;
+        let twoToThe[12] = 4096;
+        let twoToThe[13] = 8192;
+        let twoToThe[14] = 16384;
+        let twoToThe[15] = 32768;
+
     }
 
     /** Returns the absolute value of x. */
     function int abs(int x) {
+        if (x < 0) {
+            return -x;
+        }
+        return x;
     }
 
     /** Returns the product of x and y. */
     function int multiply(int x, int y) {
+        var int sum;
+        var int shiftedX;
+        var int j;
+        var int jBitOfY;
+
+        let sum = 0;
+        let shiftedX = x;
+
+        let j = 0;
+
+        while (j < 16) {
+            let jBitOfY = bit(y, j);
+
+            if (jBitOfY = 1) {
+                let sum = sum + shiftedX;
+            }
+            shiftedX = shiftedX + shiftedX;
+            let j = j + 1;
+        }
     }
+
+    function int divideHelper(int x, int y) {
+        var int q;
+        var int qq;
+        if ((y < x) | (y < 0) ) {
+            return 0;
+        }
+        let q = divideHelper(x, (y+y));
+
+        let qq = q + q;
+        if ((x - (qq * y)) < y) {
+            return (qq);
+        }
+        else {
+            return qq + 1;
+        }
+    }
+
 
     /** Returns the integer part of x/y. */
     function int divide(int x, int y) {
+        var bool neg;
+        var absDivideVal;
+        // if (neg or neg) and not (neg and neg)
+        if (((x < 0) | (y < 0)) & ~((x < 0) & (y < 0)) ) {
+            let neg = true;
+        }
+        else {
+            let neg = false;
+        }
+
+        let absDivideVal = divideHelper(abs(x), abs(y));
+
+        if (neg) {
+            return ~absDivideVal;
+        }
+        return absDivideVal;
     }
 
     /** Returns the integer part of the square root of x. */
     function int sqrt(int x) {
+        var int y;
+        var int j;
+        var int innerBracket;
+        var int eval;
+        let y = 0;
+        let j = 7;
+
+        while ((j < 0) | (j = 0) ) {
+            let innerBracket = y + twoToThe[j];
+            let eval = (innerBracket) * (innerBracket);
+
+            if (eval > x) {
+                if (eval > 0) {
+                    let y = y + twoToThe[j];
+                }
+            }
+            let j = j - 1;
+        }
+        return y;
     }
 
     /** Returns the greater number. */
     function int max(int a, int b) {
+        if (a < b) {
+            return b;
+        }
+        return a;
     }
 
     /** Returns the smaller number. */
     function int min(int a, int b) {
+        if (a < b) {
+            return a;
+        }
+        return b;
+    }
+
+    /** returns true if the j-th bit of the integer x is 1 else false . */
+    function bool bit(int x, int j) {
+        var int jBitOfX;
+        
+        let jBitOfX = x & twoToThe[j];
+
+        if (jBitOfX = twoToThe[j]) {
+            return true;
+        }
+
+        return false;
+    }
+
+    function int getTwoToThePowerOf(int j) {
+        return twoToThe[j];
     }
 }
