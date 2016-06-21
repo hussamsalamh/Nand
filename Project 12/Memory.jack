@@ -16,8 +16,8 @@ class Memory {
     function void init() {
         let memory = 2048;
         let freeList = 2048;
-        let freeList[0] = 14336; // amount of free addresses
-        let freeList[1] = null; // the next
+        let freeList[0] = 14334; // amount of free addresses
+        let freeList[1] = null; // the next free segment
         return;
     }
 
@@ -37,11 +37,60 @@ class Memory {
      *  specified size and returns a reference to its base address. */
     function int alloc(int size) {
         var Array segment;
-        var Array
+        var Array prevSegment;
+        var Array newSegment;
+        var int blockBaseAddr;
+        let segment = freeList;
+        let prevSegment = null;
+
+        // search for available segment (first fit)
+        while(~(segment[0] > size) & ~(segment = null)) {
+            //update segment to current next and update prev
+            let prevSegment = segment;
+            let segment = segment[1];
+
+        }
+
+        if (segment = null) { //didnt find good segment
+            return null;
+        }
+
+        //found good segment
+
+        if (~(segment[0] = (size + 1))) {
+            let newSegment = prevSegment[1] + size + 1;
+            let newSegment[0] = segment[0] - size - 1;
+            let newSegment[1] = segment[1];
+            let prevSegment[1] = newSegment;
+        }
+        else {
+            let prevSegment[1] = segment[1];
+        }
+
+        let segment[0] = size + 1;
+        let segment = segment + 1;
+        return segment;
     }
 
     /** De-allocates the given object and frees its space. */
     function void deAlloc(int object) {
-        //TODO
+        var Array segment;
+        var Array segToFree;
+
+        //get the size
+        let segToFree = object - 1;
+        //no next because its going to be last in freeList
+        let segToFree[1] = null;
+
+        let segment = freeList;
+        //iterate to last
+        while(~(segment[1] = null)) {
+            let segment = segment[1];
+        }
+
+        //add to end of freeList;
+        let segment[1] = segToFree;
+
+        return;
     }    
 }

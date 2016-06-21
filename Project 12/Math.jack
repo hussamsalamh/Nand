@@ -114,7 +114,7 @@ class Math {
         let y = 0;
         let j = 7;
 
-        while ((j < 0) | (j = 0) ) {
+        while (~(j < 0)) { // j >= 0
             let innerBracket = y + twoToThe[j];
             let eval = (innerBracket) * (innerBracket);
 
