@@ -271,11 +271,25 @@ class Output {
 
     /** Advances the cursor to the beginning of the next line. */
     function void println() {
-        //TODO
+        if (cursorY < 21) {
+            do Output.moveCursor(cursorY + 1, 0);
+            return;
+        }
+        do Output.moveCursor(0,0);
+        return;
     }
 
     /** Moves the cursor one column back. */
     function void backSpace() {
-        //TODO
+        if (cursorX > 0) { //not at start of line, move back
+            do Output.moveCursor(cursorY, cursorX - 1);
+            return;
+        }
+        if (cursorY > 0) { // at start of line, not the most top
+            //move to line above, at end
+            do Output.moveCursor(cursorY - 1, 63);
+            return;
+        }
+        return;
     }
 }
