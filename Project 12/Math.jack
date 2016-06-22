@@ -165,4 +165,36 @@ class Math {
         return (a - (n * (a / n))); //TODO if problem then use Math.divide
     }
 
+    function int shiftLeft(int n, int amount) {
+        var int i;
+        var int retVal;
+
+        let i = amount;
+        let retVal = 0;
+
+        while (i < 16) {
+            if (Math.bit(n, i)) {
+                let retVal = retVal + twoToThe[i - amount];
+            }
+            let i = i + 1;
+        }
+        return retVal;
+    }
+
+    function int shiftRight(int n, int amount) {
+        var int i;
+        var int retVal;
+
+        let i = 0;
+        let retVal = 0;
+
+        while ((i + amount) < 16) {
+            if (Math.bit(n, i)) {
+                let retVal = retVal + twoToThe[i + amount];
+            }
+            let i = i + 1;
+        }
+        return retVal;
+    }
+
 }
