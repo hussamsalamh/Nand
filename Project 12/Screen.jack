@@ -8,33 +8,73 @@
  */
 class Screen {
 
+    static boolean blackColor;
+
     /** Initializes the Screen. */
     function void init() {
+        let blackColor = true;
+        return;
     }
 
     /** Erases the whole screen. */
     function void clearScreen() {
+        var int i;
+        let i = 16384;
+
+        while(i < 24576) {
+            do Memory.poke(i, 0);
+            let i = i + 1;
+        }
+        return;
     }
 
     /** Sets the color to be used in further draw commands
      *  where white = false, black = true. */
     function void setColor(boolean b) {
+        let blackColor = b;
+        return;
     }
 
     /** Draws the (x, y) pixel. */
     function void drawPixel(int x, int y) {
+        var int position;
+        var int temp;
+        var int pixelLocation;
+
+        let position = Math.mod(x, 16); //TODO if problem with this then mod is not good for this
+        let pixelLocation = 16384 + Math.shiftRight(y, 5) + Math.shiftLeft(x, 4);
+
+        if (blackColor) {
+            do Memory.poke(pixelLocation, (Memory.peek(pixelLocation) | Math.getTwoToThePowerOf(position)));
+        }
+        else {
+            do Memory.poke(pixelLocation, (Memory.peek(pixelLocation) & (-1 - Math.getTwoToThePowerOf(position))));
+        }
+        return;
     }
 
     /** Draws a line from (x1, y1) to (x2, y2). */
     function void drawLine(int x1, int y1, int x2, int y2) {
+        //TODO
     }
 
     /** Draws a filled rectangle where the top left corner
      *  is (x1, y1) and the bottom right corner is (x2, y2). */
     function void drawRectangle(int x1, int y1, int x2, int y2) {
+        //TODO
     }
 
     /** Draws a filled circle of radius r around (cx, cy). */
     function void drawCircle(int cx, int cy, int r) {
+        var int dy;
+        var int temp;
+
+        let dy = -r;
+        while(~(dy > r)) {
+            let temp = Math.sqrt((r * r) - (dy * dy));
+            do Screen.drawLine((cx - temp), (cy + dy), (cx + temp), (cy + dy));
+            let dy = dy + 1;
+        }
+        return;
     }
 }
