@@ -55,13 +55,157 @@ class Screen {
 
     /** Draws a line from (x1, y1) to (x2, y2). */
     function void drawLine(int x1, int y1, int x2, int y2) {
-        //TODO
+        var int a;
+        var int b;
+        var int absA;
+        var int absB;
+        var int i;
+        var int dx;
+        var int dy;
+        var int aIncrease;
+        var int bIncrease;
+        var int temp;
+        var int pxLocation;
+        var int pxLocation2;
+        var int mask;
+        var int adyMinusBdx;
+
+        let adyMinusBdx = 0;
+
+        //base case
+        if ((x1 = x2) & (y1 = y2)) {
+            return;
+        }
+
+        //x axis is same
+        if (x1 = x2) {
+            let i = Math.min(y1, y2);
+            let temp = Math.max(y1, y2);
+            while(~(i > temp)) {
+                do Screen.drawPixel(x1, i);
+                let i = i + 1;
+            }
+            return;
+        }
+
+        //y axis is same
+        if (y1 = y2) {
+            let i = Math.min(x1, x2);
+            let temp = Math.max(x1, x2);
+            let mask = 0;
+
+            let pxLocation = 16384 + Math.shiftRight(y1, 5) + Math.shiftLeft(i, 4); //TODO if problem see original brackets
+            let pxLocation2 = 16384 + Math.shiftRight(y1, 5) + Math.shiftLeft(temp, 4); //TODO if problem see original brackets
+
+            let a = Math.mod(i, 16);
+
+            if (pxLocation = pxLocation2) {
+                let b = Math.mod(temp, 16);
+
+                while(a < (b + 1)) {
+                    let mask = mask + Math.getTwoToThePowerOf(a);
+                    let a = a + 1;
+                }
+
+                let b = Memory.peek(pxLocation);
+                if (blackColor) {
+                    let b = mask | b;
+                }
+                else {
+                    let b = (~(mask) & b);
+                }
+                do Memory.poke(pxLocation, b);
+                return;
+
+            }
+
+            if (~(a = 0)) {
+                while (a < 16) {
+                    let mask = mask + Math.getTwoToThePowerOf(a);
+                    let a = a + 1;
+                    let i = i + 1;
+                }
+                let b = Memory.peek(pxLocation);
+                if (blackColor) {
+                    let b = mask | b;
+                }
+                else {
+                    let b = (~(mask) & b);
+                }
+                do Memory.poke(pxLocation, b);
+                let pxLocation = pxLocation + 1;
+            }
+
+            let dx = temp - i;
+            while (dx > 15) {
+                do Memory.poke(pxLocation, blackColor);
+                let dx = dx - 16;
+                let pxLocation = pxLocation + 1;
+            }
+
+            if (~(dx = 0)) {
+                let mask = 0;
+                let a = Math.mod(temp, 16);
+                while(a < 16) {
+                    let mask = mask + Math.getTwoToThePowerOf(a);
+                    let a = a + 1;
+                }
+                let mask = -mask;
+                let b = Memory.peek(pxLocation);
+                if (blackColor) {
+                    let b = mask | b;
+                }
+                else {
+                    let b = (~(mask) & b);
+                }
+                do Memory.poke(pxLocation, b);
+            }
+            return;
+        }
+
+        let dx = x2 - x1;
+        let dy = y2 - y1;
+        let bIncrease = 1;
+
+        if (dy < 0) {
+            let bIncrease = -1;
+            let dy = -dy;
+        }
+
+        let aIncrease = 1;
+        if (dx < 0) {
+            let aIncrease = -1;
+            let dx = -dx;
+        }
+        let a = 0;
+        let b = 0;
+        let absA = Math.abs(a);
+        let absB = Math.abs(b);
+
+
+        while(~(absA > dx) & ~(absB > dy)) {
+            do Screen.drawPixel(x1 + a, y1 + b);
+            if (adyMinusBdx < 0) {
+                let a = a + aIncrease;
+                let adyMinusBdx = adyMinusBdx + dy;
+            }
+            else {
+                let b = b + bIncrease;
+                let adyMinusBdx = adyMinusBdx - dx;
+            }
+        }
+        return;
+
     }
 
     /** Draws a filled rectangle where the top left corner
      *  is (x1, y1) and the bottom right corner is (x2, y2). */
     function void drawRectangle(int x1, int y1, int x2, int y2) {
-        //TODO
+        while (~(y1 > y2)) {
+            do Screen.drawLine(x1, y1, x2, y1);
+            let y1 = y1 + 1;
+        }
+        return;
     }
 
     /** Draws a filled circle of radius r around (cx, cy). */
