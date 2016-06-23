@@ -10,8 +10,8 @@ class Sys {
 
     /** Performs all the initializations required by the OS. */
     function void init() {
-        do Math.init();
         do Memory.init();
+        do Math.init();
         do Output.init();
         do Screen.init();
         do Keyboard.init();
@@ -25,6 +25,7 @@ class Sys {
         while (true) {
             //empty
         }
+        return;
     }
 
     /** Waits approximately duration milliseconds and then returns. */
@@ -46,6 +47,7 @@ class Sys {
     function void error(int errorCode) {
         do Output.printString("ERR");
         do Output.printInt(errorCode);
+        do Sys.halt();
         return;
     }
 }

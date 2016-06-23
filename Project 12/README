@@ -1,0 +1,21 @@
+yonilipman,irahi
+===============================================================================
+Yonatan Lipman, ID 305629750, yonatan.lipman@mail.huji.ac.il
+Era Choshen, ID 302907761, era.choshen@mail.huji.ac.il
+===============================================================================
+
+project12
+===============================================================================
+
+Submitted Files
+--------------------------
+README
+
+Array.java - Represents an array. Can be used to hold any type of object.
+Keyboard.jack - A library for handling user input from the keyboard.
+Math.jack - A basic math library. added additional functions
+Memory.jack - Memory operations library.
+Output.jack - Handles writing characters to the screen.
+Screen.jack - Graphic screen library.
+String.jack - Represents a String object. Implements the String type.
+Sys.jack - A library of basic system services.

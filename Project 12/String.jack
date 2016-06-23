@@ -14,15 +14,20 @@ class String {
 
     /** Constructs a new empty String with a maximum length of maxLength. */
     constructor String new(int maxLength) {
-        let stringArray = Array.new(maxLength);
-        let mLength = maxLength; //TODO is this needed?
+        if (maxLength < 1) {
+            let mLength = 1;
+        }
+        else {
+            let mLength = maxLength;
+        }
+        let stringArray = Array.new(mLength);
         let stringLength = 0;
         return this;
     }
 
     /** De-allocates the string and frees its space. */
     method void dispose() {
-        deAlloc(this);
+        do stringArray.dispose();
         return;
     }
 
@@ -39,23 +44,19 @@ class String {
     /** Sets the j'th character of this string to be c. */
     method void setCharAt(int j, char c) {
         let stringArray[j] = c;
-        if (stringLength < (j + 1)) {
-            let stringLength = j + 1;
-        }
         return;
     }
 
     /** Appends the character c to the end of this String.
      *  Returns this string as the return value. */
     method String appendChar(char c) {
-        let stringArray[(stringLength)] = c;
+        let stringArray[stringLength] = c;
         let stringLength = stringLength + 1;
         return this;
     }
 
     /** Erases the last character from this String. */
     method void eraseLastChar() {
-        //TODO remove last char?
         let stringLength = stringLength - 1;
         return;
     }
@@ -65,12 +66,13 @@ class String {
     method int intValue() {
         var int v;
         var int i;
+        var int temp;
         var boolean neg;
         let i = 0;
         let v = 0;
 
         //check that first val isnt neg
-        if (stringArray[i] = 45) {
+        if (stringArray[0] = 45) {
             let neg = true;
             let i = i + 1;
         }
@@ -79,12 +81,18 @@ class String {
         }
 
         while (i < stringLength) {
-            let v = (v * 10) + (stringArray[i] - 48);
-            let i = i + 1;
+            let temp = stringArray[i] - 48;
+            if ((temp < 0) | (temp > 9)) {
+                let i = stringLength;
+            }
+            else {
+                let v = (v * 10) + (temp);
+                let i = i + 1;
+            }
         }
 
         if (neg) {
-            let v = v * -1;
+            return -v;
         }
         return v;
     }
@@ -93,12 +101,14 @@ class String {
         var int lastDigit;
         var int remainingNum;
 
-        if (n = 0) {
-            return;
-        }
-
         let remainingNum = n / 10;
         let lastDigit = n - (remainingNum * 10);
+
+        if (n < 10) {
+            let stringArray[stringLength] = lastDigit + 48;
+            let stringLength = stringLength + 1;
+            return;
+        }
 
         do int2String(remainingNum);
         do appendChar(lastDigit + 48);
@@ -110,8 +120,12 @@ class String {
         let stringLength = 0;
 
         if (number < 0) {
-            let number = number * -1;
-            do appendChar(45); //ASCII val of '-'
+            let number = -number;
+            let stringArray[0] = 45; //ASCII val of '-'
+            let stringLength = 1;
+        }
+        else {
+            let stringLength = 0;
         }
         do int2String(number);
         return;

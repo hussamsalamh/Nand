@@ -84,8 +84,10 @@ class Keyboard {
                 return retVal;
             }
             if (c = 129) { // if c is backspace
-                do retVal.eraseLastChar();
-                do Output.backSpace();
+                if (retVal.length() > 0) {
+                    do retVal.eraseLastChar();
+                    do Output.backSpace();
+                }
             }
             if ((c < 127) & (c > 31)) {
                 do retVal.appendChar(c);
@@ -106,7 +108,7 @@ class Keyboard {
         let str = Keyboard.readLine(message);
         let retVal = str.intValue();
 
-        str.dispose();
+        do str.dispose();
         return retVal;
     }
 }

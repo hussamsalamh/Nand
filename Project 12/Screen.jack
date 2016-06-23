@@ -41,8 +41,8 @@ class Screen {
         var int temp;
         var int pixelLocation;
 
-        let position = Math.mod(x, 16); //TODO if problem with this then mod is not good for this
-        let pixelLocation = 16384 + Math.shiftRight(y, 5) + Math.shiftLeft(x, 4);
+        let position = Math.mod(x, 16);
+        let pixelLocation = (16384 + Math.shiftRight(y, 5)) + Math.shiftLeft(x, 4);
 
         if (blackColor) {
             do Memory.poke(pixelLocation, (Memory.peek(pixelLocation) | Math.getTwoToThePowerOf(position)));
@@ -57,8 +57,6 @@ class Screen {
     function void drawLine(int x1, int y1, int x2, int y2) {
         var int a;
         var int b;
-        var int absA;
-        var int absB;
         var int i;
         var int dx;
         var int dy;
@@ -97,9 +95,9 @@ class Screen {
             let pxLocation = 16384 + Math.shiftRight(y1, 5) + Math.shiftLeft(i, 4); //TODO if problem see original brackets
             let pxLocation2 = 16384 + Math.shiftRight(y1, 5) + Math.shiftLeft(temp, 4); //TODO if problem see original brackets
 
-            let a = Math.mod(i, 16);
 
             if (pxLocation = pxLocation2) {
+                let a = Math.mod(i, 16);
                 let b = Math.mod(temp, 16);
 
                 while(a < (b + 1)) {
@@ -116,9 +114,9 @@ class Screen {
                 }
                 do Memory.poke(pxLocation, b);
                 return;
-
             }
 
+            let a = Math.mod(i, 16);
             if (~(a = 0)) {
                 while (a < 16) {
                     let mask = mask + Math.getTwoToThePowerOf(a);
@@ -150,7 +148,7 @@ class Screen {
                     let mask = mask + Math.getTwoToThePowerOf(a);
                     let a = a + 1;
                 }
-                let mask = -mask;
+                let mask = ~mask;
                 let b = Memory.peek(pxLocation);
                 if (blackColor) {
                     let b = mask | b;
@@ -179,11 +177,9 @@ class Screen {
         }
         let a = 0;
         let b = 0;
-        let absA = Math.abs(a);
-        let absB = Math.abs(b);
 
 
-        while(~(absA > dx) & ~(absB > dy)) {
+        while(~(Math.abs(a) > dx) & ~(Math.abs(b) > dy)) {
             do Screen.drawPixel(x1 + a, y1 + b);
             if (adyMinusBdx < 0) {
                 let a = a + aIncrease;

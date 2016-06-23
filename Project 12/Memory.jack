@@ -14,10 +14,15 @@ class Memory {
 
     /** Initializes memory parameters. */
     function void init() {
-        let memory = 0; //TODO was 2048, check moodle
+        let memory = 0;
         let freeList = 2048;
-        let freeList[0] = 14334; // amount of free addresses
-        let freeList[1] = null; // the next free segment
+
+        let freeList[0] = -1; // amount of free addresses
+        let freeList[1] = 2050; // the next free segment
+
+        let freeList[2] = 14333;
+        let freeList[3] = null;
+
         return;
     }
 

@@ -9,29 +9,22 @@
 class Math {
 
     static Array twoToThe;
+	static int temp;
 
 
     /** Initializes the library. */
     function void init() {
-        
+        var int i;
+		var int power;
         let twoToThe = Array.new(16);
+		let i = 0;
+		let power = 1;
 
-        let twoToThe[0] = 1;
-        let twoToThe[1] = 2;
-        let twoToThe[2] = 4;
-        let twoToThe[3] = 8;
-        let twoToThe[4] = 16;
-        let twoToThe[5] = 32;
-        let twoToThe[6] = 64;
-        let twoToThe[7] = 128;
-        let twoToThe[8] = 256;
-        let twoToThe[9] = 512;
-        let twoToThe[10] = 1024;
-        let twoToThe[11] = 2048;
-        let twoToThe[12] = 4096;
-        let twoToThe[13] = 8192;
-        let twoToThe[14] = 16384;
-        let twoToThe[15] = 32768;
+		while(i < 16) {
+			let twoToThe[i] = power;
+			let power = power + power;
+			let i = i + 1;
+		}
 
         return;
     }
@@ -44,65 +37,71 @@ class Math {
         return x;
     }
 
+
+	function int returnSign(int x,int y,int res) {
+        if(((y < 0)&(x > 0))|((y > 0)&(x < 0))) {
+            let res = -res;
+        }
+        return res;
+    }
+
     /** Returns the product of x and y. */
     function int multiply(int x, int y) {
         var int sum;
         var int shiftedX;
         var int j;
-        var int jBitOfY;
+		var int absX;
+		var int absY;
+
+		if ((x = 0) | (y = 0)) {
+			return 0;
+		}
+
+        let absX = Math.abs(x);
+        let absY = Math.abs(y);
 
         let sum = 0;
-        let shiftedX = x;
+        let shiftedX = absX;
 
         let j = 0;
 
         while (j < 16) {
-            let jBitOfY = bit(y, j);
 
-            if (jBitOfY = 1) {
+            if (Math.bit(absY, j)) {
                 let sum = sum + shiftedX;
             }
-            shiftedX = shiftedX + shiftedX;
+            let shiftedX = shiftedX + shiftedX;
             let j = j + 1;
         }
+		return Math.returnSign(x, y, sum);
     }
 
     function int divideHelper(int x, int y) {
         var int q;
-        var int qq;
-        if (y > x) { //TODO was different, see dans notes
+
+        if ((y > x) | (y < 0)) { //TODO was different, see dans notes
             return 0;
         }
-        let q = divideHelper(x, (y+y));
+        let q = Math.divideHelper(x, (y+y));
 
-        let qq = q + q;
-        if ((x - (qq * y)) < y) {
-            return (qq);
+
+        if (temp < y) {
+            return (q + q);
         }
         else {
-            return qq + 1;
+			let temp = temp - y;
+            return (q + q + 1);
         }
     }
 
 
     /** Returns the integer part of x/y. */
     function int divide(int x, int y) {
-        var boolean neg;
-        var absDivideVal;
-        // if (neg or neg) and not (neg and neg)
-        if (((x < 0) | (y < 0)) & ~((x < 0) & (y < 0)) ) {
-            let neg = true;
-        }
-        else {
-            let neg = false;
-        }
+        var int absDivideVal;
+		let temp = Math.abs(x);
+        let absDivideVal = Math.divideHelper(temp, Math.abs(y));
 
-        let absDivideVal = divideHelper(abs(x), abs(y));
-
-        if (neg) {
-            return ~absDivideVal;
-        }
-        return absDivideVal;
+		return Math.returnSign(x, y, absDivideVal);
     }
 
     /** Returns the integer part of the square root of x. */
@@ -111,18 +110,17 @@ class Math {
         var int j;
         var int innerBracket;
         var int eval;
+
         let y = 0;
         let j = 7;
 
         while (~(j < 0)) { // j >= 0
             let innerBracket = y + twoToThe[j];
-            let eval = (innerBracket) * (innerBracket);
+            let eval = Math.multiply(innerBracket, innerBracket);
 
-            if (eval > x) {
-                if (eval > 0) {
-                    let y = y + twoToThe[j];
-                }
-            }
+			if((eval > 0) & ~(eval > x)) {
+				let y = innerBracket;
+			}
             let j = j - 1;
         }
         return y;
@@ -147,14 +145,10 @@ class Math {
     /** returns true if the j-th bit of the integer x is 1 else false . */
     function boolean bit(int x, int j) {
         var int jBitOfX;
-        
+
         let jBitOfX = x & twoToThe[j];
 
-        if (jBitOfX = twoToThe[j]) {
-            return true;
-        }
-
-        return false;
+        return jBitOfX > 0;
     }
 
     function int getTwoToThePowerOf(int j) {
@@ -162,7 +156,7 @@ class Math {
     }
 
     function int mod(int a, int n) {
-        return (a - (n * (a / n))); //TODO if problem then use Math.divide
+        return (a - (n * (a / n)));
     }
 
     function int shiftLeft(int n, int amount) {
