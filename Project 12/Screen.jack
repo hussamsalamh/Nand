@@ -92,8 +92,8 @@ class Screen {
             let temp = Math.max(x1, x2);
             let mask = 0;
 
-            let pxLocation = 16384 + Math.shiftRight(y1, 5) + Math.shiftLeft(i, 4); //TODO if problem see original brackets
-            let pxLocation2 = 16384 + Math.shiftRight(y1, 5) + Math.shiftLeft(temp, 4); //TODO if problem see original brackets
+            let pxLocation = 16384 + Math.shiftRight(y1, 5) + Math.shiftLeft(i, 4);
+            let pxLocation2 = 16384 + Math.shiftRight(y1, 5) + Math.shiftLeft(temp, 4);
 
 
             if (pxLocation = pxLocation2) {

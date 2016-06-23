@@ -79,7 +79,7 @@ class Math {
     function int divideHelper(int x, int y) {
         var int q;
 
-        if ((y > x) | (y < 0)) { //TODO was different, see dans notes
+        if ((y > x) | (y < 0)) {
             return 0;
         }
         let q = Math.divideHelper(x, (y+y));
